@@ -43,7 +43,7 @@ class Pendencia {
      */
     private $descricao;
     /**
-     * @ORM\Column(type="date", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      * @var \DateTime
      */
     private $dataCriacao;
@@ -53,12 +53,12 @@ class Pendencia {
      */
     private $resolvido;
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
-    private $dataConclusão;
+    private $dataConclusao;
     /**
-     * @ORM\ManyToOne(targetEntity="Processo", inversedBy="pareceres")
+     * @ORM\ManyToOne(targetEntity="Processo", inversedBy="pendencias")
      * @ORM\JoinColumn(name="Processo_idProcesso",
      *                 referencedColumnName="idProcesso", nullable=false)
      * @var Processo
@@ -74,7 +74,7 @@ class Pendencia {
         $this->pareceres = new ArrayCollection();
     }
     
-    public function getIdParecer() {
+    public function getIdPendencia() {
         return $this->idPendencia;
     }
 
@@ -91,15 +91,15 @@ class Pendencia {
     }
 
     public function getDataConclusão() {
-        return $this->dataConclusão;
+        return $this->dataConclusao;
     }
 
     public function getProcesso() {
         return $this->processo;
     }
 
-    public function setIdParecer($idParecer) {
-        $this->idPendencia = $idParecer;
+    public function setIdPendencia($idPendencia) {
+        $this->idPendencia = $idPendencia;
     }
 
     public function setDescricao($descricao) {
@@ -115,7 +115,7 @@ class Pendencia {
     }
 
     public function setDataConclusão(\DateTime $dataConclusão) {
-        $this->dataConclusão = $dataConclusão;
+        $this->dataConclusao = $dataConclusão;
     }
 
     public function setProcesso(Processo $processo) {

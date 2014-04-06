@@ -37,7 +37,7 @@ class Assunto {
      */
     private $idAssunto;
     /**
-     * @ORM\Column(type="string", length=150, nullable=false)
+     * @ORM\Column(type="string", length=150, nullable=false, unique=true)
      * @var string
      */
     private $nome;
@@ -51,10 +51,15 @@ class Assunto {
      * @var ArrayCollection
      */
     private $processos;
+    /**
+     * @ORM\OneToMany(targetEntity="Workflow", mappedBy="assunto")
+     * @var ArrayCollection
+     */
     private $workflows;
 
     public function __construct() {
         $this->processos = new ArrayCollection();
+        $this->workflows = new ArrayCollection();
     }
     
     public function getIdAssunto() {
@@ -104,5 +109,30 @@ class Assunto {
     
     public function getProcessos(){
         return $this->processos->toArray();
+    }
+    
+    public function addWorkflow(Workflow $workflow){
+        if($this->workflows->contains($workflow)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->workflows->set($workflow->getIdWorkflow(), $workflow);
+    }
+    
+    public function getWorkflow($key){
+        if(!$this->workflows->containsKey($key)){
+            throw new NullPointerException();
+        }
+        $this->workflows->get($key);
+    }
+
+    public function removeWorkflow($key){
+        if(!$this->workflows->containsKey($key)){
+            return;
+        }
+        $this->workflows->remove($key);
+    }
+    
+    public function getWorkflows(){
+        $this->workflows->toArray();
     }
 }

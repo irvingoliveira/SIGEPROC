@@ -55,10 +55,10 @@ class OrgaoExterno {
      */
     private $endereco;
     /**
-     * @ORM\OneToMany(targetEntity="FluxoPosto", mappedBy="orgaosExternos")
+     * @ORM\OneToMany(targetEntity="FluxoPosto", mappedBy="orgaoExterno")
      * @var ArrayCollection
      */
-    private $fluxosPostos;
+    private $fluxosOrgaoExterno;
     /**
      * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="orgaoExterno")
      * @var ArrayCollection
@@ -66,7 +66,7 @@ class OrgaoExterno {
     private $guiasDeRemessa;
     
     public function __construct() {
-        $this->fluxosPostos = new ArrayCollection();
+        $this->fluxosOrgaoExterno = new ArrayCollection();
         $this->guiasDeRemessa = new ArrayCollection();
     }
 
@@ -128,27 +128,27 @@ class OrgaoExterno {
     }
     
     public function addFluxoPosto(FluxoPosto $fluxoPosto){
-        if($this->fluxosPostos->contains($fluxoPosto)){
+        if($this->fluxosOrgaoExterno->contains($fluxoPosto)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
-        $this->fluxosPostos->set($fluxoPosto->getIdFluxoPosto(), $fluxoPosto);
+        $this->fluxosOrgaoExterno->set($fluxoPosto->getIdFluxoPosto(), $fluxoPosto);
     }
     
     public function getFluxoPosto($key){
-        if(!$this->fluxosPostos->containsKey($key)){
+        if(!$this->fluxosOrgaoExterno->containsKey($key)){
             throw new NullPointerException();
         }
-        return $this->fluxosPostos->get($key);
+        return $this->fluxosOrgaoExterno->get($key);
     }
     
     public function removeFluxoPosto($key){
-        if(!$this->fluxosPostos->containsKey($key)){
+        if(!$this->fluxosOrgaoExterno->containsKey($key)){
             return;
         }
-        $this->fluxosPostos->remove($key);
+        $this->fluxosOrgaoExterno->remove($key);
     }
     
     public function getFluxosPostos(){
-        return $this->fluxosPostos->toArray();
+        return $this->fluxosOrgaoExterno->toArray();
     }
 }

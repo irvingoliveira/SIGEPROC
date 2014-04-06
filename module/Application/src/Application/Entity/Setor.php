@@ -62,7 +62,7 @@ class Setor {
     /**
      * @ORM\ManyToOne(targetEntity="TipoSetor", inversedBy="setores")
      * @ORM\JoinColumn(name="TipoSetor_idTipoSetor",
-     *                 referencedColumnName="idTipoSetor")
+     *                 referencedColumnName="idTipoSetor", nullable=false)
      * @var TipoSetor
      */
     private $tipo;
@@ -82,16 +82,23 @@ class Setor {
      * @ORM\OneToMany(targetEntity="FluxoPosto", mappedBy="setor")
      * @var ArrayCollection
      */
-    private $fluxosPostos;
+    private $fluxosSetor;
     /**
      * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="setor")
      * @var ArrayCollection
      */
     private $guiasDeRemessa;
-    
+    /**
+     * @ORM\OneToMany(targetEntity="Requerente", mappedBy="setor")
+     * @var ArrayCollection
+     */
+    private $requerentes;
+
+
     public function __construct() {
-        $this->fluxosPostos = new ArrayCollection();
+        $this->fluxosSetor = new ArrayCollection();
         $this->guiasDeRemessa = new ArrayCollection();
+        $this->requerentes = new ArrayCollection();
         $this->setoresFilhos = new ArrayCollection();
         $this->usuarios = new ArrayCollection();
     }
@@ -195,27 +202,52 @@ class Setor {
     }
 
     public function addFluxoPosto(FluxoPosto $fluxoPosto){
-        if($this->fluxosPostos->contains($fluxoPosto)){
+        if($this->fluxosSetor->contains($fluxoPosto)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
-        $this->fluxosPostos->set($fluxoPosto->getIdFluxoPosto(), $fluxoPosto);
+        $this->fluxosSetor->set($fluxoPosto->getIdFluxoPosto(), $fluxoPosto);
     }
     
     public function getFluxoPosto($key){
-        if(!$this->fluxosPostos->containsKey($key)){
+        if(!$this->fluxosSetor->containsKey($key)){
             throw new NullPointerException();
         }
-        return $this->fluxosPostos->get($key);
+        return $this->fluxosSetor->get($key);
     }
     
     public function removeFluxoPosto($key){
-        if(!$this->fluxosPostos->containsKey($key)){
+        if(!$this->fluxosSetor->containsKey($key)){
             return;
         }
-        $this->fluxosPostos->remove($key);
+        $this->fluxosSetor->remove($key);
     }
     
     public function getFluxosPostos(){
-        return $this->fluxosPostos->toArray();
+        return $this->fluxosSetor->toArray();
+    }
+    
+    public function addRequerente(Requerente $requerente){
+        if($this->requerentes->contains($requerente)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->requerentes->set($requerente->getIdRequerente(), $requerente);
+    }
+    
+    public function getRequerente($key){
+        if(!$this->requerentes->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->requerentes->get($key);
+    }
+    
+    public function removeRequerente($key){
+        if(!$this->requerentes->containsKey($key)){
+            return;
+        }
+        $this->requerentes->remove($key);
+    }
+    
+    public function getRequerentes(){
+        return $this->requerentes->toArray();
     }
 }

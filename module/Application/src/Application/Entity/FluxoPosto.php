@@ -40,21 +40,21 @@ class FluxoPosto {
      */
     private $diasUteis;
     /**
-     * @ORM\ManyToOne(targetEntity="Workflow", inversedBy="fluxosPosto")
+     * @ORM\ManyToOne(targetEntity="Workflow", inversedBy="fluxosPostos")
      * @ORM\JoinColumn(name="Workflow_idWorkflow",
      *                 referencedColumnName="idWorkflow", nullable=false)
      * @var Workflow
      */
     private $workflow;
     /**
-     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="fluxosPostos")
+     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="fluxosSetor")
      * @ORM\JoinColumn(name="Setor_idSetor",
      *                 referencedColumnName="idSetor", nullable=true)
      * @var Setor
      */
     private $setor;
     /**
-     * @ORM\ManyToOne(targetEntity="OrgaoExterno", inversedBy="fluxosPostos")
+     * @ORM\ManyToOne(targetEntity="OrgaoExterno", inversedBy="fluxosOrgaoExterno")
      * @ORM\JoinColumn(name="OrgaoExterno_idOrgaoExterno",
      *                 referencedColumnName="idOrgaoExterno", nullable=true)
      * @var OrgaoExterno

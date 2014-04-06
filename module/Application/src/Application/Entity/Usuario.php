@@ -38,7 +38,7 @@ class Usuario {
      */
     private $idUsuario;
     /**
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="integer", unique=true, nullable=false)
      * @var int
      */
     private $matricula;
@@ -46,7 +46,7 @@ class Usuario {
      * @ORM\Column(type="integer", nullable=true)
      * @var int
      */
-    private $digito;
+    private $digitoMatricula;
     /**
      * @ORM\Column(type="string", length=100, nullable=false)
      * @var string
@@ -90,16 +90,22 @@ class Usuario {
      * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="emissor")
      * @var ArrayCollection
      */
-    private $guiasDeRemessasEnviadas;
+    private $guiasDeRemessaEnviadas;
     /**
      * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="destinatario")
      * @var ArrayCollection
      */
-    private $guiasDeRemessasRecebidas;
+    private $guiasDeRemessaRecebidas;
+    /**
+     * @ORM\OneToMany(targetEntity="Processo", mappedBy="usuario")
+     * @var ArrayCollection
+     */
+    private $processos;
     
     public function __construct() {
         $this->guiasDeRemessaEnviadas = new ArrayCollection();
         $this->guiasDeRemessaRecebidas = new ArrayCollection();
+        $this->processos = new ArrayCollection();
     }
     
     public function getIdUsuario() {
@@ -111,7 +117,7 @@ class Usuario {
     }
 
     public function getDigito() {
-        return $this->digito;
+        return $this->digitoMatricula;
     }
 
     public function getNome() {
@@ -151,7 +157,7 @@ class Usuario {
     }
 
     public function setDigito($digito) {
-        $this->digito = $digito;
+        $this->digitoMatricula = $digito;
     }
 
     public function setNome($nome) {
@@ -183,52 +189,77 @@ class Usuario {
     }
     
      public function addGuiaDeRemessaEnviada(GuiaDeRemessa $guiaDeRemessa){
-        if($this->guiasDeRemessasEnviadas->contains($guiaDeRemessa)){
+        if($this->guiasDeRemessaEnviadas->contains($guiaDeRemessa)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
-        $this->guiasDeRemessasEnviadas->set($guiaDeRemessa->getIdGuiaDeRemessa(), $guiaDeRemessa);
+        $this->guiasDeRemessaEnviadas->set($guiaDeRemessa->getIdGuiaDeRemessa(), $guiaDeRemessa);
     }
     
     public function getGuiaDeRemessaEnviada($key){
-        if(!$this->guiasDeRemessasEnviadas->containsKey($key)){
+        if(!$this->guiasDeRemessaEnviadas->containsKey($key)){
             throw new NullPointerException();
         }
-        return $this->guiasDeRemessasEnviadas->get($key);
+        return $this->guiasDeRemessaEnviadas->get($key);
     }
     
     public function removeGuiaDeRemessaEnviada($key){
-        if(!$this->guiasDeRemessasEnviadas->containsKey($key)){
+        if(!$this->guiasDeRemessaEnviadas->containsKey($key)){
             return;
         }
-        $this->guiasDeRemessasEnviadas->remove($key);
+        $this->guiasDeRemessaEnviadas->remove($key);
     }
     
     public function getGuiasDeRemessaEnviadas(){
-        return $this->guiasDeRemessasEnviadas->toArray();
+        return $this->guiasDeRemessaEnviadas->toArray();
+    }
+    
+    public function addProcesso(Processo $processo){
+        if($this->processos->contains($processo)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->processos->set($processo->getIdGuiaDeRemessa(), $processo);
+    }
+    
+    public function getProcesso($key){
+        if(!$this->processos->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->processos->get($key);
+    }
+    
+    public function removeProcesso($key){
+        if(!$this->processos->containsKey($key)){
+            return;
+        }
+        $this->processos->remove($key);
+    }
+    
+    public function getProcessos(){
+        return $this->processos->toArray();
     }
     
     public function addGuiaDeRemessaRecebida(GuiaDeRemessa $guiaDeRemessa){
-        if($this->guiasDeRemessasRecebidas->contains($guiaDeRemessa)){
+        if($this->guiasDeRemessaRecebidas->contains($guiaDeRemessa)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
-        $this->guiasDeRemessasRecebidas->set($guiaDeRemessa->getIdGuiaDeRemessa(), $guiaDeRemessa);
+        $this->guiasDeRemessaRecebidas->set($guiaDeRemessa->getIdGuiaDeRemessa(), $guiaDeRemessa);
     }
     
     public function getGuiaDeRemessaRecebida($key){
-        if(!$this->guiasDeRemessasRecebidas->containsKey($key)){
+        if(!$this->guiasDeRemessaRecebidas->containsKey($key)){
             throw new NullPointerException();
         }
-        return $this->guiasDeRemessasRecebidas->get($key);
+        return $this->guiasDeRemessaRecebidas->get($key);
     }
     
     public function removeGuiaDeRemessaRecebida($key){
-        if(!$this->guiasDeRemessasRecebidas->containsKey($key)){
+        if(!$this->guiasDeRemessaRecebidas->containsKey($key)){
             return;
         }
-        $this->guiasDeRemessasRecebidas->remove($key);
+        $this->guiasDeRemessaRecebidas->remove($key);
     }
     
     public function getGuiasDeRemessaRecebidas(){
-        return $this->guiasDeRemessasRecebidas->toArray();
+        return $this->guiasDeRemessaRecebidas->toArray();
     }
 }

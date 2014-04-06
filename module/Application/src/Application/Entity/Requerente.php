@@ -57,6 +57,12 @@ class Requerente {
      * @var ArrayCollection
      */
     private $processos;
+    /**
+     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="requerentes")
+     * @ORM\JoinColumn(name="Setor_idSetor",
+     *                 referencedColumnName="idSetor", nullable=true)
+     * @var Setor
+     */
     private $setor;
     
     public function __construct() {
@@ -136,5 +142,13 @@ class Requerente {
     
     public function getTelefones(){
         return $this->telefones->toArray();
+    }
+    
+    public function getSetor() {
+        return $this->setor;
+    }
+
+    public function setSetor(Setor $setor) {
+        $this->setor = $setor;
     }
 }

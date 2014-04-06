@@ -38,17 +38,17 @@ class Apenso {
      */
     private $idApenso;
     /**
-     * @ORM\Column(type="date", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      * @var DateTime
      */
     private $dataInicio;
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @var DateTime
      */
     private $dataFim;
     /**
-     * @ORM\OneToOne(targetEntity="Processo", inversedBy="apensoFilho")
+     * @ORM\ManyToOne(targetEntity="Processo", inversedBy="apensoFilho")
      * @ORM\JoinColumn(name="Processo_idProcesso",
      *                 referencedColumnName="idProcesso", nullable=false)
      * @var Processo

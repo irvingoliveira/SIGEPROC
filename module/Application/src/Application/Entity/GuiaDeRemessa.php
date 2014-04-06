@@ -53,12 +53,12 @@ class GuiaDeRemessa {
      */
     private $anoExercicio;
     /**
-     * @ORM\Column(type="date", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      * @var \DateTime
      */
     private $dataCriacao;
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @var \DateTime
      */
     private $dataRecebimento;
@@ -71,7 +71,8 @@ class GuiaDeRemessa {
     private $emissor;
     /**
      * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="guiasDeRemessaRecebidas")
-     * @ORM\JoinColumn(name="Destinatario_idUsuario", nullable=true)
+     * @ORM\JoinColumn(name="Destinatario_idUsuario", 
+     *                 referencedColumnName="idUsuario", nullable=true)
      * @var Usuario
      */
     private $destinatario;

@@ -63,7 +63,7 @@ class Processo {
      */
     private $dataEncerramento;
     /**
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="smallint", nullable=false)
      * @var int
      */
     private $volume;
@@ -79,15 +79,15 @@ class Processo {
     /**
      * @ORM\ManyToOne(targetEntity="Apenso", inversedBy="processosFilhos")
      * @ORM\JoinColumn(name="Apenso_idApenso",
-     *                 referencedColumnName="idApenso", nullable=true)
+     *                 referencedColumnName="idApenso", unique=false, nullable=true)
      * @var Apenso
      */
     private $apenso;
     /**
-     * @ORM\OneToOne(targetEntity="Apenso", mappedBy="processoPai")
-     * @var Apenso
+     * @ORM\OneToMany(targetEntity="Apenso", mappedBy="processoPai")
+     * @var ArrayCollection
      */
-    private $apensoFilho;
+    private $apensosFilhos;
     /**
      * @ORM\ManyToOne(targetEntity="Requerente", inversedBy="processos")
      * @ORM\JoinColumn(name="Requerente_idRequerente",
@@ -101,7 +101,19 @@ class Processo {
      * @var ArrayCollection
      */
     private $pendencias;
+    /**
+     * @ORM\ManyToOne(targetEntity="StatusProcesso", inversedBy="processos")
+     * @ORM\JoinColumn(name="StatusProcesso_idStatusProcesso",
+     *                 referencedColumnName="idStatusProcesso", nullable=false)
+     * @var Status
+     */
     private $status;
+    /**
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="processos")
+     * @ORM\JoinColumn(name="Usuario_idUsuario",
+     *                 referencedColumnName="idUsuario",nullable=false)
+     * @var Usuario
+     */
     private $usuario;
     /**
      * @ORM\ManyToMany(targetEntity="GuiaDeRemessa", mappedBy="processos")
@@ -110,6 +122,7 @@ class Processo {
     private $guiasDeRemessa;
 
     public function __construct() {
+        $this->apensosFilhos = new ArrayCollection();
         $this->pendencias = new ArrayCollection();
         $this->guiasDeRemessa =new ArrayCollection();
     }
@@ -174,17 +187,11 @@ class Processo {
         return $this->apenso;
     }
 
-    public function getApensoFilho() {
-        return $this->apensoFilho;
-    }
 
     public function setApenso(Apenso $apenso) {
         $this->apenso = $apenso;
     }
 
-    public function setApensoFilho(Apenso $apensoFilho) {
-        $this->apensoFilho = $apensoFilho;
-    }
 
     public function getRequerente() {
         return $this->requerente;
@@ -238,5 +245,71 @@ class Processo {
     
     public function getGuiasDeRemessa(){
         return $this->guiasDeRemessa->toArray();
+    }
+    
+    public function getStatus() {
+        return $this->status;
+    }
+
+    public function getUsuario() {
+        return $this->usuario;
+    }
+
+    public function setStatus(Status $status) {
+        $this->status = $status;
+    }
+
+    public function setUsuario(Usuario $usuario) {
+        $this->usuario = $usuario;
+    }
+    
+    public function addPendencia(Pendencia $pendencia){
+        if($this->pendencias->contains($pendencia)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->pendencias->set($pendencia->getIdPendencia(), $pendencia);
+    }
+    
+    public function getPendencia($key){
+        if(!$this->pendencias->containsKey($key)){
+            throw new NullPointerException();
+        }
+        $this->pendencias->get($key);
+    }
+
+    public function removePendencia($key){
+        if(!$this->pendencias->containsKey($key)){
+            return;
+        }
+        $this->pendencias->remove($key);
+    }
+    
+    public function getPendencias(){
+        $this->pendencias->toArray();
+    }
+    
+    public function addApensoFilho(Apenso $apensoFilho) {
+        if($this->apensosFilhos->contains($apensoFilho)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->apensosFilhos->set($apensoFilho->getIdApenso(),$apensoFilho);
+    }
+    
+    public function getApensoFilho($key) {
+        if(!$this->apensosFilhos->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->apensosFilhos->get($key);
+    }
+    
+    public function removeApensoFilho($key){
+        if(!$this->apensosFilhos->containsKey($key)){
+            return;
+        }
+        $this->apensosFilhos->remove($key);
+    }
+    
+    public function getApensosFilhos(){
+        return $this->apensosFilhos->toArray();
     }
 }

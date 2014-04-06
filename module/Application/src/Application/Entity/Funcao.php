@@ -33,7 +33,7 @@ class Funcao {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="int", nullable=false)
+     * @ORM\Column(type="integer", nullable=false)
      * @var int
      */
     private $idFuncao;

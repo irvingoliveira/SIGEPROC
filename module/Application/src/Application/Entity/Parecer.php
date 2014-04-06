@@ -41,14 +41,14 @@ class Parecer {
      */
     private $descricao;
     /**
-     * @ORM\Column(type="date", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      * @var \DateTime
      */
     private $data;
     /**
-     * @ORM\ManyToOne(targetEntity="Pendencia", inversedBy="pendencias")
+     * @ORM\ManyToOne(targetEntity="Pendencia", inversedBy="pareceres")
      * @ORM\JoinColumn(name="Pendencia_idPendencia",
-     *                 referencedColumnName="idPendencia")
+     *                 referencedColumnName="idPendencia", nullable=false)
      * @var Pendencia
      */
     private $pendencia;

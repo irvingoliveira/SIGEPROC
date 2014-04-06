@@ -36,8 +36,8 @@ class Documento {
      */
     private $idDocumento;
     /**
-     * @ORM\Column(type="integer", nullable=false)
-     * @var int
+     * @ORM\Column(type="string", length=45, nullable=false)
+     * @var string
      */
     private $numero;
     /**
@@ -65,7 +65,7 @@ class Documento {
     /**
      * @ORM\ManyToOne(targetEntity="TipoDocumento", inversedBy="documentos")
      * @ORM\JoinColumn(name="TipoDocumento_idTipoDocumento",
-     *                 referencedColumnName="idTipoDocumento")
+     *                 referencedColumnName="idTipoDocumento", nullable=false)
      * @var TipoDocumento
      */
     private $tipo;

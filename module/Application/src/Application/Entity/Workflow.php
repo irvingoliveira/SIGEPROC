@@ -58,10 +58,10 @@ class Workflow {
      * @ORM\OneToMany(targetEntity="FluxoPosto", mappedBy="workflow")
      * @var ArrayCollection
      */
-    private $fluxosPosto;
+    private $fluxosPostos;
     
     public function __construct() {
-        $this->fluxosPosto = new ArrayCollection();
+        $this->fluxosPostos = new ArrayCollection();
     }
     
     public function getIdWorkflow() {
@@ -97,27 +97,27 @@ class Workflow {
     }
 
     public function addFluxoPosto(FluxoPosto $fluxoposto){
-        if($this->fluxosPosto->contains($fluxoposto)){
+        if($this->fluxosPostos->contains($fluxoposto)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
-        $this->fluxosPosto->set($fluxoposto->getIdFluxoPosto(), $fluxoposto);
+        $this->fluxosPostos->set($fluxoposto->getIdFluxoPosto(), $fluxoposto);
     }
     
     public function getFluxoPosto($key){
-        if(!$this->fluxosPosto->containsKey($key)){
+        if(!$this->fluxosPostos->containsKey($key)){
             throw new NullPointerException();
         }
-        return $this->fluxosPosto->get($key);
+        return $this->fluxosPostos->get($key);
     }
     
     public function removeFluxoPosto($key){
-        if(!$this->fluxosPosto->containsKey($key)){
+        if(!$this->fluxosPostos->containsKey($key)){
             return;
         }
-        $this->fluxosPosto->remove($key);
+        $this->fluxosPostos->remove($key);
     }
     
     public function getFluxosPosto(){
-        return $this->fluxosPosto->toArray();
+        return $this->fluxosPostos->toArray();
     }
 }
