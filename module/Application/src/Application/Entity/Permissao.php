@@ -72,7 +72,7 @@ class Permissao {
         return $this->nome;
     }
 
-    public function getPermitido() {
+    public function isPermitido() {
         return $this->permitido;
     }
 

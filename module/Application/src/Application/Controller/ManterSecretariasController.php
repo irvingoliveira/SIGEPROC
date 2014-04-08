@@ -20,17 +20,24 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 /**
  * Description of ManterSecretariasController
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
-class IndexController extends AbstractActionController
-{
-    public function indexAction()
-    {
-        return new ViewModel();
+class ManterSecretariasController extends AbstractActionController{
+    private $objectManager;
+    
+    public function getObjectManager(){
+        if($this->objectManager == NULL){
+            $this->objectManager = $this->getServiceLocator()->get('ObjectManager');
+        }
+        return $this->objectManager;
+    }
+    
+    public function indexAction() {
+        $objectManager = $this->getObjectManager();
+        
     }
 }

@@ -16,21 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-namespace Application\Controller;
-
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-
+namespace Application\Exception;
 /**
- * Description of ManterSecretariasController
+ * Description of UserNotFoundException
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
-class IndexController extends AbstractActionController
-{
-    public function indexAction()
-    {
-        return new ViewModel();
+class InactiveUserException extends \Exception{
+    public function __construct() {
+        parent::__construct('Usuário inativo. Por favor, contate o administrador do sistema.');
     }
 }

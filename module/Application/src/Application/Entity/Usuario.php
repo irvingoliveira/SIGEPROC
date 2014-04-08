@@ -82,7 +82,7 @@ class Usuario {
     /**
      * @ORM\ManyToOne(targetEntity="Setor", inversedBy="usuarios")
      * @ORM\JoinColumn(name="Setor_idSetor",
-     *                 referencedColumnName="idSetor", nullable=false)
+     *                 referencedColumnName="idSetor", nullable=true)
      * @var Setor
      */
     private $setor;
@@ -136,7 +136,7 @@ class Usuario {
         return $this->dataCriacao;
     }
 
-    public function getAtivo() {
+    public function isAtivo() {
         return $this->ativo;
     }
 

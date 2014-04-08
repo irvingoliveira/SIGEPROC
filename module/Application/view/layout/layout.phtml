@@ -1,9 +1,9 @@
 <?php echo $this->doctype(); ?>
 
-<html lang="en">
+<html lang="pt-BR">
     <head>
         <meta charset="utf-8">
-        <?php echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle('SIGEPROC - Sistema de Gerenciamento de Processos')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -13,11 +13,13 @@
         <!-- Le styles -->
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
                         ->prependStylesheet($this->basePath() . '/css/style.css')
+                        ->prependStylesheet($this->basePath() . '/css/jquery-ui.custom.min.css')
                         ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
                         ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
 
         <!-- Scripts -->
         <?php echo $this->headScript()
+            ->prependFile($this->basePath() . '/js/jquery-ui.custom.min.js')
             ->prependFile($this->basePath() . '/js/bootstrap.min.js')
             ->prependFile($this->basePath() . '/js/jquery.min.js')
             ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
@@ -34,12 +36,25 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<?php echo $this->url('home') ?>"><img src="<?php echo $this->basePath('img/zf2-logo.png') ?>" alt="Zend Framework 2"/>&nbsp;<?php echo $this->translate('Skeleton Application') ?></a>
+                    <a class="navbar-brand" href="<?php echo $this->url('home') ?>"><img src="<?php echo $this->basePath('img/logo-w.png') ?>" alt="SIGEPROC"/></a>
                 </div>
                 <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                    </ul>
+                    <?if($this->funcao != 'GUEST'):?>
+                        <ul class="nav navbar-nav" id="menu">
+                            <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Principal') ?></a></li>
+                            <li><a href="<?php echo $this->url('assuntos') ?>">Assuntos</a></li>
+                            <li><a href="#">Funções</a></li>
+                            <li><a href="#">Secretarias</a></li>
+                            <li><a href="#">Setores</a></li>
+                            <li><a href="#">Orgãos externos</a></li>
+                            <li><a href="#">Configurações</a></li>
+                            <li><a href="<?php echo $this->url('logout') ?>">Sair</a></li>
+                        </ul>
+                    <?endif;?>
+                    <span class="search-bar">
+                        <input class="search-box default-search" type="text" placeholder="Digite o nº do processo/ano" />  
+                        <a href="#"><img src="<?php echo $this->basePath('img/busca-transparencia.png') ?>" width="45" height="45"></a>
+                    </span>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
@@ -47,7 +62,7 @@
             <?php echo $this->content; ?>
             <hr>
             <footer>
-                <p>&copy; 2005 - <?php echo date('Y') ?> by Zend Technologies Ltd. <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2014 - <?php echo date('Y') ?> por <a href="mailto:irving.oliveira@gmail.com">Irving Oliveira</a>. SIGEPROC é um software livre licenciado sob a <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License</a>.</p>
             </footer>
         </div> <!-- /container -->
         <?php echo $this->inlineScript() ?>

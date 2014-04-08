@@ -8,14 +8,15 @@ body {
 }
 
 .btn-success {
-  background-color: #57a900;
-  background-image: -moz-linear-gradient(top, #70d900, #57a900);
-  background-image: -ms-linear-gradient(top, #70d900, #57a900);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#70d900), to(#57a900));
-  background-image: -webkit-linear-gradient(top, #70d900, #57a900);
-  background-image: -o-linear-gradient(top, #70d900, #57a900);
-  background-image: linear-gradient(top, #70d900, #57a900);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#70d900', endColorstr='#57a900', GradientType=0);
+  border-color: #999b10;
+  background-color: #d2d416;
+  background-image: -moz-linear-gradient(top, #e1e265, #d2d416);
+  background-image: -ms-linear-gradient(top, #e1e265, #d2d416);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e1e265), to(#d2d416));
+  background-image: -webkit-linear-gradient(top, #e1e265, #d2d416);
+  background-image: -o-linear-gradient(top, #e1e265, #d2d416);
+  background-image: linear-gradient(top, #e1e265, #d2d416);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1e265', endColorstr='#d2d416', GradientType=0);
 }
 
 .btn-success:hover,
@@ -23,15 +24,65 @@ body {
 .btn-success.active,
 .btn-success.disabled,
 .btn-success[disabled] {
-  background-color: #57a900;
+  background-color: #d2d416;
 }
 
 .btn-success:active, .btn-success.active {
-  background-color: #57a900;
+  background-color: #d2d416;
 }
 
 div.container a.brand {
     background: url("../img/zf2-logo.png") no-repeat scroll 0 10px transparent;
     margin-left: 0;
     padding: 8px 20px 12px 40px;
+}
+
+footer p{
+    text-align: center;
+}
+
+.search-bar{
+    float: right;
+    background: url("../img/busca.png");
+    height: 48px;
+    width: 262px;
+}
+
+.search-bar #search-button{
+    margin: 0;
+    padding: 0;
+    float: right;
+}
+
+.search-bar input{
+    margin: 13px 0 12px 20px;
+    border: 0;
+    background: transparent;
+}
+
+.search-bar input:focus{
+    outline: transparent;
+}
+
+.search-box{
+    width: 190px;
+}
+
+.default-search{
+    color: #888;
+}
+
+.jumbo {
+  padding: 10px;
+  margin-bottom: 30px;
+  font-size: 21px;
+  font-weight: 200;
+  line-height: 2.1428571435;
+  color: inherit;
+  text-align: center;
+  background-color: #eeeeee;
+}
+
+.center{
+    text-align: center;
 }

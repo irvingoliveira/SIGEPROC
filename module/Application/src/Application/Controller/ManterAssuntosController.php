@@ -20,17 +20,27 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-
+use Application\Exception\UserNotFoundException;
+use Application\Exception\InactiveUserException;
 /**
- * Description of ManterSecretariasController
+ * Description of ManterUsuariosController
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
-class IndexController extends AbstractActionController
-{
-    public function indexAction()
-    {
-        return new ViewModel();
+class ManterAssuntosController extends AbstractActionController {
+
+    private $objectManager;
+    
+    public function getObjectManager() {
+        if (!$this->objectManager) {
+            $this->objectManager = $this->getServiceLocator()->get('ObjectManager');
+        }
+        return $this->objectManager;
     }
+
+    public function indexAction() {
+        
+    }
+    
 }
+    

@@ -1,7 +1,7 @@
-<h1><?php echo $this->translate('A 404 error occurred') ?></h1>
-<h2><?php echo $this->message ?></h2>
+<h1 align="center"><img src="<?php echo $this->basePath('img/404.png') ?>" alt="Erro 404"/></h1>
+<!--<h2><?php echo $this->message ?></h2> -->
 
-<?php if (isset($this->reason) && $this->reason): ?>
+<?php /*if (isset($this->reason) && $this->reason): ?>
 
 <?php
 $reasonMessage= '';
@@ -22,6 +22,8 @@ switch ($this->reason) {
         $reasonMessage = $this->translate('We cannot determine at this time why a 404 was generated.');
         break;
 }
+ 
+
 ?>
 
 <p><?php echo $reasonMessage ?></p>
@@ -104,4 +106,4 @@ if (isset($this->controller_class)
 
 <?php endif ?>
 
-<?php endif ?>
+<?php endif*/ ?>
