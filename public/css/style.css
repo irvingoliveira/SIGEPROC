@@ -31,6 +31,10 @@ body {
   background-color: #d2d416;
 }
 
+.btn-add{
+    margin-bottom: 15px;
+}
+
 div.container a.brand {
     background: url("../img/zf2-logo.png") no-repeat scroll 0 10px transparent;
     margin-left: 0;

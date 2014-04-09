@@ -1,0 +1,42 @@
+<?
+if($this->secretaria){
+    $id = $this->secretaria->getIdSecretaria();
+    $nome = $this->secretaria->getNome();
+    $sigla = $this->secretaria->getSigla();
+}
+?>
+<div class="row">
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Editar secretaria</h3>
+            </div>
+            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('secretarias', array('action' => 'editar', 'id' => $id)); ?>">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="nomeTxt" class="col-lg-3 col-md-3 control-label">Nome:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="nomeTxt" class="form-control" id="nomeTxt" placeholder="Secretaria de Municipal de Exemplos" value="<?=$nome;?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="siglaTxt" class="col-lg-3 col-md-3 control-label">Sigla:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="siglaTxt" class="form-control" id="siglaTxt" placeholder="SME" value="<?=$sigla;?>">
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer center">
+                <button type="submit" class="btn btn-success">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?if($this->sucesso):?>
+    <? $this->headScript()->captureStart(); ?>
+        decisao = confirm('Deseja adicionar uma nova secretaria?');
+        if(!decisao){
+            location.href="/secretarias";
+        }
+    <?$this->headScript()->captureEnd();?>
+<?endif;?>

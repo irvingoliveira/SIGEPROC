@@ -13,12 +13,13 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\Session\SessionManager;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\Session;
 use Zend\Session\Container;
 
-class Module implements ServiceProviderInterface, AutoloaderProviderInterface
+class Module implements ServiceProviderInterface, AutoloaderProviderInterface, ViewHelperProviderInterface
 {
     public function onBootstrap(MvcEvent $e)
     {
@@ -149,5 +150,16 @@ class Module implements ServiceProviderInterface, AutoloaderProviderInterface
 //                                           ->doLog($e);
 //                                    },2);
         }
+    }
+    
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'message' => function($sm) {
+                    return new \Application\View\Helper\Messenger($sm->getServiceLocator()->get('ControllerPluginManager')->get('flashmessenger'));
+                },
+            )
+        );
     }
 }

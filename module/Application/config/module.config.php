@@ -43,7 +43,7 @@ return array(
                 'options' => array(
                     'route' => '/',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => 'Index',
                         'action' => 'index',
                     ),
                 ),
@@ -53,7 +53,7 @@ return array(
                 'options' => array(
                     'route' => '/autenticar',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\ManterUsuarios',
+                        'controller' => 'Usuarios',
                         'action' => 'autenticar',
                     ),
                 ),
@@ -63,7 +63,7 @@ return array(
                 'options' => array(
                     'route' => '/logout',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\ManterUsuarios',
+                        'controller' => 'Usuarios',
                         'action' => 'logout',
                     ),
                 ),
@@ -73,7 +73,21 @@ return array(
                 'options' => array(
                     'route' => '/assuntos',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\ManterAssuntos',
+                        'controller' => 'Assuntos',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'secretarias' => array(
+                'type' => 'Segment',
+                'options' =>array(
+                    'route'    => '/secretarias[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Secretarias',
                         'action' => 'index',
                     ),
                 ),
@@ -131,9 +145,10 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController',
-            'Application\Controller\ManterAssuntos' => 'Application\Controller\ManterAssuntosController',
-            'Application\Controller\ManterUsuarios' => 'Application\Controller\ManterUsuariosController',
+            'Index' => 'Application\Controller\IndexController',
+            'Assuntos' => 'Application\Controller\ManterAssuntosController',
+            'Secretarias' => 'Application\Controller\ManterSecretariasController',
+            'Usuarios' => 'Application\Controller\ManterUsuariosController',
         ),
     ),
     'controller_plugins' => array(

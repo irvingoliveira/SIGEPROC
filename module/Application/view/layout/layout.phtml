@@ -44,7 +44,7 @@
                             <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Principal') ?></a></li>
                             <li><a href="<?php echo $this->url('assuntos') ?>">Assuntos</a></li>
                             <li><a href="#">Funções</a></li>
-                            <li><a href="#">Secretarias</a></li>
+                            <li><a href="<?php echo $this->url('secretarias', array('action' => 'index')) ?>">Secretarias</a></li>
                             <li><a href="#">Setores</a></li>
                             <li><a href="#">Orgãos externos</a></li>
                             <li><a href="#">Configurações</a></li>
@@ -58,6 +58,7 @@
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
+        <?php echo $this->message(); ?>
         <div class="container">
             <?php echo $this->content; ?>
             <hr>
