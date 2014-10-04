@@ -16,91 +16,89 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 /**
- * Description of Parecer
+ * Description of UsuarioSetor
  *
  * @author Irving Fernando de Medeiros Oliveira
  * @ORM\Entity
  */
-class Parecer {
+class UsuarioSetor {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", nullable=false)
      * @var int
      */
-    private $idParecer;
+    private $idUsuarioSetor;
     /**
-     * @ORM\Column(type="text", nullable=false)
-     * @var string
-     */
-    private $descricao;
-    /**
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="date", nullable=false)
      * @var \DateTime
      */
-    private $data;
+    private $dataLotacao;
     /**
-     * @ORM\ManyToOne(targetEntity="Pendencia", inversedBy="pareceres")
-     * @ORM\JoinColumn(name="Pendencia_idPendencia",
-     *                 referencedColumnName="idPendencia", nullable=false)
-     * @var Pendencia
+     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTime
      */
-    private $pendencia;
+    private $dataSaida;
     /**
-     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="pareceres")
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="setores")
      * @ORM\JoinColumn(name="Usuario_idUsuario", 
      *                 referencedColumnName="idUsuario", nullable=false)
      * @var Usuario
      */
     private $usuario;
+    /**
+     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="usuarios")
+     * @ORM\JoinColumn(name="Setor_idSetor", 
+     *                 referencedColumnName="idSetor", nullable=false)
+     * @var Setor
+     */
+    private $setor;
     
     public function __construct() {
         
     }
     
-    public function getIdParecer() {
-        return $this->idParecer;
+    public function getIdUsuarioSetor() {
+        return $this->idUsuarioSetor;
     }
 
-    public function getDescricao() {
-        return $this->descricao;
+    public function getDataLotacao() {
+        return $this->dataLotacao;
     }
 
-    public function getData() {
-        return $this->data;
+    public function getDataSaida() {
+        return $this->dataSaida;
     }
 
-    public function getPendencia() {
-        return $this->pendencia;
-    }
-
-    public function setIdParecer($idParecer) {
-        $this->idParecer = $idParecer;
-    }
-
-    public function setDescricao($descricao) {
-        $this->descricao = $descricao;
-    }
-
-    public function setData(\DateTime $data) {
-        $this->data = $data;
-    }
-
-    public function setPendencia(Pendencia $pendencia) {
-        $this->pendencia = $pendencia;
-    }
-    
     public function getUsuario() {
         return $this->usuario;
     }
 
+    public function getSetor() {
+        return $this->setor;
+    }
+
+    public function setIdUsuarioSetor($idUsuarioSetor) {
+        $this->idUsuarioSetor = $idUsuarioSetor;
+    }
+
+    public function setDataLotacao(\DateTime $dataLotacao) {
+        $this->dataLotacao = $dataLotacao;
+    }
+
+    public function setDataSaida(\DateTime $dataSaida) {
+        $this->dataSaida = $dataSaida;
+    }
+
     public function setUsuario(Usuario $usuario) {
         $this->usuario = $usuario;
+    }
+
+    public function setSetor(Setor $setor) {
+        $this->setor = $setor;
     }
 }

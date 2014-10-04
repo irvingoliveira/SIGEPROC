@@ -69,6 +69,13 @@ class Pendencia {
      * @var ArrayCollection
      */
     private $pareceres;
+    /**
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="setores")
+     * @ORM\JoinColumn(name="Usuario_idUsuario", 
+     *                 referencedColumnName="idUsuario", nullable=false)
+     * @var Usuario
+     */
+    private $usuario;
     
     public function __construct() {
         $this->pareceres = new ArrayCollection();
@@ -145,5 +152,20 @@ class Pendencia {
     
     public function getPareceres(){
         return $this->pareceres->toArray();
+    }
+    public function getDataConclusao() {
+        return $this->dataConclusao;
+    }
+
+    public function getUsuario() {
+        return $this->usuario;
+    }
+
+    public function setDataConclusao(\DateTime $dataConclusao) {
+        $this->dataConclusao = $dataConclusao;
+    }
+
+    public function setUsuario(Usuario $usuario) {
+        $this->usuario = $usuario;
     }
 }

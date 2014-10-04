@@ -130,4 +130,8 @@ class Funcao {
     public function getPermissoes(){
         return $this->permissoes->toArray();
     }
+    
+    public function __toString() {
+        return $this->nome;
+    }
 }

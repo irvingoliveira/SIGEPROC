@@ -56,6 +56,13 @@ class Assunto {
      * @var ArrayCollection
      */
     private $workflows;
+    /**
+     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="assuntos")
+     * @ORM\JoinColumn(name="Setor_idSetor", 
+     *                 referencedColumnName="idSetor", nullable=false)
+     * @var Setor
+     */
+    private $setor;
 
     public function __construct() {
         $this->processos = new ArrayCollection();
@@ -134,5 +141,13 @@ class Assunto {
     
     public function getWorkflows(){
         $this->workflows->toArray();
+    }
+    
+    public function getSetor() {
+        return $this->setor;
+    }
+
+    public function setSetor(Setor $setor) {
+        $this->setor = $setor;
     }
 }

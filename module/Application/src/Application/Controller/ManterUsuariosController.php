@@ -67,7 +67,7 @@ class ManterUsuariosController extends AbstractActionController {
                             'id' => $identity->getIdUsuario(),
                             'matricula' => $identity->getMatricula(),
                             'nome' => $identity->getNome(),
-                            'setor' => $identity->getSetor(),
+                            'setor' => $identity->getSetorAtual(),
                             'email' => $identity->getEmail(),
                             'funcao' => $identity->getFuncao()->getNome()
                         ));
@@ -91,7 +91,8 @@ class ManterUsuariosController extends AbstractActionController {
                 try{
                     throw new UserNotFoundException();
                 }  catch (UserNotFoundException $e){
-                    return array('errMsg' => $e->getMessage());
+                    $this->flashMessenger()->addErrorMessage("Não foi possível autenticar com estas informações de login. Tente novamente.");
+                    $this->redirect()->toRoute('autenticar');
                 }
             }
         }

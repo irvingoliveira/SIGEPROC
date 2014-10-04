@@ -25,11 +25,3 @@
         </div>
     </div>
 </div>
-<?if($this->sucesso):?>
-    <? $this->headScript()->captureStart(); ?>
-        decisao = confirm('Deseja adicionar uma nova secretaria?');
-        if(!decisao){
-            location.href="/secretarias";
-        }
-    <?$this->headScript()->captureEnd();?>
-<?endif;?>

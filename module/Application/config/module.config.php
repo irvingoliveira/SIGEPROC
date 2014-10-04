@@ -29,10 +29,9 @@ return array(
                 'credential_property' => 'senha',
                 'credential_callable' => function(\Application\Entity\Usuario $usuario,
                 $senha) {
-
-            $bcrypt = new \Zend\Crypt\Password\Bcrypt();
-            return $bcrypt->verify($senha, $usuario->getSenha());
-        }
+                    $bcrypt = new \Zend\Crypt\Password\Bcrypt();
+                    return $bcrypt->verify($senha, $usuario->getSenha());
+                }
             ),
         ),
     ),
@@ -88,6 +87,34 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'Secretarias',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'setores' => array(
+                'type' => 'Segment',
+                'options' =>array(
+                    'route'    => '/setores[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Setores',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'tiposdesetor' => array(
+                'type' => 'Segment',
+                'options' =>array(
+                    'route'    => '/tiposdesetor[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'TiposDeSetor',
                         'action' => 'index',
                     ),
                 ),
@@ -148,6 +175,8 @@ return array(
             'Index' => 'Application\Controller\IndexController',
             'Assuntos' => 'Application\Controller\ManterAssuntosController',
             'Secretarias' => 'Application\Controller\ManterSecretariasController',
+            'Setores' => 'Application\Controller\ManterSetoresController',
+            'TiposDeSetor' => 'Application\Controller\ManterTiposDeSetorController',
             'Usuarios' => 'Application\Controller\ManterUsuariosController',
         ),
     ),

@@ -2,35 +2,40 @@
     <div class="col-md-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Secretarias</h3>
+                <h3 class="panel-title">Setores</h3>
             </div>
             <div class="panel-body">
                 <div class="col-sm-2">
-                    <a href="<?=$this->url('secretarias', array('action' => 'adicionar'))?>" class="btn btn-success btn-add" title="Novo"><span class="glyphicon glyphicon-plus"></span>Nova secretaria</a>
+                    <a href="<?=$this->url('setores', array('action' => 'adicionar'))?>" class="btn btn-success btn-add" title="Novo"><span class="glyphicon glyphicon-plus"></span>Novo setor</a>
                 </div>
-                <form method="GET" action="<?=$this->url('secretarias', array('action' => 'buscar'))?>">
+                <form method="GET" action="<?=$this->url('setores', array('action' => 'buscar'))?>">
                     <div class="col-sm-offset-4 col-sm-5">
-                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar secretaria" maxlength="150">
+                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar setor" maxlength="150">
                     </div>
                     <div class="col-sm-1">
                         <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
-                        </a>
                     </div>
                 </form>
                 <table class="table table-striped table-bordered table-hover">
                     <tr>
                         <th>Sigla</th>
+                        <th>Tipo</th>
                         <th>Nome</th>
+                        <th>Secretaria</th>
+                        <th>Setor pai</th>
                         <th>&nbsp;</th>
                     </tr>
-                    <? foreach ($this->secretarias as $key => $secretaria): ?>
+                    <? foreach ($this->setores as $tipo): ?>
                         <tr>
-                            <td class="col-sd-2"><?= $secretaria->getSigla() ?></td>            
-                            <td><?= $secretaria->getNome() ?></td>            
+                            <td class="col-sd-1"><?= $tipo->getSigla() ?></td>            
+                            <td class="col-sd-1"><?= $tipo->getTipo()->getNome() ?></td>            
+                            <td><?= $tipo->getNome() ?></td>            
+                            <td class="col-sd-1"><?= $tipo->getSecretaria()->getSigla() ?></td>            
+                            <td class="col-sd-2"><?=($tipo->getSetorPai())?$tipo->getSetorPai()->getSigla():NULL ?></td>            
                             <td class="col-sd-2">
-                                <a class="btn btn-xs btn-info" title="Visualizar" href="/secretarias/visualizar/<?=$secretaria->getIdSecretaria()?>"><span class="glyphicon glyphicon-new-window"></span></a>
-                                <a class="btn btn-xs btn-warning" title="Editar" href="/secretarias/editar/<?=$secretaria->getIdSecretaria()?>"><span class="glyphicon glyphicon-edit"></span></a>
-                                <a class="btn btn-xs btn-danger" title="Excluir" href="/secretarias/excluir/<?=$secretaria->getIdSecretaria()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/setores/visualizar/<?=$tipo->getIdSetor()?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-warning" title="Editar" href="/setores/editar/<?=$tipo->getIdSetor()?>"><span class="glyphicon glyphicon-edit"></span></a>
+                                <a class="btn btn-xs btn-danger" title="Excluir" href="/setores/excluir/<?=$tipo->getIdSetor()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
                             </td>
                         </tr>
                     <? endforeach; ?>
@@ -40,14 +45,14 @@
                 // add at the end of the file after the table
                 echo $this->paginationControl(
                         // the paginator object
-                        $this->secretarias,
+                        $this->setores,
                         // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
                         'sliding',
                         // the partial to use to render the control
-                        array('partial/paginator.phtml', 'Secretaria'),
+                        array('partial/paginator.phtml', 'Setor'),
                         // the route to link to when a user clicks a control link
                         array(
-                    'route' => 'secretarias',
+                    'route' => 'setores',
                     'orderby' => $this->orderby,
                         )
                 );

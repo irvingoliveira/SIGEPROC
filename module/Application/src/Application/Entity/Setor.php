@@ -65,7 +65,7 @@ class Setor {
      *                 referencedColumnName="idTipoSetor", nullable=false)
      * @var TipoSetor
      */
-    private $tipo;
+    private $tipoSetor;
     /**
      * @ORM\ManyToOne(targetEntity="Secretaria", inversedBy="setores")
      * @ORM\JoinColumn(name="Secretaria_idSecretaria",
@@ -74,7 +74,7 @@ class Setor {
      */
     private $secretaria;
     /**
-     * @ORM\OneToMany(targetEntity="Usuario", mappedBy="setor")
+     * @ORM\OneToMany(targetEntity="UsuarioSetor", mappedBy="setor")
      * @var ArrayCollection
      */
     private $usuarios;
@@ -93,6 +93,11 @@ class Setor {
      * @var ArrayCollection
      */
     private $requerentes;
+    /**
+     * @ORM\OneToMany(targetEntity="Assunto", mappedBy="setor")
+     * @var ArrayCollection
+     */
+    private $assuntos;
 
 
     public function __construct() {
@@ -101,6 +106,7 @@ class Setor {
         $this->requerentes = new ArrayCollection();
         $this->setoresFilhos = new ArrayCollection();
         $this->usuarios = new ArrayCollection();
+        $this->assuntos = new ArrayCollection();
     }
     
     public function getIdSetor() {
@@ -120,7 +126,7 @@ class Setor {
     }
 
     public function getTipo() {
-        return $this->tipo;
+        return $this->tipoSetor;
     }
 
     public function getSecretaria() {
@@ -144,14 +150,14 @@ class Setor {
     }
 
     public function setTipo(TipoSetor $tipo) {
-        $this->tipo = $tipo;
+        $this->tipoSetor = $tipo;
     }
 
     public function setSecretaria(Secretaria $secretaria) {
         $this->secretaria = $secretaria;
     }
 
-    public function addSetorFilho(SetorFilho $setor){
+    public function addSetorFilho(Setor $setor){
         if($this->setoresFilhos->contains($setor)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
@@ -249,5 +255,30 @@ class Setor {
     
     public function getRequerentes(){
         return $this->requerentes->toArray();
+    }
+    
+    public function addAssunto(Assunto $assunto){
+        if($this->assuntos->contains($assunto)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->assuntos->set($assunto->getIdAssunto(), $assunto);
+    }
+    
+    public function getAssunto($key){
+        if(!$this->assuntos->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->assuntos->get($key);
+    }
+    
+    public function removeAssunto($key){
+        if(!$this->assuntos->containsKey($key)){
+            return;
+        }
+        $this->assuntos->remove($key);
+    }
+    
+    public function getAssuntos(){
+        return $this->assuntos->toArray();
     }
 }

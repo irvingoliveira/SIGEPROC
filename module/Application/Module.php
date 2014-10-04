@@ -156,6 +156,9 @@ class Module implements ServiceProviderInterface, AutoloaderProviderInterface, V
     {
         return array(
             'factories' => array(
+                'menuAtivo'  => function($sm) {
+                    return new \Application\View\Helper\MenuAtivo($sm->getServiceLocator()->get('Request'));
+                },
                 'message' => function($sm) {
                     return new \Application\View\Helper\Messenger($sm->getServiceLocator()->get('ControllerPluginManager')->get('flashmessenger'));
                 },

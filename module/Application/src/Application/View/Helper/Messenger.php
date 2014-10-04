@@ -20,11 +20,7 @@ namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Zend\Mvc\Controller\Plugin\FlashMessenger as FlashMessenger;
-/**
- * Description of Message
- *
- * @author Irving Fernando de Medeiros Oliveira
- */
+
 class Messenger extends AbstractHelper{
 
     protected $flashMessenger;

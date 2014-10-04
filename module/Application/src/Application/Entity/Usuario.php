@@ -80,12 +80,10 @@ class Usuario {
      */
     private $funcao;
     /**
-     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="Setor_idSetor",
-     *                 referencedColumnName="idSetor", nullable=true)
-     * @var Setor
+     * @ORM\OneToMany(targetEntity="UsuarioSetor", mappedBy="usuario")
+     * @var ArrayCollection
      */
-    private $setor;
+    private $setores;
     /**
      * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="emissor")
      * @var ArrayCollection
@@ -101,11 +99,24 @@ class Usuario {
      * @var ArrayCollection
      */
     private $processos;
+    /**
+     * @ORM\OneToMany(targetEntity="Pendencia", mappedBy="usuario")
+     * @var ArrayCollection
+     */
+    private $pendencias;
+    /**
+     * @ORM\OneToMany(targetEntity="Parecer", mappedBy="usuario")
+     * @var ArrayCollection
+     */
+    private $pareceres;
     
     public function __construct() {
+        $this->setores = new ArrayCollection();
         $this->guiasDeRemessaEnviadas = new ArrayCollection();
         $this->guiasDeRemessaRecebidas = new ArrayCollection();
         $this->processos = new ArrayCollection();
+        $this->pendencias = new ArrayCollection();
+        $this->pareceres = new ArrayCollection();
     }
     
     public function getIdUsuario() {
@@ -144,10 +155,6 @@ class Usuario {
         return $this->funcao;
     }
 
-    public function getSetor() {
-        return $this->setor;
-    }
-
     public function setIdUsuario($idUsuario) {
         $this->idUsuario = $idUsuario;
     }
@@ -183,12 +190,8 @@ class Usuario {
     public function setFuncao(Funcao $funcao) {
         $this->funcao = $funcao;
     }
-
-    public function setSetor(Setor $setor) {
-        $this->setor = $setor;
-    }
     
-     public function addGuiaDeRemessaEnviada(GuiaDeRemessa $guiaDeRemessa){
+    public function addGuiaDeRemessaEnviada(GuiaDeRemessa $guiaDeRemessa){
         if($this->guiasDeRemessaEnviadas->contains($guiaDeRemessa)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
@@ -261,5 +264,84 @@ class Usuario {
     
     public function getGuiasDeRemessaRecebidas(){
         return $this->guiasDeRemessaRecebidas->toArray();
+    }
+    
+    public function addSetor(Setor $setor){
+        if($this->setores->contains($setor)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->setores->set($setor->getIdSetor(), $setor);
+    }
+    
+    public function getSetorAtual(){
+        $this->setores->last();
+    }
+
+    public function getSetor($key){
+        if(!$this->setores->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->setores->get($key);
+    }
+    
+    public function removeSetor($key){
+        if(!$this->setores->containsKey($key)){
+            return;
+        }
+        $this->setores->remove($key);
+    }
+    
+    public function getSetores(){
+        return $this->setores->toArray();
+    }
+    
+    public function addPendencia(Pendencia $pendencia){
+        if($this->pendencias->contains($pendencia)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->pendencias->set($pendencia->getIdPendencia(), $pendencia);
+    }
+    
+    public function getPendencia($key){
+        if(!$this->pendencias->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->pendencias->get($key);
+    }
+    
+    public function removePendencia($key){
+        if(!$this->pendencias->containsKey($key)){
+            return;
+        }
+        $this->pendencias->remove($key);
+    }
+    
+    public function getPendencias(){
+        return $this->pendencias->toArray();
+    }
+    
+    public function addParecer(Parecer $parecer){
+        if($this->pareceres->contains($parecer)){
+            throw new ObjectAlreadyExistsOnCollectionException();
+        }
+        $this->pareceres->set($parecer->getIdParecer(), $parecer);
+    }
+    
+    public function getParecer($key){
+        if(!$this->pareceres->containsKey($key)){
+            throw new NullPointerException();
+        }
+        return $this->pareceres->get($key);
+    }
+    
+    public function removeParecer($key){
+        if(!$this->pareceres->containsKey($key)){
+            return;
+        }
+        $this->pareceres->remove($key);
+    }
+    
+    public function getPareceres(){
+        return $this->pareceres->toArray();
     }
 }
