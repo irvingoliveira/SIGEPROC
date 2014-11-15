@@ -28,6 +28,10 @@ use Application\Exception\ObjectAlreadyExistsOnCollectionException;
  *
  * @author Irving Fernando de Medeiros Oliveira
  * @ORM\Entity
+ * @ORM\Table(name="Secretaria",uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="nome_UNIQUE", columns="nome"),
+ *     @ORM\UniqueConstraint(name="sigla_UNIQUE", columns="sigla")
+ * }))
  */
 class Secretaria {
     /**

@@ -64,10 +64,10 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'idSetor', 'nome', 'sigla', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'fluxosSetor', 'guiasDeRemessa', 'requerentes');
+            return array('__isInitialized__', 'idSetor', 'nome', 'sigla', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'fluxosSetor', 'guiasDeRemessa', 'requerentes', 'assuntos');
         }
 
-        return array('__isInitialized__', 'idSetor', 'nome', 'sigla', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'fluxosSetor', 'guiasDeRemessa', 'requerentes');
+        return array('__isInitialized__', 'idSetor', 'nome', 'sigla', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'fluxosSetor', 'guiasDeRemessa', 'requerentes', 'assuntos');
     }
 
     /**
@@ -483,6 +483,50 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRequerentes', array());
 
         return parent::getRequerentes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addAssunto(\Application\Entity\Assunto $assunto)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addAssunto', array($assunto));
+
+        return parent::addAssunto($assunto);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAssunto($key)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAssunto', array($key));
+
+        return parent::getAssunto($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeAssunto($key)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeAssunto', array($key));
+
+        return parent::removeAssunto($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAssuntos()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAssuntos', array());
+
+        return parent::getAssuntos();
     }
 
 }

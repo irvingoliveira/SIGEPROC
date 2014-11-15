@@ -20,8 +20,10 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Application\Exception\UserNotFoundException;
-use Application\Exception\InactiveUserException;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\Iterator;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use Application\DAL\UsuarioDAO;
 /**
  * Description of ManterUsuariosController
  *
@@ -29,7 +31,6 @@ use Application\Exception\InactiveUserException;
  */
 class ManterUsuariosController extends AbstractActionController {
 
-    private $objectManager;
     private $authService;
     
     public function getAuthService(){
@@ -37,13 +38,6 @@ class ManterUsuariosController extends AbstractActionController {
             $this->authService = $this->getServiceLocator()->get('AuthService');
         }
         return $this->authService;
-    }
-
-    public function getObjectManager() {
-        if (!$this->objectManager) {
-            $this->objectManager = $this->getServiceLocator()->get('ObjectManager');
-        }
-        return $this->objectManager;
     }
 
     public function autenticarAction() {
@@ -97,6 +91,32 @@ class ManterUsuariosController extends AbstractActionController {
             }
         }
     }
+    
+    public function indexAction() {
+        $request = $this->getRequest();
+
+        if (!$request->isPost()) {
+            $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
+
+            $ormPaginator = new ORMPaginator($usuarioDAO->lerTodos());
+            $ormPaginatorIterator = $ormPaginator->getIterator();
+
+            $adapter = new Iterator($ormPaginatorIterator);
+
+            $paginator = new Paginator($adapter);
+            $paginator->setDefaultItemCountPerPage(10);
+            $page = (int) $this->params()->fromQuery('page');
+            if ($page)
+                $paginator->setCurrentPageNumber($page);
+
+            return array(
+                'usuarios' => $paginator,
+                'orderby' => $this->params()->fromQuery('orderby'),
+            );
+        }
+    }
+    
+    
     
     public function logoutAction(){
         $authService = $this->getAuthService();

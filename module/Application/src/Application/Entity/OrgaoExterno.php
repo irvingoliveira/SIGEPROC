@@ -48,7 +48,7 @@ class OrgaoExterno {
      */
     private $abreviacao;
     /**
-     * @ORM\OneToOne(targetEntity="Endereco", inversedBy="orgaoExterno")
+     * @ORM\OneToOne(targetEntity="Endereco",cascade={"persist"}, inversedBy="orgaoExterno")
      * @ORM\JoinColumn(name="Endereco_idEndereco",
      *                 referencedColumnName="idEndereco", nullable=false)
      * @var Endereco
@@ -100,6 +100,7 @@ class OrgaoExterno {
 
     public function setEndereco(Endereco $endereco) {
         $this->endereco = $endereco;
+        $endereco->setOrgaoExterno($this);
     }
     
     public function addGuiaDeRemessa(GuiaDeRemessa $guiaDeremessa){

@@ -19,7 +19,7 @@
 
 namespace Application\Filters;
 
-use \Doctrine\Common\Persistence\ObjectManager;
+use Zend\ServiceManager\ServiceManager;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator;
@@ -39,8 +39,8 @@ final class SetorFilter extends InputFilter{
     private $setorMestreSlct;
     private $objectManager;
     
-    public function __construct(ObjectManager $om, $nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, $setorMestreSlct) {
-        $this->objectManager = $om;
+    public function __construct(ServiceManager $sm, $nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, $setorMestreSlct) {
+        $this->objectManager = $sm->get('ObjectManager');
         $this->nomeTxt = $nomeTxt;
         $this->siglaTxt = $siglaTxt;
         $this->secretariaSlct = $secretariaSlct;
@@ -49,7 +49,7 @@ final class SetorFilter extends InputFilter{
         $this->setorInputFilters();
     }
 
-    public function setorInputFilters() {
+    private final function setorInputFilters() {
         
         $nomeFilter = new Input('nomeTxt');
 

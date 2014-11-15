@@ -98,10 +98,22 @@ class ManterSecretariasController extends AbstractActionController {
             $objectManager->flush();
             $this->flashMessenger()->addSuccessMessage("Secretaria adicionada com sucesso.");
             $this->redirect()->toRoute('secretarias');
+        } catch (\Doctrine\DBAL\DBALException $e){
+            if(strpos($e->getMessage(), 'SQLSTATE[23000]') > 0){
+                $mensagem = "Já existe uma secretaria cadastrada com este nome ou sigla.";
+            } else{
+                $mensagem = "Ocorreu um erro na operação, tente novamente ";
+                $mensagem .= "ou entre em contato com um administrador ";
+                $mensagem .= "do sistema.";
+            }
+            $this->flashMessenger()->addErrorMessage($mensagem);
         } catch (\Exception $e) {
-            $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-            $this->redirect()->toRoute('secretarias');
+            $mensagem = "Ocorreu um erro na operação, tente novamente ";
+            $mensagem .= "ou entre em contato com um administrador ";
+            $mensagem .= "do sistema.";
+            $this->flashMessenger()->addErrorMessage($mensagem);
         }
+        $this->redirect()->toRoute('secretarias');
     }
 
     public function buscarAction() {

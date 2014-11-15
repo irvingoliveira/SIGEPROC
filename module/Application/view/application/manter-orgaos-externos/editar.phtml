@@ -1,0 +1,102 @@
+<?
+if($this->setor){
+    $id = $this->setor->getIdSetor();
+    $nome = $this->setor->getNome();
+    $sigla = $this->setor->getSigla();
+    $_secretaria = $this->setor->getSecretaria()->getNome();
+    $_tipoSetor = $this->setor->getTipo()->getNome();
+    if($this->setor->getSetorPai() != NULL){
+        $_setorPai = $this->setor->getSetorPai()->getNome();
+        $_idSetorPai = $this->setor->getSetorPai()->getIdSetor();
+    }
+}
+?>
+<div class="row">
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Editar setor</h3>
+            </div>
+            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('setores', array('action' => 'editar')); ?>">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="secretariaSlct" class="col-lg-3 col-md-3 control-label">Secretaria:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <select name="secretariaSlct" class="form-control" id="secretariaSlct">
+                            <option>----Selecione uma secretaria----</option>
+                            <?  foreach ($this->secretarias as $secretaria):?>
+                                <?if($secretaria->getNome() == $_secretaria):?>
+                                    <option value="<?=$secretaria->getIdSecretaria()?>" selected="selected"><?=$secretaria->getNome()?></option>
+                                <?else:?>
+                                    <option value="<?=$secretaria->getIdSecretaria()?>"><?=$secretaria->getNome()?></option>
+                                <?endif;?>
+                            <?  endforeach;?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tipoSlct" class="col-lg-3 col-md-3 control-label">Tipo:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <select name="tipoSlct" class="form-control" id="tipoSlct">
+                            <option>----Selecione um tipo de setor----</option>
+                            <?  foreach ($this->tiposSetor as $tipoSetor):?>
+                                <?if($tipoSetor->getNome() == $_tipoSetor):?>
+                                    <option value="<?=$tipoSetor->getIdTipoSetor()?>" selected="selected"><?=$tipoSetor->getNome()?></option>
+                                <?else:?>
+                                    <option value="<?=$tipoSetor->getIdTipoSetor()?>"><?=$tipoSetor->getNome()?></option>
+                                <?endif;?>
+                            <?  endforeach;?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="setorMestreSlct" class="col-lg-3 col-md-3 control-label">Setor mestre:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <select name="setorMestreSlct" class="form-control" id="setorMestreSlct">
+                            <option>----Selecione um setor mestre----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nomeTxt" class="col-lg-3 col-md-3 control-label">Nome:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="nomeTxt" class="form-control" id="nomeTxt" value="<?=$nome?>" placeholder="Controle de Exemplos">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="siglaTxt" class="col-lg-3 col-md-3 control-label">Sigla:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="siglaTxt" class="form-control" id="siglaTxt" value="<?=$sigla?>" placeholder="CCE">
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer center">
+                <button type="submit" class="btn btn-success">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?if($this->sucesso):?>
+    <? $this->headScript()->captureStart(); ?>
+        decisao = confirm('Deseja adicionar uma nova secretaria?');
+        if(!decisao){
+            location.href="/secretarias";
+        }
+    <?$this->headScript()->captureEnd();?>
+<?endif;?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    var valor = $('#secretariaSlct').val();
+    $.post('/setores/getsetorcombobysecretaria',{data: valor, selected: <?=$_idSetorPai?>},function(ret){
+        $('#setorMestreSlct').html(ret);
+    });
+    
+    $('#secretariaSlct').change(function(){
+        var valor = $(this).val();
+        $.post('/setores/getsetorcombobysecretaria',{data: valor},function(ret){
+            $('#setorMestreSlct').html(ret);
+        });
+    });
+});
+<? $this->headScript()->captureEnd(); ?>

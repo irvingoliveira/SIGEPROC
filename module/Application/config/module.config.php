@@ -29,9 +29,9 @@ return array(
                 'credential_property' => 'senha',
                 'credential_callable' => function(\Application\Entity\Usuario $usuario,
                 $senha) {
-                    $bcrypt = new \Zend\Crypt\Password\Bcrypt();
-                    return $bcrypt->verify($senha, $usuario->getSenha());
-                }
+            $bcrypt = new \Zend\Crypt\Password\Bcrypt();
+            return $bcrypt->verify($senha, $usuario->getSenha());
+        }
             ),
         ),
     ),
@@ -43,6 +43,20 @@ return array(
                     'route' => '/',
                     'defaults' => array(
                         'controller' => 'Index',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'assuntos' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/assuntos[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'assuntos',
                         'action' => 'index',
                     ),
                 ),
@@ -67,23 +81,41 @@ return array(
                     ),
                 ),
             ),
-            'assuntos' => array(
-                'type' => 'Literal',
+            'orgaosexternos' => array(
+                'type' => 'Segment',
                 'options' => array(
-                    'route' => '/assuntos',
+                    'route' => '/orgaosexternos[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
                     'defaults' => array(
-                        'controller' => 'Assuntos',
+                        'controller' => 'OrgaosExternos',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'processos' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/processos[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Processos',
                         'action' => 'index',
                     ),
                 ),
             ),
             'secretarias' => array(
                 'type' => 'Segment',
-                'options' =>array(
-                    'route'    => '/secretarias[/:action][/:id]',
+                'options' => array(
+                    'route' => '/secretarias[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Secretarias',
@@ -93,11 +125,11 @@ return array(
             ),
             'setores' => array(
                 'type' => 'Segment',
-                'options' =>array(
-                    'route'    => '/setores[/:action][/:id]',
+                'options' => array(
+                    'route' => '/setores[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Setores',
@@ -107,14 +139,56 @@ return array(
             ),
             'tiposdesetor' => array(
                 'type' => 'Segment',
-                'options' =>array(
-                    'route'    => '/tiposdesetor[/:action][/:id]',
+                'options' => array(
+                    'route' => '/tiposdesetor[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'TiposDeSetor',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'tiposdedocumento' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/tiposdedocumento[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'TiposDeDocumento',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'usuarios' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/usuarios[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Usuarios',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'workflows' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/workflows[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Workflows',
                         'action' => 'index',
                     ),
                 ),
@@ -174,10 +248,14 @@ return array(
         'invokables' => array(
             'Index' => 'Application\Controller\IndexController',
             'Assuntos' => 'Application\Controller\ManterAssuntosController',
+            'OrgaosExternos' => 'Application\Controller\ManterOrgaosExternosController',
+            'Processos' => 'Application\Controller\ManterProcessosController',
             'Secretarias' => 'Application\Controller\ManterSecretariasController',
             'Setores' => 'Application\Controller\ManterSetoresController',
+            'TiposDeDocumento' => 'Application\Controller\ManterTiposDeDocumentoController',
             'TiposDeSetor' => 'Application\Controller\ManterTiposDeSetorController',
             'Usuarios' => 'Application\Controller\ManterUsuariosController',
+            'Workflows' => 'Application\Controller\ManterWorkflowsController',
         ),
     ),
     'controller_plugins' => array(

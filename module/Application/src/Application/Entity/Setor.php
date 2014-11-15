@@ -28,6 +28,12 @@ use Application\Exception\ObjectAlreadyExistsOnCollectionException;
  *
  * @author Irving Fernando de Medeiros Oliveira
  * @ORM\Entity
+ * @ORM\Table(name="Setor", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="uq_Setor_por_Secretaria", 
+ *                           columns={"nome", "Secretaria_idSecretaria"}),
+ *     @ORM\UniqueConstraint(name="uq_Sigla_Setor_por_Secretaria", 
+ *                           columns={"sigla", "Secretaria_idSecretaria"})
+ * })
  */
 class Setor {
     /**
@@ -50,7 +56,7 @@ class Setor {
     /**
      * @ORM\ManyToOne(targetEntity="Setor", inversedBy="setoresFilhos")
      * @ORM\JoinColumn(name="Setor_idSetor",
-     *                 referencedColumnName="idSetor", nullable=true)
+     *                 referencedColumnName="idSetor", nullable=true, onDelete="SET NULL")
      * @var Setor
      */
     private $setorPai;

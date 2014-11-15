@@ -35,13 +35,13 @@
                         <th>Nome</th>
                         <th>&nbsp;</th>
                     </tr>
-                    <? foreach ($this->tiposDeSetor as $tipo): ?>
+                    <? foreach ($this->tiposDeSetor as $assunto): ?>
                             <tr>           
-                                <td><?= $tipo->getNome() ?></td>                     
+                                <td><?= $assunto->getNome() ?></td>                     
                             <td class="col-sm-2">
-                                <a class="btn btn-xs btn-info" title="Visualizar" href="/tiposdesetor/visualizar/<?=$tipo->getIdTipoSetor()?>"><span class="glyphicon glyphicon-new-window"></span></a>
-                                <a class="btn btn-xs btn-warning" title="Editar" href="/tiposdesetor/editar/<?=$tipo->getIdTipoSetor()?>"><span class="glyphicon glyphicon-edit"></span></a>
-                                <a class="btn btn-xs btn-danger" title="Excluir" href="/tiposdesetor/excluir/<?=$tipo->getIdTipoSetor()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/tiposdesetor/visualizar/<?=$assunto->getIdTipoSetor()?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-warning" title="Editar" href="/tiposdesetor/editar/<?=$assunto->getIdTipoSetor()?>"><span class="glyphicon glyphicon-edit"></span></a>
+                                <a class="btn btn-xs btn-danger" title="Excluir" href="/tiposdesetor/excluir/<?=$assunto->getIdTipoSetor()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
                             </td>
                         </tr>
                     <? endforeach; ?>

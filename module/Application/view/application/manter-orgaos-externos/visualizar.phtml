@@ -1,0 +1,43 @@
+<?
+if($this->secretaria){
+    $id = $this->secretaria->getIdSecretaria();
+    $nome = $this->secretaria->getNome();
+    $sigla = $this->secretaria->getSigla();
+}
+?>
+<div class="row">
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading list-group">
+                <h3 class="panel-title">Vizualizar secretaria</h3>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Id:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$id;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Nome:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$nome;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Sigla:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="siglaTxt"><?=$sigla;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer center">
+                <a href="<?=$this->url('secretarias', array('action' => 'index'))?>" class="btn btn-success" title="Voltar"><span class="glyphicon glyphicon-backward"></span>Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>

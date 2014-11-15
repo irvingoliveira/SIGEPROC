@@ -8,22 +8,80 @@
             <div class="panel-body">
                 <ul class="navbar-link">
                     <li><a href="<?php echo $this->url('assuntos') ?>">Cadastrar assuntos</a></li>
-                    <li><a href="<?php echo $this->url('home') ?>">Cadastrar workflows</a></li>
+                    <li><a href="<?php echo $this->url('workflows') ?>">Cadastrar workflows</a></li>
                 </ul>
             </div>
         </div>
     </div>
-
+   
     <div class="col-md-9">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Discover Modules') ?></h3>
+                <h3 class="panel-title">Assuntos</h3>
             </div>
             <div class="panel-body">
-                <p><?php echo sprintf($this->translate('The community is working on developing a community site to serve as a repository and gallery for ZF2 modules. The project is available %son GitHub%s. The site is currently live and currently contains a list of some of the modules already available for ZF2.'), '<a href="https://github.com/zendframework/modules.zendframework.com">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://modules.zendframework.com/" target="_blank"><?php echo $this->translate('Explore ZF2 Modules') ?> &raquo;</a></p>
+                <div class="col-sm-2">
+                    <a href="<?=$this->url('assuntos', array('action' => 'adicionar'))?>" class="btn btn-success btn-add" title="Novo"><span class="glyphicon glyphicon-plus"></span>Novo assunto</a>
+                </div>
+                <form method="GET" action="<?=$this->url('assuntos', array('action' => 'buscar'))?>">
+                    <div class="col-sm-offset-4 col-sm-5">
+                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar assunto" maxlength="150">
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
+                        </a>
+                    </div>
+                </form>
+                <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Secretaria responsável</th>
+                        <th>Setor responsável</th>
+                        <th>Descrição</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <? foreach ($this->assuntos as $assunto): ?>
+                        <tr>
+                            <td class="col-sd-1"><?= $assunto->getNome() ?></td>            
+                            <td class="col-sd-1"><?= $assunto->getSetor()->getSecretaria()->getSigla(); ?></td>            
+                            <td class="col-sd-1"><?= $assunto->getSetor()->getNome() ?></td>            
+                            <td class="col-sd-1"><?= substr($assunto->getDescricao(),0,20)."..." ?></td>            
+                            <td class="col-sd-2">
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/assuntos/visualizar/<?=$assunto->getIdAssunto()?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-warning" title="Editar" href="/assuntos/editar/<?=$assunto->getIdAssunto()?>"><span class="glyphicon glyphicon-edit"></span></a>
+                                <a class="btn btn-xs btn-danger" title="Excluir" href="/assuntos/excluir/<?=$assunto->getIdAssunto()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
+                            </td>
+                        </tr>
+                    <? endforeach; ?>
+                </table>
+
+                <?php
+                // add at the end of the file after the table
+                echo $this->paginationControl(
+                        // the paginator object
+                        $this->assuntos,
+                        // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+                        'sliding',
+                        // the partial to use to render the control
+                        array('partial/paginator.phtml', 'Assunto'),
+                        // the route to link to when a user clicks a control link
+                        array(
+                    'route' => 'assuntos',
+                    'orderby' => $this->orderby,
+                        )
+                );
+                ?>
             </div>
         </div>
     </div>
-
+    
 </div>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function (){
+    $('.btn-danger').on('click', function () {
+        var msg = 'Tem certeza que deseja realizar esta operação?';
+        return confirm(msg);
+    });
+ });
+ <? $this->headScript()->captureEnd(); ?>

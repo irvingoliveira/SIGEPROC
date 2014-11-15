@@ -30,31 +30,27 @@ use Zend\Filter;
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
-final class SetorFilter extends InputFilter {
+final class TipoSetorFilter extends InputFilter {
 
     private $nomeTxt;
-    private $siglaTxt;
-    private $secretariaSlct;
-    private $tipoSlct;
-    private $setorMestreSlct;
     private $objectManager;
 
     public function __construct(ObjectManager $om, $nomeTxt) {
         $this->objectManager = $om;
         $this->nomeTxt = $nomeTxt;
-        $this->setorInputFilters();
+        $this->TipoSetorInputFilters();
     }
 
-    public function TipoSetorInputFilters() {
+    private final function TipoSetorInputFilters() {
 
         $nomeFilter = new Input('nomeTxt');
 
         $nomeStringLength = new Validator\StringLength(array('max' => 100, 'min' => 3));
         $nomeStringLength->setMessages(array(
             Validator\StringLength::TOO_SHORT =>
-            'O nome \'%value%\' é muito curto, o valor mínimo é %min%',
+            'O nome \'%value%\' é muito curto, o valor mínimo é de %min% caracteres.',
             Validator\StringLength::TOO_LONG =>
-            'O nome \'%value%\' é muito longo, o valor máximo é %max%'
+            'O nome \'%value%\' é muito longo, o valor máximo é de %max% caracteres.'
         ));
 
         $nomeFilter->getValidatorChain()

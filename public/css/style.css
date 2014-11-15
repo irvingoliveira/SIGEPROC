@@ -3,20 +3,24 @@ body {
     padding-bottom: 40px;
 }
 
+textarea{
+    resize: none;
+}
+
 .zf-green {
     color: #68b604;
 }
 
 .btn-success {
-  border-color: #999b10;
-  background-color: #d2d416;
-  background-image: -moz-linear-gradient(top, #e1e265, #d2d416);
-  background-image: -ms-linear-gradient(top, #e1e265, #d2d416);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e1e265), to(#d2d416));
-  background-image: -webkit-linear-gradient(top, #e1e265, #d2d416);
-  background-image: -o-linear-gradient(top, #e1e265, #d2d416);
-  background-image: linear-gradient(top, #e1e265, #d2d416);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1e265', endColorstr='#d2d416', GradientType=0);
+    border-color: #999b10;
+    background-color: #d2d416;
+    background-image: -moz-linear-gradient(top, #e1e265, #d2d416);
+    background-image: -ms-linear-gradient(top, #e1e265, #d2d416);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e1e265), to(#d2d416));
+    background-image: -webkit-linear-gradient(top, #e1e265, #d2d416);
+    background-image: -o-linear-gradient(top, #e1e265, #d2d416);
+    background-image: linear-gradient(top, #e1e265, #d2d416);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1e265', endColorstr='#d2d416', GradientType=0);
 }
 
 .btn-success:hover,
@@ -24,11 +28,11 @@ body {
 .btn-success.active,
 .btn-success.disabled,
 .btn-success[disabled] {
-  background-color: #d2d416;
+    background-color: #d2d416;
 }
 
 .btn-success:active, .btn-success.active {
-  background-color: #d2d416;
+    background-color: #d2d416;
 }
 
 .btn-add{
@@ -77,16 +81,80 @@ footer p{
 }
 
 .jumbo {
-  padding: 10px;
-  margin-bottom: 30px;
-  font-size: 21px;
-  font-weight: 200;
-  line-height: 2.1428571435;
-  color: inherit;
-  text-align: center;
-  background-color: #eeeeee;
+    padding: 10px;
+    margin-bottom: 30px;
+    font-size: 21px;
+    font-weight: 200;
+    line-height: 2.1428571435;
+    color: inherit;
+    text-align: center;
+    background-color: #eeeeee;
 }
 
 .center{
     text-align: center;
+}
+
+ol {
+    counter-reset:li; /* Inicia o contador */      
+    margin-left:0; /* Remove margin padrão */      
+    padding-left:0; /* Remove padding padrão */  
+}  
+
+ol > li {      
+    position:relative; /* Cria contexto de posicionamento */      
+    margin:0 0 6px 2em; /* margem para abrir espaço para a numeração */      
+    padding:4px 8px; /* Espaçamento em volta do conteúdo */      
+    list-style:none; /* Desabilita numeração padrão */      
+    /*border-top:2px solid #666;      
+    background:#f6f6f6;  */
+}  
+
+ol > li:before {      
+    content:counter(li); /* Define um contador como conteúdo */      
+    counter-increment:li; /* Incrementa o contador de 1 */      
+    /* Posicionamento e estilização do número */     
+    position:absolute;      
+    top:-2px;      
+    left:-2em;      
+    -moz-box-sizing:border-box;     
+    -webkit-box-sizing:border-box;      
+    box-sizing:border-box;      
+    width:2em;      /* Espaçamento entre número e texto em navegadores que suportam conteúdo gerado, ams não o posicionam(Camino 2 por exemplo) */      
+    margin-right:8px;      
+    margin-top: 1px;
+    padding: 10px 4px;      
+    border:1px solid #ddd;      
+    color:#000;      
+    background:#f8f8f8;
+    font-weight:bold;      
+    font-family:"Helvetica Neue", Arial, sans-serif;      
+    text-align:center;  
+}  
+
+li ol,  li ul {
+    margin-top:6px;}  
+ol ol li:last-child {
+    margin-bottom:0;
+}
+
+.panel-workflow{
+    min-height: 300px;
+    background: url("../img/workflow-help.jpg") no-repeat;
+    margin: 12px;
+}
+
+.panel-workflow-active{
+    min-height: 324px;
+    background: #fff;
+}
+
+.fechar-item{
+    float: right;
+}
+
+.fechar-item:hover{
+    float: right;
+    color: #f00;
+    cursor: pointer;
 }

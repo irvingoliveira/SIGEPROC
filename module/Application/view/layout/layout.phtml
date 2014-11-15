@@ -3,6 +3,7 @@
 <html lang="pt-BR">
     <head>
         <meta charset="utf-8">
+        
         <?php echo $this->headTitle('SIGEPROC - Sistema de Gerenciamento de Processos')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php echo $this->headMeta()
@@ -39,11 +40,14 @@
                     <?
                         $home = $this->url('home');
                         $assuntos = $this->url('assuntos');
+                        $orgaosexternos = $this->url('orgaosexternos');
+                        $processos = $this->url('processos');
                         /*
                          * TODO
                          */
                         $secretarias = $this->url('secretarias');
                         $setores = $this->url('setores');
+                        $usuarios = $this->url('usuarios');
                         /**
                          * TODO
                          */
@@ -60,14 +64,21 @@
                             <li <?=$this->MenuAtivo($assuntos)?>>
                                 <a href="<?=$assuntos?>">Assuntos</a>
                             </li>
-                            <li><a href="#">Funções</a></li>
+                            <li <?=$this->MenuAtivo($processos)?>>
+                                <a href="<?=$processos?>">Processos</a>
+                            </li>
                             <li <?=$this->MenuAtivo($secretarias)?>>
                                 <a href="<?=$secretarias?>">Secretarias</a>
                             </li>
                             <li <?=$this->MenuAtivo($setores)?>>
                                 <a href="<?=$setores?>">Setores</a></li>
-                            <li><a href="#">Orgãos externos</a></li>
-                            <li><a href="#">Configurações</a></li>
+                            <li <?=$this->MenuAtivo($orgaosexternos)?>>
+                                <a href="<?=$orgaosexternos?>">Orgãos externos</a>
+                            </li>
+<!--                            <li><a href="#">Configurações</a></li>-->
+                            <li <?=$this->MenuAtivo($usuarios)?>>
+                                <a href="<?=$usuarios?>">Usuários</a>
+                            </li>
                             <li <?=$this->MenuAtivo($logout)?>>
                                 <a href="<?=$logout?>">Sair</a>
                             </li>

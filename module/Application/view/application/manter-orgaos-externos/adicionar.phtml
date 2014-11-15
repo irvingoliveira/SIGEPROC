@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Adicionar novo orgão externo</h3>
+            </div>
+            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('orgaosexternos', array('action' => 'adicionar')); ?>">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="nomeTxt" class="col-lg-3 col-md-3 control-label">Nome:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="nomeTxt" class="form-control" id="nomeTxt" placeholder="Forum de Exemplos">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="abreviacaoTxt" class="col-lg-3 col-md-3 control-label">Sigla:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="abreviacaoTxt" class="form-control" id="abreviacaoTxt" placeholder="FE">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="logradouroTxt" class="col-lg-3 col-md-3 control-label">Logradouro:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="logradouroTxt" class="form-control" id="logradouroTxt" placeholder="Rua Exemplo">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="numeroTxt" class="col-lg-3 col-md-3 control-label">Numero:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="numeroTxt" class="form-control" id="numeroTxt" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="complementoTxt" class="col-lg-3 col-md-3 control-label">Complemento:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="complementoTxt" class="form-control" id="complementoTxt" placeholder="Quadra E">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bairroTxt" class="col-lg-3 col-md-3 control-label">Bairro:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <input type="text" name="bairroTxt" class="form-control" id="bairroTxt" placeholder="Jardim Exemplo">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="estadoSlct" class="col-lg-3 col-md-3 control-label">Estado:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <select name="estadoSlct" class="form-control" id="estadoSlct">
+                            <option>----Selecione um estado----</option>
+                            <?  foreach ($this->estados as $estado):?>
+                            <option value=<?=$estado->getIdEstado()?>><?=$estado->getNome()?></option>
+                            <?  endforeach;?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cidadeSlct" class="col-lg-3 col-md-3 control-label">Cidade:</label>
+                    <div class="col-lg-9 col-md-9">
+                        <select name="cidadeSlct" class="form-control" id="cidadeSlct">
+                            <option>----Selecione uma cidade----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer center">
+                <button type="submit" class="btn btn-success">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#estadoSlct').change(function(){
+        var valor = $(this).val();
+        $.post('/orgaosexternos/getcidadecombobyestado',{data: valor},function(ret){
+            $('#cidadeSlct').html(ret);
+        });
+    });
+});
+<? $this->headScript()->captureEnd(); ?>

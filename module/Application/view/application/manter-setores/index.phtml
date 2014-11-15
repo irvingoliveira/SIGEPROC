@@ -12,6 +12,7 @@
             </div>
         </div>
     </div>
+    
     <div class="col-md-9">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -39,17 +40,17 @@
                         <th>Setor pai</th>
                         <th>&nbsp;</th>
                     </tr>
-                    <? foreach ($this->setores as $tipo): ?>
+                    <? foreach ($this->setores as $setor): ?>
                         <tr>
-                            <td class="col-sd-1"><?= $tipo->getSigla() ?></td>            
-                            <td class="col-sd-1"><?= $tipo->getTipo()->getNome() ?></td>            
-                            <td><?= $tipo->getNome() ?></td>            
-                            <td class="col-sd-1"><?= $tipo->getSecretaria()->getSigla() ?></td>            
-                            <td class="col-sd-2"><?=($tipo->getSetorPai())?$tipo->getSetorPai()->getSigla():NULL ?></td>            
+                            <td class="col-sd-1"><?= $setor->getSigla() ?></td>            
+                            <td class="col-sd-1"><?= $setor->getTipo()->getNome() ?></td>            
+                            <td><?= $setor->getNome() ?></td>            
+                            <td class="col-sd-1"><?= $setor->getSecretaria()->getSigla() ?></td>            
+                            <td class="col-sd-2"><?=($setor->getSetorPai())?$setor->getSetorPai()->getSigla():NULL ?></td>            
                             <td class="col-sd-2">
-                                <a class="btn btn-xs btn-info" title="Visualizar" href="/setores/visualizar/<?=$tipo->getIdSetor()?>"><span class="glyphicon glyphicon-new-window"></span></a>
-                                <a class="btn btn-xs btn-warning" title="Editar" href="/setores/editar/<?=$tipo->getIdSetor()?>"><span class="glyphicon glyphicon-edit"></span></a>
-                                <a class="btn btn-xs btn-danger" title="Excluir" href="/setores/excluir/<?=$tipo->getIdSetor()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/setores/visualizar/<?=$setor->getIdSetor()?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-warning" title="Editar" href="/setores/editar/<?=$setor->getIdSetor()?>"><span class="glyphicon glyphicon-edit"></span></a>
+                                <a class="btn btn-xs btn-danger" title="Excluir" href="/setores/excluir/<?=$setor->getIdSetor()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
                             </td>
                         </tr>
                     <? endforeach; ?>
@@ -63,7 +64,7 @@
                         // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
                         'sliding',
                         // the partial to use to render the control
-                        array('partial/paginator.phtml', 'Secretaria'),
+                        array('partial/paginator.phtml', 'Setores'),
                         // the route to link to when a user clicks a control link
                         array(
                     'route' => 'setores',
@@ -74,6 +75,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 
 <? $this->headScript()->captureStart(); ?>

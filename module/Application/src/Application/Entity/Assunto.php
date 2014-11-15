@@ -27,6 +27,9 @@ use Application\Exception\ObjectAlreadyExistsOnCollectionException;
  *
  * @author Irving Fernando de Medeiros Oliveira
  * @ORM\Entity
+ * @ORM\Table(name="Assunto",uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="nome_UNIQUE", columns="nome")
+ * })
  */
 class Assunto {
     /**
@@ -67,6 +70,14 @@ class Assunto {
     public function __construct() {
         $this->processos = new ArrayCollection();
         $this->workflows = new ArrayCollection();
+    }
+    
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
     }
     
     public function getIdAssunto() {

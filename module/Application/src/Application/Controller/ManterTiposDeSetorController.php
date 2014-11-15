@@ -23,10 +23,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\Iterator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
-use Zend\Validator;
-use Zend\Filter;
+use Application\Filters\TipoSetorFilter;
 use Application\Entity\TipoSetor;
 /**
  * Description of ManterSecretariasController
@@ -80,7 +77,7 @@ class ManterTiposDeSetorController extends AbstractActionController{
         $request = $this->getRequest();
         if($request->isPost()){
             $nomeTxt = $request->getPost('nomeTxt');
-            $dadosFiltrados = $this->tipoDeSetorInputFilters($nomeTxt);
+            $dadosFiltrados = new TipoSetorFilter($this->getObjectManager(), $nomeTxt);
             if($dadosFiltrados->isValid()){
                 $tipoDeSetor = new TipoSetor();
                 $tipoDeSetor->setNome($dadosFiltrados->getValue('nomeTxt'));
@@ -164,7 +161,7 @@ class ManterTiposDeSetorController extends AbstractActionController{
                 }
             }else{
                 $nomeTxt = $request->getPost('nomeTxt');
-                $dadosFiltrados = $this->tipoDeSetorInputFilters($nomeTxt);
+                $dadosFiltrados = new TipoSetorFilter($objectManager, $nomeTxt);
                 $tipoDeSetor->setNome($dadosFiltrados->getValue('nomeTxt'));
                 $objectManager->persist($tipoDeSetor);
                 $objectManager->flush();

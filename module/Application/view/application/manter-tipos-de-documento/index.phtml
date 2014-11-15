@@ -1,0 +1,78 @@
+<div class="row">
+    <div id='a' class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Menu</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="navbar-link">
+                    <li><a href="<?php echo $this->url('assuntos') ?>">Cadastrar processos</a></li>
+                    <li><a href="<?php echo $this->url('tiposdedocumento') ?>">Cadastrar tipos de documentos</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tipos de documento</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-2">
+                    <a href="<?=$this->url('tiposdedocumento', array('action' => 'adicionar'))?>" class="btn btn-success btn-add" title="Novo"><span class="glyphicon glyphicon-plus"></span>Novo tipo de documento</a>
+                </div>
+                <form method="GET" action="<?=$this->url('tiposdedocumento', array('action' => 'buscar'))?>">
+                    <div class="col-sm-offset-4 col-sm-5">
+                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar tipo de documento" maxlength="100">
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
+                        </a>
+                    </div>
+                </form>
+                <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th>Nome</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <? foreach ($this->tiposDeDocumento as $tipoDocumento): ?>
+                            <tr>           
+                                <td><?= $tipoDocumento->getNome() ?></td>                     
+                            <td class="col-sm-2">
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/tiposdedocumento/visualizar/<?=$tipoDocumento->getIdTipoDocumento()?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-warning" title="Editar" href="/tiposdedocumento/editar/<?=$tipoDocumento->getIdTipoDocumento()?>"><span class="glyphicon glyphicon-edit"></span></a>
+                                <a class="btn btn-xs btn-danger" title="Excluir" href="/tiposdedocumento/excluir/<?=$tipoDocumento->getIdTipoDocumento()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
+                            </td>
+                        </tr>
+                    <? endforeach; ?>
+                </table>
+
+                <?php
+                // add at the end of the file after the table
+                echo $this->paginationControl(
+                        // the paginator object
+                        $this->tiposDeDocumento,
+                        // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+                        'sliding',
+                        // the partial to use to render the control
+                        array('partial/paginator.phtml', 'TiposDeDocumento'),
+                        // the route to link to when a user clicks a control link
+                        array(
+                    'route' => 'tiposdedocumento',
+                    'orderby' => $this->orderby,
+                        )
+                );
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function (){
+    $('.btn-danger').on('click', function () {
+        var msg = 'Tem certeza que deseja realizar esta operação?';
+        return confirm(msg);
+    });
+ });
+ <? $this->headScript()->captureEnd(); ?>

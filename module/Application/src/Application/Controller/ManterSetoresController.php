@@ -161,7 +161,18 @@ class ManterSetoresController extends AbstractActionController {
             $objectManager->persist($setor);
             $objectManager->flush();
             $this->flashMessenger()->addSuccessMessage("Setor adicionado com sucesso.");
-        } catch (\Exception $e) {
+        } catch (\Doctrine\DBAL\DBALException $e){
+            if(strpos($e->getMessage(), 'SQLSTATE[23000]') > 0){
+                $mensagem = "Já existe um setor cadastrado nesta secretaria ";
+                $mensagem.= "com este nome ou sigla.";
+            } else{
+                $mensagem = "Ocorreu um erro na operação, tente novamente ";
+                $mensagem .= "ou entre em contato com um administrador ";
+                $mensagem .= "do sistema.";
+            }
+            $this->flashMessenger()->addErrorMessage($mensagem);
+        }
+        catch (\Exception $e) {
             $mensagem = "Ocorreu um erro na operação, tente novamente ";
             $mensagem .= "ou entre em contato com um administrador ";
             $mensagem .= "do sistema.";
@@ -253,41 +264,62 @@ class ManterSetoresController extends AbstractActionController {
             } else {
                 $nomeTxt = $request->getPost('nomeTxt');
                 $siglaTxt = $request->getPost('siglaTxt');
-                $dadosFiltrados = new SetorFilter($this->getObjectManager(),$nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, $setorMestreSlct);
+                $secretariaSlct = $request->getPost('secretariaSlct');
+                $tipoSlct = $request->getPost('tipoSlct');
+                $setorMestreSlct = $request->getPost('setorMestreSlct');
+                $dadosFiltrados = new SetorFilter($this->getObjectManager(),
+                                                  $nomeTxt, $siglaTxt, $secretariaSlct, 
+                                                  $tipoSlct, $setorMestreSlct);
+                
                 if (!$dadosFiltrados->isValid()) {
                     foreach ($dadosFiltrados->getInvalidInput() as $erro) {
                         foreach ($erro->getMessages() as $message) {
                             $this->flashMessenger()->addErrorMessage($message);
                         }
                     }
-                    $this->redirect()->toUrl('/setores/adicionar');
+                    $this->redirect()->toRoute('setores');
                     return;
                 }
+                $secretaria = $objectManager->getRepository('Application\Entity\Secretaria')
+                                ->find($dadosFiltrados->getValue('secretariaSlct'));
+                
+                $tipo = $objectManager->getRepository('Application\Entity\TipoSetor')
+                                ->find($dadosFiltrados->getValue('tipoSlct'));
+                
+                $setorMestre = $objectManager->getRepository('Application\Entity\Setor')
+                                ->find($dadosFiltrados->getValue('setorMestreSlct'));
+                
                 $setor->setNome($dadosFiltrados->getValue('nomeTxt'));
                 $setor->setSigla($dadosFiltrados->getValue('siglaTxt'));
+                $setor->setSecretaria($secretaria);
+                $setor->setTipo($tipo);
+                if ($setorMestre instanceof \Application\Entity\Setor)
+                    $setor->setSetorPai($setorMestre);
+                
                 $objectManager->persist($setor);
                 $objectManager->flush();
-                $this->flashMessenger()->addSuccessMessage("Setor editada com sucesso.");
-                $this->redirect()->toRoute('setor');
+                $this->flashMessenger()->addSuccessMessage("Setor editado com sucesso.");
+                $this->redirect()->toRoute('setores');
             }
         }
     }
 
     public function excluirAction() {
         $objectManager = $this->getObjectManager();
-        $idSecretaria = $this->params()->fromRoute('id');
-        if (isset($idSecretaria)) {
-            $secretarias = $objectManager->getRepository('Application\Entity\Secretaria');
-            $secretaria = $secretarias->find($idSecretaria);
+        $idSetor = $this->params()->fromRoute('id');
+        if (isset($idSetor)) {
+            $setores = $objectManager->getRepository('Application\Entity\Setor');
+            $setor = $setores->find($idSetor);
             try {
-                $objectManager->remove($secretaria);
+                $objectManager->remove($setor);
                 $objectManager->flush();
             } catch (\Exception $e) {
                 $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-                $this->redirect()->toRoute('secretarias');
+                $this->redirect()->toRoute('setores');
+                echo $e->getMessage();
             }
             $this->flashMessenger()->addSuccessMessage("Secretaria excluida com sucesso.");
-            $this->redirect()->toRoute('secretarias');
+            $this->redirect()->toRoute('setores');
         }
     }
 
@@ -339,6 +371,4 @@ class ManterSetoresController extends AbstractActionController {
         }
         die();
     }
-
-
 }

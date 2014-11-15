@@ -1,0 +1,152 @@
+<div class="row">
+    <div class="col-md-4">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Adicionar setores ao workflow</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="navbar-link">
+                        <div class="form-group">
+                            <label for="secretariaSlct" class="col-md-7 control-label">Secretaria:</label>
+                            <div class="col-md-12">
+                                <select name="secretariaSlct" class="form-control" id="secretariaSlct">
+                                    <option>----Selecione uma secretaria----</option>
+                                    <? foreach ($this->secretarias as $secretaria): ?>
+                                        <option value=<?= $secretaria->getIdSecretaria() ?>><?= $secretaria->getNome() ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                            </div>
+                            <label for="setorSlct" class="col-md-7 control-label">Setor:</label>
+                            <div class="col-md-12">
+                                <select name="setorSlct" class="form-control" id="setorSlct">
+                                    <option>----Selecione um setor----</option>
+                                </select>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+                <div class="panel-footer center">
+                    <button type="button" id="addSetor" class="btn btn-success">
+                        Adicionar ao workflow <span class="glyphicon glyphicon-arrow-right">&nbsp;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Adicionar orgãos externos ao workflow</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="navbar-link">
+                        <div class="form-group">
+                            <label for="orgaoSlct" class="col-md-7 control-label">Orgão externo:</label>
+                            <div class="col-md-12">
+                                <select name="orgaoSlct" class="form-control" id="orgaoSlct">
+                                    <option>---Selecione um orgão externo---</option>
+                                    <? foreach ($this->orgaosExternos as $orgaoExterno): ?>
+                                        <option value=<?= $orgaoExterno->getIdOrgaoExterno() ?>><?= $orgaoExterno->getNome() ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+                <div class="panel-footer center">
+                    <button type="button" id="addOrgao" class="btn btn-success">
+                        Adicionar ao workflow <span class="glyphicon glyphicon-arrow-right">&nbsp;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Workflow</h3>
+            </div>
+            <div class="panel-body panel-workflow" id="panel-workflow">
+                <ol id="sortable" class="list-group">
+
+                </ol>            
+            </div>
+            <div class="panel-footer center">
+                <form id="workflow" class="form-horizontal" role="form" method="POST" action="<?= $this->url('workflows', array('action' => 'adicionar')); ?>">
+                    <button type="button" id="enviar" class="btn btn-success">
+                        Enviar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#secretariaSlct').change(function(){
+        var valor = $(this).val();
+        $.post('/assuntos/getsetorcombobysecretaria',{data: valor},function(ret){
+            $('#setorSlct').html(ret);
+        });
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#addSetor').click(function(){
+        var valor = $('#setorSlct').val();
+        var texto = $('#setorSlct option:selected').text();
+        if(isNaN(valor)){
+            alert('Você deve selecionar um setor válido!');
+        }else{
+        $('#sortable').append('<li id="S'+valor+'" class="list-group-item">'+texto+' <span class="fechar-item" onclick="$(this).parent().remove();">✖</span></li>');
+        }
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#addOrgao').click(function(){
+        var valor = $('#orgaoSlct').val();
+        var texto = $('#orgaoSlct option:selected').text();
+        if(isNaN(valor)){
+            alert('Você deve selecionar um orgão externo válido!');
+        }else{
+        $('#sortable').append('<li id="O'+valor+'" class="list-group-item">'+texto+'<span class="fechar-item" onclick="$(this).parent().remove();">✖</span></li>');
+        }
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#enviar').click(function(){
+        $('#sortable li').each(function(){
+            $('#workflow').append('<input type="hidden" name="postos[]" value="'+$(this).attr('id')+'">');
+        });
+        $('#workflow').submit();
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('.btn').click(function(){
+        $('.panel-workflow').attr("class","panel-body panel-workflow-active");
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(function() {
+    $( "#sortable" ).sortable({
+        revert: true
+    });
+    $( "ul, li" ).disableSelection();
+ });
+<? $this->headScript()->captureEnd(); ?>

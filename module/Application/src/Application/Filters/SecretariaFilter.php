@@ -43,7 +43,7 @@ final class SecretariaFilter extends InputFilter {
         $this->secretariaInputFilters();
     }
 
-    public function secretariaInputFilters() {
+    private final function secretariaInputFilters() {
 
         $nomeFilter = new Input('nomeTxt');
 
