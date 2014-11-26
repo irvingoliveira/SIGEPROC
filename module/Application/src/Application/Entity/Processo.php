@@ -58,11 +58,6 @@ class Processo {
      */
     private $dataAbertura;
     /**
-     * @ORM\Column(type="date", nullable=true)
-     * @var DateTime
-     */
-    private $dataEncerramento;
-    /**
      * @ORM\Column(type="smallint", nullable=false)
      * @var int
      */
@@ -127,6 +122,14 @@ class Processo {
         $this->guiasDeRemessa =new ArrayCollection();
     }
     
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
+    }
+    
     public function getIdProcesso() {
         return $this->idProcesso;
     }
@@ -147,10 +150,6 @@ class Processo {
         return $this->dataAbertura;
     }
 
-    public function getDataEncerramento() {
-        return $this->dataEncerramento;
-    }
-
     public function getVolume() {
         return $this->volume;
     }
@@ -169,10 +168,6 @@ class Processo {
 
     public function setDataAbertura(DateTime $dataAbertura) {
         $this->dataAbertura = $dataAbertura;
-    }
-
-    public function setDataEncerramento(DateTime $dataEncerramento) {
-        $this->dataEncerramento = $dataEncerramento;
     }
 
     public function setVolume($volume) {

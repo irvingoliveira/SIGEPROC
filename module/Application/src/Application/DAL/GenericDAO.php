@@ -33,13 +33,69 @@ abstract class GenericDAO implements DAOInterface {
         $this->serviceManager = $serviceManager;
         $this->objectManager = $serviceManager->get('ObjectManager');
     }
-
+    /**
+     * 
+     * @return Doctrine\ORM\EntityManager
+     */
     protected function getObjectManager(){
-        return $this->objectManager;
+        if (!$this->objectManager->isOpen()) {
+            $this->objectManager = $this->objectManager->create(
+                $this->objectManager->getConnection(), 
+                $this->objectManager->getConfiguration()
+            );
+        }
+         return $this->objectManager;
     }
     
+    protected function getServiceManager(){
+        return $this->serviceManager;
+    }
+    
+    public function busca($parametro){
+        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o ';
+        $dql.= "WHERE o.nome LIKE ?1";
+        $objectManager = $this->getObjectManager();
+        $query = $objectManager->createQuery($dql);
+        $query->setParameter(1,$parametro);
+        return $query->getResult();
+    }
+    
+    public function buscaExata($parametro){
+        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o ';
+        $dql.= "WHERE o.nome = ?1";
+        $objectManager = $this->getObjectManager();
+        $query = $objectManager->createQuery($dql);
+        $query->setParameter(1,$parametro);
+        return $query->getResult();
+    }
+   
+    public function buscaPersonalizada(ArrayCollection $params){
+        $objectManager = $this->getObjectManager();
+        $i=1;
+        $j=1;
+        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o ';
+        $dql.= 'WHERE o.'.$params->key().' = ?'.$i.' ';
+        while(TRUE){
+            if($params->next() == NULL)
+                break;
+            $dql.= 'AND o.'.$params->key().' = ?'.++$i.' ';    
+        }
+        $query = $objectManager->createQuery($dql);
+        $params->first();
+        while (TRUE){
+            $query->setParameter($j++,$params->current());
+            if($params->next() == NULL){
+                break;
+            }
+        }
+        return $query;
+    }
+
     public function lerPorId($id) {
-        $objetos = $this->objectManager
+        if($id == NULL)
+            return;
+        $objectManager = $this->getObjectManager();
+        $objetos = $objectManager
                         ->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
         $objeto = $objetos->find($id);
         return $objeto;    
@@ -49,25 +105,45 @@ abstract class GenericDAO implements DAOInterface {
     
     public function lerTodos() {
         $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o';
-        $query = $this->objectManager->createQuery($dql);
+        $objectManager = $this->getObjectManager();
+        $query = $objectManager->createQuery($dql);
         return $query;
+    }
+    
+    public function getIdHaystack() {
+        $dql = 'SELECT o.id'.$this->getNomeDaClasse().' '
+             . 'FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o';
+        $objectManager = $this->getObjectManager();
+        $query = $objectManager->createQuery($dql);
+        return $query->getResult();
     }
     
     public function salvar(ArrayCollection $params) {
         $reflector = new \ReflectionClass('Application\Entity\\'.$this->getNomeDaClasse());
         $objeto = $reflector->newInstance();
         while(TRUE){
-            $objeto->{$params->key()} = $params->current();
+            if($params->current() instanceof ArrayCollection){
+                $inicial = strtoupper(substr($params->key(),0,1));
+                $objeto->{'add'.$inicial.substr($params->key(),1)} = $params->current();
+            }else{
+                $objeto->{$params->key()} = $params->current();
+            }
             if($params->next() == NULL){
                 break;
             }
         }
-        $this->objectManager->persist($objeto);
-        $this->objectManager->flush();
+        $objectManager = $this->getObjectManager();
+        $objectManager->persist($objeto);
+        $objectManager->flush();
+        return $objectManager->find('Application\Entity\\'.$this->getNomeDaClasse(),
+                                             $objeto->{'id'.$this->getNomeDaClasse()});
     }
     
     public function editar($id, ArrayCollection $params) {
-        $objetos = $this->objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
+        if($id == NULL)
+            return;
+        $objectManager = $this->getObjectManager();
+        $objetos = $objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
         $objeto = $objetos->find($id);
         while(TRUE){
             $objeto->{$params->key()} = $params->current();
@@ -75,16 +151,19 @@ abstract class GenericDAO implements DAOInterface {
                 break;
             }
         }
-        $this->objectManager->persist($objeto);
-        $this->objectManager->flush();
+        $objectManager->persist($objeto);
+        $objectManager->flush();
     }
     
     public function excluir($id) {
-        $objetos = $this->objectManager
+        if($id == NULL)
+            return;
+        $objectManager = $this->getObjectManager();
+        $objetos = $objectManager
                         ->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
         $objeto = $objetos->find($id); 
-        $this->objectManager->remove($objeto);
-        $this->objectManager->flush();
+        $objectManager->remove($objeto);
+        $objectManager->flush();
     }
     
     public function getQtdRegistros(){
@@ -96,5 +175,9 @@ abstract class GenericDAO implements DAOInterface {
     public function lerRepositorio(){
         return $this->objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse())
                 ->findAll();
+    }
+    
+    public function getRepositorio(){
+        return $this->objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
     }
 }

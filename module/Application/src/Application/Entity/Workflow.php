@@ -41,11 +41,6 @@ class Workflow {
      * @ORM\Column(type="string", length=100, nullable=false)
      * @var string
      */
-    private $nome;
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @var string
-     */
     private $descricao;
     /**
      * @ORM\ManyToOne(targetEntity="Assunto", inversedBy="workflows")
@@ -64,12 +59,16 @@ class Workflow {
         $this->fluxosPostos = new ArrayCollection();
     }
     
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
+    }
+    
     public function getIdWorkflow() {
         return $this->idWorkflow;
-    }
-
-    public function getNome() {
-        return $this->nome;
     }
 
     public function getDescricao() {
@@ -83,11 +82,7 @@ class Workflow {
     public function setIdWorkflow($idWorkflow) {
         $this->idWorkflow = $idWorkflow;
     }
-
-    public function setNome($nome) {
-        $this->nome = $nome;
-    }
-
+    
     public function setDescricao($descricao) {
         $this->descricao = $descricao;
     }
@@ -100,7 +95,7 @@ class Workflow {
         if($this->fluxosPostos->contains($fluxoposto)){
             throw new ObjectAlreadyExistsOnCollectionException();
         }
-        $this->fluxosPostos->set($fluxoposto->getIdFluxoPosto(), $fluxoposto);
+        $this->fluxosPostos->set($fluxoposto->getIdFluxoPosto(), $fluxoposto);;
     }
     
     public function getFluxoPosto($key){
@@ -117,7 +112,7 @@ class Workflow {
         $this->fluxosPostos->remove($key);
     }
     
-    public function getFluxosPosto(){
+    public function getFluxosPostos(){
         return $this->fluxosPostos->toArray();
     }
 }

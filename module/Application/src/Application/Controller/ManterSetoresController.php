@@ -26,6 +26,10 @@ use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Application\Filters\SetorFilter;
 use Application\Entity\Setor;
 
+use Application\DAL\SecretariaDAO;
+use Application\DAL\SetorDAO;
+use Application\DAL\TipoSetorDAO;
+
 /**
  * Description of ManterSecretariasController
  *
@@ -125,9 +129,17 @@ class ManterSetoresController extends AbstractActionController {
         $siglaTxt = $request->getPost('siglaTxt');
         $secretariaSlct = $request->getPost('secretariaSlct');
         $tipoSlct = $request->getPost('tipoSlct');
-        $setorMestreSlct = $request->getPost('setorMestreSlct');
-
-        $dadosFiltrados = new SetorFilter($this->getObjectManager(),$nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, $setorMestreSlct);
+        if(is_int($request->getPost('setorMestreSlct')))
+            $setorMestreSlct = $request->getPost('setorMestreSlct');
+        else
+            $setorMestreSlct = NULL;
+        $arquivoRd = $request->getPost('arquivoRd');
+        $secretariaDAO= new SecretariaDAO($this->getServiceLocator());
+        $setorDAO= new SetorDAO($this->getServiceLocator());
+        $tipoSetorDAO= new TipoSetorDAO($this->getServiceLocator());
+        
+        $dadosFiltrados = new SetorFilter($nomeTxt, $siglaTxt, $secretariaSlct, 
+                $tipoSlct, $arquivoRd, $setorMestreSlct, $secretariaDAO, $tipoSetorDAO, $setorDAO);
 
         if (!$dadosFiltrados->isValid()) {
             foreach ($dadosFiltrados->getInvalidInput() as $erro) {
@@ -142,16 +154,20 @@ class ManterSetoresController extends AbstractActionController {
         $objectManager = $this->getServiceLocator()->get('ObjectManager');
         $secretaria = $objectManager->getRepository('Application\Entity\Secretaria')
                 ->find((int) $dadosFiltrados->getValue('secretariaSlct'));
-        if ($dadosFiltrados->getValue('setorMestreSlct') != NULL)
+        try{
             $setorMestre = $objectManager->getRepository('Application\Entity\Setor')
                     ->find((int) $dadosFiltrados->getValue('setorMestreSlct'));
-
+        }  catch (\Exception $e){
+            
+        }
+        
         $tipo = $objectManager->getRepository('Application\Entity\TipoSetor')
                 ->find((int) $dadosFiltrados->getValue('tipoSlct'));
 
         $setor = new Setor();
         $setor->setNome($dadosFiltrados->getValue('nomeTxt'));
         $setor->setSigla($dadosFiltrados->getValue('siglaTxt'));
+        $setor->setArquivo((bool)$dadosFiltrados->getValue('arquivoRd'));
         $setor->setSecretaria($secretaria);
         $setor->setTipo($tipo);
         if ($setorMestre instanceof \Application\Entity\Setor)
@@ -163,6 +179,7 @@ class ManterSetoresController extends AbstractActionController {
             $this->flashMessenger()->addSuccessMessage("Setor adicionado com sucesso.");
         } catch (\Doctrine\DBAL\DBALException $e){
             if(strpos($e->getMessage(), 'SQLSTATE[23000]') > 0){
+                            echo $e->getMessage();die();
                 $mensagem = "Já existe um setor cadastrado nesta secretaria ";
                 $mensagem.= "com este nome ou sigla.";
             } else{
@@ -324,21 +341,21 @@ class ManterSetoresController extends AbstractActionController {
     }
 
     public function visualizarAction() {
-        $idSecretaria = (int) $this->params()->fromRoute('id', 0);
-        if ($idSecretaria) {
+        $idSetor = (int) $this->params()->fromRoute('id', 0);
+        if ($idSetor) {
             $objectManager = $this->getObjectManager();
             try {
-                $secretarias = $objectManager->getRepository('Application\Entity\Secretaria');
-                $secretaria = $secretarias->find($idSecretaria);
+                $setorDAO = new SetorDAO($this->getServiceLocator());
+                $setor = $setorDAO->lerPorId($idSetor);
             } catch (\Exception $e) {
                 $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-                $this->redirect()->toRoute('secretarias');
+                $this->redirect()->toRoute('setores');
             }
-            if ($secretaria != NULL) {
-                return array('secretaria' => $secretaria);
+            if ($setor != NULL) {
+                return array('setor' => $setor);
             } else {
-                $this->flashMessenger()->addMessage("Secretaria não encotrada");
-                $this->redirect()->toRoute('secretarias');
+                $this->flashMessenger()->addMessage("Setor não encotrado");
+                $this->redirect()->toRoute('setores');
             }
         }
     }

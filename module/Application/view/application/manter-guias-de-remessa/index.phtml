@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="col-md-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Guias de remessa</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-2">
+                    <a href="<?=$this->url('guiasderemessa', array('action' => 'adicionar'))?>" class="btn btn-success btn-add" title="Novo"><span class="glyphicon glyphicon-plus"></span>Nova guia</a>
+                </div>
+                <form method="GET" action="<?=$this->url('guiasderemessa', array('action' => 'buscar'))?>">
+                    <div class="col-sm-offset-4 col-sm-5">
+                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar processos" maxlength="150">
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
+                        </a>
+                    </div>
+                </form>
+                <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th>Número</th>
+                        <th>Exercício</th>
+                        <th>Assunto</th>
+                        <th>Volumes</th>
+                        <th>Requerente</th>
+                    </tr>
+                    <? foreach ($this->processos as $processo): ?>
+                        <tr>
+                            <td class="col-sd-2"><?= $processo->getNumero() ?></td>            
+                            <td><?= $processo->getAnoExercicio() ?></td>            
+                            <td><?= $processo->getAssunto()->getNome() ?></td>            
+                            <td><?= $processo->getVolume() ?></td>            
+                            <td><?= $processo->getRequerente()->getNome() ?></td>                     
+                        </tr>
+                    <? endforeach; ?>
+                </table>
+
+                <?php
+                // add at the end of the file after the table
+                echo $this->paginationControl(
+                        // the paginator object
+                        $this->processos,
+                        // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+                        'sliding',
+                        // the partial to use to render the control
+                        array('partial/paginator.phtml', 'Secretarias'),
+                        // the route to link to when a user clicks a control link
+                        array(
+                    'route' => 'processos',
+                    'orderby' => $this->orderby,
+                        )
+                );
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

@@ -81,6 +81,20 @@ return array(
                     ),
                 ),
             ),
+            'guiasderemessa' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/guiasderemessa[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'GuiasDeRemessa',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'orgaosexternos' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -133,6 +147,20 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'Setores',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'statusprocessos' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/statusprocessos[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'StatusProcessos',
                         'action' => 'index',
                     ),
                 ),
@@ -248,10 +276,12 @@ return array(
         'invokables' => array(
             'Index' => 'Application\Controller\IndexController',
             'Assuntos' => 'Application\Controller\ManterAssuntosController',
+            'GuiasDeRemessa' => 'Application\Controller\ManterGuiasDeRemessaController',
             'OrgaosExternos' => 'Application\Controller\ManterOrgaosExternosController',
             'Processos' => 'Application\Controller\ManterProcessosController',
             'Secretarias' => 'Application\Controller\ManterSecretariasController',
             'Setores' => 'Application\Controller\ManterSetoresController',
+            'StatusProcessos' => 'Application\Controller\ManterStatusProcessosController',
             'TiposDeDocumento' => 'Application\Controller\ManterTiposDeDocumentoController',
             'TiposDeSetor' => 'Application\Controller\ManterTiposDeSetorController',
             'Usuarios' => 'Application\Controller\ManterUsuariosController',

@@ -28,6 +28,12 @@ use Application\Exception\ObjectAlreadyExistsOnCollectionException;
  *
  * @author Irving Fernando de Medeiros Oliveira
  * @ORM\Entity
+ * @ORM\Table(name="Requerente", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="requerente_UNIQUE", 
+ *                           columns={"nome", "Setor_idSetor", 
+ *                                    "Documento_idDocumento", 
+ *                                    "Telefone_idTelefone"})
+ * });
  */
 class Requerente {
     /**
@@ -43,17 +49,21 @@ class Requerente {
      */
     private $nome;
     /**
-     * @ORM\OneToOne(targetEntity="Documento", mappedBy="requerenteProcesso")
+     * @ORM\OneToOne(targetEntity="Documento", inversedBy="requerenteProcesso")
+     * @ORM\JoinColumn(name="Documento_idDocumento",
+     *                 referencedColumnName="idDocumento", nullable=false)
      * @var Documento
      */
     private $documento;
     /**
-     * @ORM\OneToMany(targetEntity="Telefone", mappedBy="requerenteTelefone")
-     * @var ArrayCollection
+     * @ORM\OneToOne(targetEntity="Telefone", inversedBy="requerenteTelefone")
+     * @ORM\JoinColumn(name="Telefone_idTelefone",
+     *                 referencedColumnName="idTelefone", nullable=false, unique=true)
+     * @var Telefone
      */
-    private $telefones;
+    private $telefone;
     /**
-     * @ORM\OneToMany(targetEntity="Processo", mappedBy="requerente")
+     * @ORM\OneToMany(targetEntity="Processo", mappedBy="requerente", cascade={"persist","remove"})
      * @var ArrayCollection
      */
     private $processos;
@@ -68,6 +78,14 @@ class Requerente {
     public function __construct() {
         $this->processos = new ArrayCollection();
         $this->telefones = new ArrayCollection();
+    }
+    
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
     }
     
     public function getIdRequerente() {
@@ -119,29 +137,12 @@ class Requerente {
         $this->documento = $documento;
     }
     
-    public function addTelefone(Telefone $telefone){
-        if($this->telefones->contains($telefone)){
-            throw new ObjectAlreadyExistsOnCollectionException();
-        }
-        $this->telefones->set($telefone->getIdTelefone(), $telefone);
+    public function getTelefone(){
+        return $this->telefone;
     }
     
-    public function getTelefone($key){
-        if(!$this->telefones->containsKey($key)){
-            throw new NullPointerException();
-        }
-        return $this->telefones->get($key);
-    }
-    
-    public function removeTelefone($key){
-        if(!$this->telefones->containsKey($key)){
-            return;
-        }
-        $this->telefones->remove($key);
-    }
-    
-    public function getTelefones(){
-        return $this->telefones->toArray();
+    public function setTelefone($telefone){
+        $this->telefone = $telefone;
     }
     
     public function getSetor() {
@@ -150,5 +151,9 @@ class Requerente {
 
     public function setSetor(Setor $setor) {
         $this->setor = $setor;
+    }
+    
+    public function __toString() {
+        return $this->nome;
     }
 }

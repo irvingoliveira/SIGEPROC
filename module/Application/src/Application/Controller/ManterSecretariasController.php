@@ -77,7 +77,7 @@ class ManterSecretariasController extends AbstractActionController {
         $nomeTxt = $request->getPost('nomeTxt');
         $siglaTxt = $request->getPost('siglaTxt');
         
-        $dadosFiltrados = new SecretariaFilter($this->getObjectManager(), $nomeTxt, $siglaTxt);
+        $dadosFiltrados = new SecretariaFilter($this->getServiceLocator(), $nomeTxt, $siglaTxt);
         
         if (!$dadosFiltrados->isValid()) {
             foreach ($dadosFiltrados->getInvalidInput() as $erro) {

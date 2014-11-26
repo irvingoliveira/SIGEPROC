@@ -50,7 +50,7 @@ class Assunto {
      */
     private $descricao;
     /**
-     * @ORM\OneToMany(targetEntity="Processo", mappedBy="assunto")
+     * @ORM\OneToMany(targetEntity="Processo", mappedBy="assunto", cascade={"persist"})
      * @var ArrayCollection
      */
     private $processos;
@@ -61,8 +61,8 @@ class Assunto {
     private $workflows;
     /**
      * @ORM\ManyToOne(targetEntity="Setor", inversedBy="assuntos")
-     * @ORM\JoinColumn(name="Setor_idSetor", 
-     *                 referencedColumnName="idSetor", nullable=false)
+     * @ORM\JoinColumn(name="Setor_idPostoDeTrabalho", 
+     *                 referencedColumnName="idPostoDeTrabalho", nullable=false)
      * @var Setor
      */
     private $setor;

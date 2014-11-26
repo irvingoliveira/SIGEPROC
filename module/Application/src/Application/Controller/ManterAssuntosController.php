@@ -114,6 +114,7 @@ class ManterAssuntosController extends AbstractActionController {
             if (strpos($e->getMessage(), 'SQLSTATE[23000]') > 0) {
                 $mensagem = "Já existe um assunto cadastrado com este nome ";
             } else {
+                echo $e->getMessage();die();
                 $mensagem = "Ocorreu um erro na operação, tente novamente ";
                 $mensagem .= "ou entre em contato com um administrador ";
                 $mensagem .= "do sistema.";
@@ -135,7 +136,7 @@ class ManterAssuntosController extends AbstractActionController {
         $setorDAO = new SetorDAO($this->getServiceLocator());
         $AssuntoDAO = new AssuntoDAO($this->getServiceLocator());
         $assunto = $AssuntoDAO->lerPorId($idAssunto);
-    
+
         if (!$request->isPost()) {
             try {
                 if ($assunto != NULL) {
@@ -185,7 +186,7 @@ class ManterAssuntosController extends AbstractActionController {
         $parametros->set('nome', $dadosFiltrados->getValue('nomeTxt'));
         $parametros->set('setor', $setor);
         $parametros->set('descricao', $dadosFiltrados->getValue('descricaoTxt'));
-        
+
         try {
             $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
             $assuntoDAO->editar($idAssunto, $parametros);
@@ -227,20 +228,22 @@ class ManterAssuntosController extends AbstractActionController {
 
     public function visualizarAction() {
         $idAssunto = (int) $this->params()->fromRoute('id', 0);
-        if ($idAssunto) {
-            try {
-                $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
-                $assunto = $assuntoDAO->lerPorId($idAssunto);
-            } catch (\Exception $e) {
-                $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-                $this->redirect()->toRoute('assuntos');
-            }
-            if ($assunto != NULL) {
-                return array('assunto' => $assunto);
-            } else {
-                $this->flashMessenger()->addMessage("Assunto não encotrado");
-                $this->redirect()->toRoute('assuntos');
-            }
+        if (!$idAssunto) {
+            $this->flashMessenger()->addMessage("Assunto não encotrado");
+            $this->redirect()->toRoute('assuntos');
+        }
+        try {
+            $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
+            $assunto = $assuntoDAO->lerPorId($idAssunto);
+        } catch (\Exception $e) {
+            $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
+            $this->redirect()->toRoute('assuntos');
+        }
+        if ($assunto != NULL) {
+            return array('assunto' => $assunto);
+        } else {
+            $this->flashMessenger()->addMessage("Assunto não encotrado");
+            $this->redirect()->toRoute('assuntos');
         }
     }
 
@@ -262,11 +265,45 @@ class ManterAssuntosController extends AbstractActionController {
             echo '<option>----Selecione um setor----</option>';
             foreach ($setores as $setor) {
                 if ($setor->getIdSetor() == $selecionado)
-                    echo '<option value="' . $setor->getIdSetor() . '" selected="selected">' . $setor->getTipo()->getNome() . ' de ' . $setor->getNome() . '</option>';
+                    echo '<option value="' . $setor->getIdSetor() . '" selected="selected">' . $setor->getTipoSetor() . ' de ' . $setor->getNome() . '</option>';
                 else
-                    echo '<option value="' . $setor->getIdSetor() . '">' . $setor->getTipo()->getNome() . ' de ' . $setor->getNome() . '</option>';
+                    echo '<option value="' . $setor->getIdSetor() . '">' . $setor->getTipoSetor() . ' de ' . $setor->getNome() . '</option>';
             }
         }
+        die();
+    }
+
+    public function assuntoAutoCompleteAction() {
+        $request = $this->getRequest();
+        $termo = $this->params()->fromQuery('term');
+
+        $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
+        $assuntos = $assuntoDAO->busca($termo . '%');
+
+        $json = '[';
+        foreach ($assuntos as $key => $assunto) {
+            if ($key != 0)
+                $json .= ',';
+            $json.= '{"value":"' . $assunto->getNome() . '"}';
+        }
+        $json.= ']';
+
+        echo $json;
+        die();
+    }
+
+    public function getIdAssuntoPorNomeAction() {
+        $request = $this->getRequest();
+        if (!$request->isPost())
+            die();
+
+        $termo = $request->getPost('data');
+
+        $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
+        $assuntos = $assuntoDAO->busca($termo);
+
+        echo $assuntos[0]->getIdAssunto();
+
         die();
     }
 

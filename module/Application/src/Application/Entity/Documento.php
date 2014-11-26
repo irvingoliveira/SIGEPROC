@@ -56,9 +56,7 @@ class Documento {
      */
     private $orgaoEmissor;
     /**
-     * @ORM\OneToOne(targetEntity="Requerente", inversedBy="documento")
-     * @ORM\JoinColumn(name="Requerente_idRequerente",
-     *                 referencedColumnName="idRequerente", nullable=false)
+     * @ORM\OneToOne(targetEntity="Requerente", mappedBy="documento", cascade={"persist","remove"})
      * @var Requerente
      */
     private $requerenteProcesso;
@@ -72,6 +70,14 @@ class Documento {
     
     public function __construct() {
         
+    }
+    
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
     }
     
     public function getIdDocumento() {

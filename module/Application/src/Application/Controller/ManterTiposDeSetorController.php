@@ -77,7 +77,7 @@ class ManterTiposDeSetorController extends AbstractActionController{
         $request = $this->getRequest();
         if($request->isPost()){
             $nomeTxt = $request->getPost('nomeTxt');
-            $dadosFiltrados = new TipoSetorFilter($this->getObjectManager(), $nomeTxt);
+            $dadosFiltrados = new TipoSetorFilter($this->getServiceLocator(), $nomeTxt);
             if($dadosFiltrados->isValid()){
                 $tipoDeSetor = new TipoSetor();
                 $tipoDeSetor->setNome($dadosFiltrados->getValue('nomeTxt'));

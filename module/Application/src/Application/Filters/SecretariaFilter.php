@@ -19,7 +19,7 @@
 
 namespace Application\Filters;
 
-use \Doctrine\Common\Persistence\ObjectManager;
+use Zend\ServiceManager\ServiceManager;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator;
@@ -36,8 +36,8 @@ final class SecretariaFilter extends InputFilter {
     private $siglaTxt;
     private $objectManager;
 
-    public function __construct(ObjectManager $om, $nomeTxt, $siglaTxt) {
-        $this->objectManager = $om;
+    public function __construct(ServiceManager $sm, $nomeTxt, $siglaTxt) {
+        $this->objectManager = $sm->get('ObjectManager');
         $this->nomeTxt = $nomeTxt;
         $this->siglaTxt = $siglaTxt;
         $this->secretariaInputFilters();

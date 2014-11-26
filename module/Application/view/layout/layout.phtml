@@ -85,8 +85,12 @@
                         </ul>
                     <?endif;?>
                     <span class="search-bar">
-                        <input class="search-box default-search" type="text" placeholder="Digite o nº do processo/ano" />  
-                        <a href="#"><img src="<?php echo $this->basePath('img/busca-transparencia.png') ?>" width="45" height="45"></a>
+                        <form action="/processos/buscar" method="GET">
+                            <input class="search-box default-search" type="text" name="busca" placeholder="Digite o nº do processo/ano" />  
+                            <a href="#" onclick="$(this).parent().submit();">
+                                <img src="<?php echo $this->basePath('img/busca-transparencia.png') ?>" width="45" height="45">
+                            </a>
+                        </form>
                     </span>
                 </div><!--/.nav-collapse -->
             </div>

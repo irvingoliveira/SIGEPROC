@@ -43,7 +43,7 @@ class TipoSetor {
      */
     private $nome;
     /**
-     * @ORM\OneToMany(targetEntity="Setor", mappedBy="tipo")
+     * @ORM\OneToMany(targetEntity="Setor", mappedBy="tipoSetor")
      * @var ArrayCollection
      */
     private $setores;
@@ -93,4 +93,7 @@ class TipoSetor {
         return $this->setores->toArray();
     }
 
+    public function __toString() {
+        return $this->nome;
+    }
 }

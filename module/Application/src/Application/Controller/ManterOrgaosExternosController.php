@@ -98,7 +98,7 @@ class ManterOrgaosExternosController extends AbstractActionController {
 
             $orgaoExterno = new OrgaoExterno();
             $orgaoExterno->setNome($dadosFiltrados->getValue('nomeTxt'));
-            $orgaoExterno->setAbreviacao($dadosFiltrados->getValue('abreviacaoTxt'));
+            $orgaoExterno->setSigla($dadosFiltrados->getValue('abreviacaoTxt'));
 
             $endereco = new Endereco();
             $endereco->setLogradouro($dadosFiltrados->getValue('logradouroTxt'));

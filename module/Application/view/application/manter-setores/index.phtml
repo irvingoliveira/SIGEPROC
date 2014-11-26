@@ -43,7 +43,7 @@
                     <? foreach ($this->setores as $setor): ?>
                         <tr>
                             <td class="col-sd-1"><?= $setor->getSigla() ?></td>            
-                            <td class="col-sd-1"><?= $setor->getTipo()->getNome() ?></td>            
+                            <td class="col-sd-1"><?= $setor->getTipoSetor()->getNome() ?></td>            
                             <td><?= $setor->getNome() ?></td>            
                             <td class="col-sd-1"><?= $setor->getSecretaria()->getSigla() ?></td>            
                             <td class="col-sd-2"><?=($setor->getSetorPai())?$setor->getSetorPai()->getSigla():NULL ?></td>            

@@ -1,18 +1,49 @@
 <?
-if($this->assunto){
-    $id = $this->assunto->getIdAssunto();
-    $nome = $this->assunto->getNome();
-    $secretaria = $this->assunto->getSetor()->getSecretaria()->getNome();
-    $tipoSetor = $this->assunto->getSetor()->getTipo()->getNome();
-    $setor = $this->assunto->getSetor()->getNome();
-    $descricao = $this->assunto->getDescricao();
+if($this->processo){
+    $id = $this->processo->getIdProcesso();
+    $numero = $this->processo->getNumero();
+    $anoExercicio = $this->processo->getAnoExercicio();
+    $dataAbertura = $this->processo->getDataAbertura()->format('d/m/Y');
+    $volume = $this->processo->getVolume();
+    $assunto = $this->processo->getAssunto()->getNome();
+    $status = $this->processo->getStatus()->getNome();
+    $requerente = $this->processo->getRequerente();
+    $requerenteNome = $requerente->getNome();
+    $requerenteTel = (strlen($requerente->getTelefone()->getNumero()) == 9)?
+            '('.$requerente->getTelefone()->getDdd().')'.
+            substr($requerente->getTelefone()->getNumero(), 0,5).'-'.
+            substr($requerente->getTelefone()->getNumero(), 5):
+            '('.$requerente->getTelefone()->getDdd().')'.
+            substr($requerente->getTelefone()->getNumero(), 0,4).'-'.
+            substr($requerente->getTelefone()->getNumero(), 4);
+    if($requerente->getSetor() != NULL){
+        $requerenteSec = $requerente->getSetor()->getSecretaria()->getNome();
+        $requerenteSetor = $requerente->getSetor()->getNome();
+    }
+    $requerenteTipoDoc = $requerente->getDocumento()->getTipo()->getNome();
+    $requerenteDoc = $requerente->getDocumento()->getNumero();
+    $requerenteDocDigito = ($requerente->getDocumento()->getDigito())?
+            '-'.$requerente->getDocumento()->getDigito() : NULL;
+    if($requerente->getDocumento()->getDataEmissao() != NULL){
+        $requerenteDocEmissao = $requerente->getDocumento()
+                                           ->getDataEmissao()->format('d/m/Y');
+    }
+    if($requerente->getDocumento()->getOrgaoEmissor() != NULL){
+        $requerenteDocEmissao = $requerente->getDocumento()
+                                           ->getOrgaoEmissor();
+    }
+    $usuario = $processo->getUsuario();
+    $usuarioMatr = $usuario->getMatricula().'-'.$usuario->getDigito();
+    $usuarioNome = $usuario->getNome();
+    $usuarioSec = $usuario->getSetorAtual()['secretaria']['nome'];
+    $usuarioSetor = $usuario->getSetorAtual()['nome'];
 }
 ?>
 <div class="row">
     <div class="col-md-6 col-sm-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading list-group">
-                <h3 class="panel-title">Visualizar assunto</h3>
+                <h3 class="panel-title">Visualizar processo</h3>
             </div>
             <div class="panel-body list-group-item">
                 <div>
@@ -24,46 +55,116 @@ if($this->assunto){
             </div>
             <div class="panel-body list-group-item">
                 <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Processo:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$numero.'/'.$anoExercicio;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Assunto:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$assunto;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Volumes:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="secretariaTxt"><?=$volume;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Status:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="tipoSetorTxt"><?=$status;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Data de abertura:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$dataAbertura;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading list-group-item">
+                Infomações do requerente
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Requerente:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="setorTxt"><?=$requerenteNome;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Tipo do documento do requerente:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$requerenteTipoDoc;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Número do documento do requerente:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$requerenteDoc. $requerenteDocDigito;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Telefone do requerente:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$requerenteTel;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading list-group-item">
+                Infomações do usuário responsável pela abertura do processo
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Matricula:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$usuarioMatr;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
                     <p class="col-lg-3 col-md-3 list-group-item-text">Nome:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="nomeTxt"><?=$nome;?></p>
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$usuarioNome;?></p>
                     </div>
                 </div>
             </div>
             <div class="panel-body list-group-item">
                 <div>
-                    <p class="col-lg-3 col-md-3 list-group-item-text">Secretaria responsável:</p>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Secretaria:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="secretariaTxt"><?=$secretaria;?></p>
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$usuarioSec;?></p>
                     </div>
                 </div>
             </div>
             <div class="panel-body list-group-item">
                 <div>
-                    <p class="col-lg-3 col-md-3 list-group-item-text">Tipo do setor responsável:</p>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Setor:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="tipoSetorTxt"><?=$tipoSetor;?></p>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body list-group-item">
-                <div>
-                    <p class="col-lg-3 col-md-3 list-group-item-text">Setor responsável:</p>
-                    <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="setorTxt"><?=$setor;?></p>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body list-group-item">
-                <div>
-                    <p class="col-lg-3 col-md-3 list-group-item-text">Descrição:</p>
-                    <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="descricaoTxt"><?=$descricao;?></p>
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$usuarioSetor;?></p>
                     </div>
                 </div>
             </div>
             <div class="panel-footer center">
-                <a href="<?=$this->url('assuntos', array('action' => 'index'))?>" class="btn btn-success" title="Voltar"><span class="glyphicon glyphicon-backward"></span>Voltar</a>
+                <a href="<?=$this->url('processos', array('action' => 'index'))?>" class="btn btn-success" title="Voltar"><span class="glyphicon glyphicon-backward"></span>Voltar</a>
             </div>
         </div>
     </div>

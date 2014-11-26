@@ -35,24 +35,12 @@ use Application\Exception\ObjectAlreadyExistsOnCollectionException;
  *                           columns={"sigla", "Secretaria_idSecretaria"})
  * })
  */
-class Setor {
+class Setor extends PostoDeTrabalho{
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer", nullable=false)
-     * @var int
+     * @ORM\Column(type="boolean",nullable=false)
+     * @var boolean
      */
-    private $idSetor;
-    /**
-     * @ORM\Column(type="string", length=150, nullable=false)
-     * @var string
-     */
-    private $nome;
-    /**
-     * @ORM\Column(type="string", length=10, nullable=false)
-     * @var string
-     */
-    private $sigla;
+    private $arquivo;
     /**
      * @ORM\ManyToOne(targetEntity="Setor", inversedBy="setoresFilhos")
      * @ORM\JoinColumn(name="Setor_idSetor",
@@ -85,16 +73,6 @@ class Setor {
      */
     private $usuarios;
     /**
-     * @ORM\OneToMany(targetEntity="FluxoPosto", mappedBy="setor")
-     * @var ArrayCollection
-     */
-    private $fluxosSetor;
-    /**
-     * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="setor")
-     * @var ArrayCollection
-     */
-    private $guiasDeRemessa;
-    /**
      * @ORM\OneToMany(targetEntity="Requerente", mappedBy="setor")
      * @var ArrayCollection
      */
@@ -107,56 +85,27 @@ class Setor {
 
 
     public function __construct() {
-        $this->fluxosSetor = new ArrayCollection();
-        $this->guiasDeRemessa = new ArrayCollection();
+        parent::__construct();
         $this->requerentes = new ArrayCollection();
         $this->setoresFilhos = new ArrayCollection();
         $this->usuarios = new ArrayCollection();
         $this->assuntos = new ArrayCollection();
     }
     
-    public function getIdSetor() {
-        return $this->idSetor;
-    }
-
-    public function getNome() {
-        return $this->nome;
-    }
-
-    public function getSigla() {
-        return $this->sigla;
+    public function getIdSetor(){
+        return parent::getIdPostoDeTrabalho();
     }
 
     public function getSetorPai() {
         return $this->setorPai;
     }
 
-    public function getTipo() {
-        return $this->tipoSetor;
-    }
-
     public function getSecretaria() {
         return $this->secretaria;
     }
 
-    public function setIdSetor($idSetor) {
-        $this->idSetor = $idSetor;
-    }
-
-    public function setNome($nome) {
-        $this->nome = $nome;
-    }
-
-    public function setSigla($sigla) {
-        $this->sigla = $sigla;
-    }
-
     public function setSetorPai(Setor $setorPai) {
         $this->setorPai = $setorPai;
-    }
-
-    public function setTipo(TipoSetor $tipo) {
-        $this->tipoSetor = $tipo;
     }
 
     public function setSecretaria(Secretaria $secretaria) {
@@ -213,31 +162,6 @@ class Setor {
         return $this->guiasDeRemessa->toArray();
     }
 
-    public function addFluxoPosto(FluxoPosto $fluxoPosto){
-        if($this->fluxosSetor->contains($fluxoPosto)){
-            throw new ObjectAlreadyExistsOnCollectionException();
-        }
-        $this->fluxosSetor->set($fluxoPosto->getIdFluxoPosto(), $fluxoPosto);
-    }
-    
-    public function getFluxoPosto($key){
-        if(!$this->fluxosSetor->containsKey($key)){
-            throw new NullPointerException();
-        }
-        return $this->fluxosSetor->get($key);
-    }
-    
-    public function removeFluxoPosto($key){
-        if(!$this->fluxosSetor->containsKey($key)){
-            return;
-        }
-        $this->fluxosSetor->remove($key);
-    }
-    
-    public function getFluxosPostos(){
-        return $this->fluxosSetor->toArray();
-    }
-    
     public function addRequerente(Requerente $requerente){
         if($this->requerentes->contains($requerente)){
             throw new ObjectAlreadyExistsOnCollectionException();
@@ -286,5 +210,33 @@ class Setor {
     
     public function getAssuntos(){
         return $this->assuntos->toArray();
+    }
+    
+    public function setArquivo($boolean = FALSE){
+        $this->arquivo=$boolean;
+    }
+    
+    public function isArquivo(){
+        return $this->arquivo;
+    }
+
+    public function getTipoSetor() {
+        return $this->tipoSetor;
+    }
+
+    public function getUsuarios() {
+        return $this->usuarios;
+    }
+
+    public function setTipoSetor(TipoSetor $tipoSetor) {
+        $this->tipoSetor = $tipoSetor;
+    }
+
+    public function setUsuarios(ArrayCollection $usuarios) {
+        $this->usuarios = $usuarios;
+    }
+
+    public function __toString() {
+        return $this->secretaria->getSigla().' - '.$this->getTipoSetor().' de '.$this->getNome();
     }
 }

@@ -39,6 +39,11 @@ class StatusProcesso {
      */
     private $idStatusProcesso;
     /**
+     * @ORM\Column(type="string", length=45, nullable=false)
+     * @var string
+     */
+    private $nome;
+    /**
      * @ORM\Column(type="string", length=80, nullable=false)
      * @var string
      */
@@ -92,5 +97,17 @@ class StatusProcesso {
             return;
         }
         $this->processos->remove($key);
+    }
+    
+    public function getNome() {
+        return $this->nome;
+    }
+
+    public function setNome($nome) {
+        $this->nome = $nome;
+    }
+    
+    public function __toString() {
+        return (string)$this->idStatusProcesso;
     }
 }

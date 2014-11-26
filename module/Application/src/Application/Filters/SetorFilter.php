@@ -19,38 +19,71 @@
 
 namespace Application\Filters;
 
-use Zend\ServiceManager\ServiceManager;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator;
 use Zend\Filter;
+
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Application\DAL\DAOInterface;
 
 /**
  * Description of SecretariaFilter
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
-final class SetorFilter extends InputFilter{
-    
+final class SetorFilter extends InputFilter {
+
     private $nomeTxt;
     private $siglaTxt;
     private $secretariaSlct;
     private $tipoSlct;
     private $setorMestreSlct;
-    private $objectManager;
-    
-    public function __construct(ServiceManager $sm, $nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, $setorMestreSlct) {
-        $this->objectManager = $sm->get('ObjectManager');
+    private $arquivoRd;
+    private $secretariaDAO;
+    private $tipoSetorDAO;
+    private $setorDAO;
+
+    public function __construct($nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, 
+            $arquivoRd, $setorMestreSlct, DAOInterface $secretariaDAO, DAOInterface $tipoSetorDAO, 
+            DAOInterface $setorDAO) {
+        var_dump($setorMestreSlct);die();
         $this->nomeTxt = $nomeTxt;
         $this->siglaTxt = $siglaTxt;
         $this->secretariaSlct = $secretariaSlct;
         $this->tipoSlct = $tipoSlct;
         $this->setorMestreSlct = $setorMestreSlct;
+        $this->arquivoRd = $arquivoRd;
+        $this->secretariaDAO = $secretariaDAO;
+        $this->tipoSetorDAO = $tipoSetorDAO;
+        $this->setorDAO = $setorDAO;
         $this->setorInputFilters();
     }
 
     private final function setorInputFilters() {
+
+        $this->add($this->getNomeTxtInput());
+        $this->add($this->getSiglaTxtInput());
+        $this->add($this->getSecretariaSlctInput());
+        $this->add($this->getTipoSetorSlctInput());
+        if($this->setorDAO->getQtdRegistros()>0)
+            $this->add($this->getSetorSlctInput());
+        $this->add($this->getArquivoRdInput());
         
+        $data = new ArrayCollection();
+        $data->set('nomeTxt',$this->nomeTxt);
+        $data->set('siglaTxt',$this->siglaTxt);
+        $data->set('secretariaSlct',$this->secretariaSlct);
+        $data->set('tipoSlct',$this->tipoSlct);
+        if($this->setorDAO->getQtdRegistros()>0)
+            $data->set('setorMestreSlct',$this->setorMestreSlct);
+        $data->set('arquivoRd',$this->arquivoRd);
+        
+        $this->setData($data->toArray());
+    }
+
+    private function getNomeTxtInput() {
         $nomeFilter = new Input('nomeTxt');
 
         $nomeStringLength = new Validator\StringLength(array('max' => 150, 'min' => 3));
@@ -68,9 +101,10 @@ final class SetorFilter extends InputFilter{
                 ->attach(new Filter\HtmlEntities())
                 ->attach(new Filter\StringTrim())
                 ->attach(new Filter\StripTags());
-        
-        $this->add($nomeFilter);
-        
+        return $nomeFilter;
+    }
+
+    public function getSiglaTxtInput() {
         $siglaFilter = new Input('siglaTxt');
         $siglaStringLength = new Validator\StringLength(array('max' => 10, 'min' => 2));
         $siglaStringLength->setMessages(array(
@@ -88,14 +122,13 @@ final class SetorFilter extends InputFilter{
                 ->attach(new Filter\HtmlEntities())
                 ->attach(new Filter\StringTrim())
                 ->attach(new Filter\StripTags());
+        return $siglaFilter;
+    }
 
-        $this->add($siglaFilter);
-        
-        $dql = "SELECT s.idSecretaria FROM Application\Entity\Secretaria AS s";
-        $query = $this->objectManager->createQuery($dql);
-        $secretarias = $query->getResult();
+    public function getSecretariaSlctInput() {
+        $secretarias = $this->secretariaDAO->lerTodos()->getResult();
         foreach ($secretarias as $secretaria) {
-            $idSecretaria[] = $secretaria['idSecretaria'];
+            $idSecretaria[] = $secretaria->getIdSecretaria();
         }
 
         $secretariaHayStack = new Validator\InArray(array('haystack' => $idSecretaria));
@@ -107,14 +140,13 @@ final class SetorFilter extends InputFilter{
         $secretariaFilter->setRequired(TRUE);
         $secretariaFilter->getValidatorChain()
                 ->attach($secretariaHayStack);
-        
-        $this->add($secretariaFilter);
-        
-        $dql = "SELECT t.idTipoSetor FROM Application\Entity\TipoSetor AS t";
-        $query = $this->objectManager->createQuery($dql);
-        $tiposSetor = $query->getResult();
+        return $secretariaFilter;
+    }
+
+    public function getTipoSetorSlctInput() {
+        $tiposSetor = $this->tipoSetorDAO->lerTodos()->getResult();
         foreach ($tiposSetor as $tipoSetor) {
-            $idTipoSetor[] = $tipoSetor['idTipoSetor'];
+            $idTipoSetor[] = $tipoSetor->getIdTipoSetor();
         }
 
         $tipoSetorHayStack = new Validator\InArray(array('haystack' => $idTipoSetor));
@@ -126,36 +158,37 @@ final class SetorFilter extends InputFilter{
         $tipoSetorFilter->setRequired(TRUE);
         $tipoSetorFilter->getValidatorChain()
                 ->attach($tipoSetorHayStack);
+        return $tipoSetorFilter;
+    }
 
-        $this->add($tipoSetorFilter);
-        
-        $dql = "SELECT se.idSetor FROM Application\Entity\Setor AS se";
-        $query = $this->objectManager->createQuery($dql);
-        $setores = $query->getResult();
+    public function getSetorSlctInput() {
+        $setores = $this->setorDAO->lerTodos()->getResult();
         foreach ($setores as $setor) {
-            $idSetor[] = $setor['idSetor'];
+            $idSetor[] = $setor->getIdSetor();
         }
-
         $setorFilter = new Input('setorMestreSlct');
-        if (($setorMestreSlct != NULL) && (is_int($secretariaSlct))) {
-            $setorMestreHaystack = new Validator\InArray(array('haystack' => $idSetor));
-            $setorMestreHaystack->setMessages(array(
-                Validator\InArray::NOT_IN_ARRAY => '\'%value%\' não é um id de setor válido.'
-            ));
-            $setorFilter->getValidatorChain()
-                    ->attach($setorMestreHaystack);
-        }
+        $setorMestreHaystack = new Validator\InArray(array('haystack' => $idSetor));
+        $setorMestreHaystack->setMessages(array(
+            Validator\InArray::NOT_IN_ARRAY => '\'%value%\' não é um id de setor válido.'
+        ));
+        $setorFilter->getValidatorChain()
+                ->attach($setorMestreHaystack);
         $setorFilter->setRequired(FALSE);
 
-        $this->add($setorFilter);
+        return $setorFilter;
+    }
 
-        $this->setData(array(
-                    'nomeTxt' => $this->nomeTxt,
-                    'siglaTxt' => $this->siglaTxt,
-                    'secretariaSlct' => $this->secretariaSlct,
-                    'tipoSlct' => $this->tipoSlct,
-                    'setorMestreSlct' => $this->setorMestreSlct,
+    public function getArquivoRdInput() {
+        $arquivoFilter = new Input('arquivoRd');
+        $arquivoMestreHaystack = new Validator\InArray(array('haystack' => array(0,1)));
+        $arquivoMestreHaystack->setMessages(array(
+            Validator\InArray::NOT_IN_ARRAY => '\'%value%\' não é um id de setor válido.'
         ));
+        $arquivoFilter->getValidatorChain()
+                ->attach($arquivoMestreHaystack);
+        $arquivoFilter->setRequired(FALSE);
+
+        return $arquivoFilter;
     }
 
 }

@@ -26,6 +26,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 interface DAOInterface {
     public function lerPorId($id);
     public function lerTodos();
+    public function lerRepositorio();
+    public function getRepositorio();
+    public function getQtdRegistros();
     public function salvar(ArrayCollection $params);
     public function excluir($id);
 }

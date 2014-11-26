@@ -46,15 +46,21 @@ class Telefone {
      */
     private $numero;
     /**
-     * @ORM\ManyToOne(targetEntity="Requerente", inversedBy="telefones")
-     * @ORM\JoinColumn(name="Requerente_idRequerente",
-     *                 referencedColumnName="idRequerente", nullable=false)
+     * @ORM\OneToOne(targetEntity="Requerente", mappedBy="telefone", cascade={"persist","remove"})
      * @var Requerente
      */
     private $requerenteTelefone;
     
     public function __construct() {
         
+    }
+    
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
     }
     
     public function getIdTelefone() {

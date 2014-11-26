@@ -24,6 +24,6 @@ namespace Application\Exception;
  */
 class UserNotFoundException extends \Exception{
     public function __construct() {
-        parent::__construct('Usuário inexistente.');
+        parent::__construct('Usuário inexistente.',0,NULL);
     }
 }

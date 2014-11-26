@@ -52,8 +52,8 @@ class UsuarioSetor {
     private $usuario;
     /**
      * @ORM\ManyToOne(targetEntity="Setor", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="Setor_idSetor", 
-     *                 referencedColumnName="idSetor", nullable=false)
+     * @ORM\JoinColumn(name="Setor_idPostoDeTrabalho", 
+     *                 referencedColumnName="idPostoDeTrabalho", nullable=false)
      * @var Setor
      */
     private $setor;

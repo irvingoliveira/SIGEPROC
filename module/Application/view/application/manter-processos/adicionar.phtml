@@ -2,59 +2,168 @@
     <div class="col-md-6 col-sm-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Adicionar novo assunto</h3>
+                <h3 class="panel-title">Adicionar novo processo</h3>
             </div>
-            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('assuntos', array('action' => 'adicionar')); ?>">
-            <div class="panel-body">
-                <div class="form-group">
-                    <label for="nomeTxt" class="col-lg-3 col-md-3 control-label">Nome:</label>
-                    <div class="col-lg-9 col-md-9">
-                        <input type="text" name="nomeTxt" class="form-control" id="nomeTxt" placeholder="Pagamento de Exemplo">
+            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('processos', array('action' => 'adicionar')); ?>">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="assuntoTxt" class="col-lg-3 col-md-3 control-label">Assunto:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input name="assuntoTxt" class="form-control" id="assuntoTxt" placeholder="Digite um assunto"/>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="secretariaSlct" class="col-lg-3 col-md-3 control-label">Secretaria responsável:</label>
-                    <div class="col-lg-9 col-md-9">
-                        <select name="secretariaSlct" class="form-control" id="secretariaSlct">
-                            <option>----Selecione uma secretaria----</option>
-                            <?  foreach ($this->secretarias as $secretaria):?>
-                            <option value=<?=$secretaria->getIdSecretaria()?>><?=$secretaria->getNome()?></option>
-                            <?  endforeach;?>
-                        </select>
+
+                    <div class="form-group">
+                        <label for="volumeTxt" class="col-lg-3 col-md-3 control-label">Volume:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="volumeTxt" class="form-control" id="volumeTxt" maxlength="2" placeholder="00">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="setorSlct" class="col-lg-3 col-md-3 control-label">Setor responsável:</label>
-                    <div class="col-lg-9 col-md-9">
-                        <select name="setorSlct" class="form-control" id="setorSlct">
-                            <option>----Selecione um setor----</option>
-                            <?  /*foreach ($this->setores as $setor):?>
-                            <option value=<?=$setor->getIdSetor()?>><?=$setor->getNome()?></option>
-                            <?  endforeach;*/?>
-                        </select>
+
+                    <div class="form-group">
+                        <label for="requerenteTxt" class="col-lg-3 col-md-3 control-label">Requerente:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="requerenteTxt" class="form-control" id="requerenteTxt" maxlength="80" placeholder="João Exemplo">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="descricaoTxt" class="col-lg-3 col-md-3 control-label">Descrição:</label>
-                    <div class="col-lg-9 col-md-9">
-                        <textarea name="descricaoTxt" class="form-control" id="descricaoTxt" placeholder="Processes destinados a pagamento de exemplos."></textarea>
-                        <?//<input type="text" name="descricaoTxt" class="form-control" id="descricaoTxt" placeholder="PE">?>
+
+                    <div class="form-group">
+                        <label for="telefoneTxt" class="col-lg-3 col-md-3 control-label">Telefone do requerente:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="dddTxt" class="form-control" style="width: 42px; display: inline" id="dddTxt" maxlength="2" placeholder="00">
+                            -&nbsp;<input type="text" name="telefoneTxt" class="form-control" style="width: 110px; display: inline" id="telefoneTxt" maxlength="10" placeholder="988887777">
+                        </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="requerenteChck" class="col-lg-3 col-md-3 control-label">O interessado no processo é o setor do requerente?</label>
+                        <div class="col-lg-4 col-md-4" style="padding-top: 40px">
+                            <input type="radio" name="requerenteRd" class="form-inline" id="requerenteRd" checked="checked" value="0"/> Não&nbsp;
+                            <input type="radio" name="requerenteRd" class="form-inline" id="requerenteRd" value="1"/> Sim
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="secretariaSlct" class="col-lg-3 col-md-3 control-label">Secretaria do requerente:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <select name="secretariaSlct" class="form-control" id="secretariaSlct" disabled="disabled">
+                                <option>----Selecione uma secretaria----</option>
+                                <? foreach ($this->secretarias as $secretaria): ?>
+                                    <option value=<?= $secretaria->getIdSecretaria() ?>><?= $secretaria->getNome() ?></option>
+                                <? endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="setorSlct" class="col-lg-3 col-md-3 control-label">Setor do requerente:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <select name="setorSlct" class="form-control" id="setorSlct" disabled="disabled">
+                                <option>----Selecione um setor----</option>
+                                <? /* foreach ($this->setores as $setor):?>
+                                  <option value=<?=$setor->getIdSetor()?>><?=$setor->getNome()?></option>
+                                  <?  endforeach; */ ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoDocumentoSlct" class="col-lg-3 col-md-3 control-label">Tipo do documento de identificação do requerente:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <select name="tipoDocumentoSlct" class="form-control" id="tipoDocumentoSlct">
+                                <option>----Selecione um tipo de documento----</option>
+                                <? foreach ($this->tiposDeDocumento as $tipo): ?>
+                                    <option value=<?= $tipo->getIdTipoDocumento() ?>><?= $tipo->getNome() ?></option>
+                                <? endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="documentoTxt" class="col-lg-3 col-md-3 control-label">Documento do requerente:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="numeroTxt" class="form-control" style="width: 100px; display: inline" id="numeroTxt" maxlength="12" placeholder="00000000"/>
+                            -&nbsp;<input type="text" name="digitoTxt" class="form-control" style="width: 45px; display: inline" id="digitoTxt" maxlength="2" placeholder="00">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emissaoDt" class="col-lg-3 col-md-3 control-label">Data de emissão do documento:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="date" name="emissaoDt" class="form-control" id="emissaoDt" maxlength="10" placeholder="18/09/1988">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orgaoEmissorTxt" class="col-lg-3 col-md-3 control-label">Orgão emissor:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="orgaoEmissorTxt" class="form-control" id="orgaoEmissorTxt" maxlength="150" placeholder="Instituto de Exemplo">
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-            <div class="panel-footer center">
-                <button type="submit" class="btn btn-success">Enviar</button>
-            </div>
+                <div class="panel-footer center">
+                    <button type="submit" class="btn btn-success">Enviar</button>
+                </div>
         </div>
     </div>
 </div>
 
-<? $this->headScript()->captureStart(); ?>
-$(document).ready(function(){
-    $('#secretariaSlct').change(function(){
+<? $this->headScript()->captureStart(); ?> 
+$("#secretariaSlct").prop('disabled', true);
+$("#setorSlct").prop('disabled', true);
+    $(document).ready(function(){
+        $('#secretariaSlct').change(function(){
         var valor = $(this).val();
         $.post('/assuntos/getsetorcombobysecretaria',{data: valor},function(ret){
             $('#setorSlct').html(ret);
+        });
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('input[type=radio][name=requerenteRd]').change(function(){
+        var valor = $(this).val();
+        if(valor==0){
+            $("#secretariaSlct").prop('disabled', true);
+            $("#setorSlct").prop('disabled', true);
+        } else{
+            $("#secretariaSlct").removeAttr('disabled');
+            $("#setorSlct").removeAttr('disabled');
+        }
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+  $(function() {
+    $( "#assuntoTxt" ).autocomplete({
+      source: '/assuntos/assuntoautocomplete'
+    });
+  });
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+  $(function() {
+    $( "#requerenteTxt" ).autocomplete({
+      source: '/processos/requerenteautocomplete'
+    });
+  });
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#requerenteTxt').blur(function(){
+        var valor = $(this).val();
+        $.post('/processos/getrequerenteinfo',{data: valor},function(ret){
+            var obj = jQuery.parseJSON(ret);
+            $('#dddTxt').val(obj.ddd);
+            $('#telefoneTxt').val(obj.telefone);
+            
+            $('#numeroTxt').val(obj.documento);
+            $('#digitoTxt').val(obj.digito);
+            $('#emissaoDt').val(obj.emissao);
+            $('#orgaoEmissorTxt').val(obj.orgaoEmissor);
         });
     });
 });

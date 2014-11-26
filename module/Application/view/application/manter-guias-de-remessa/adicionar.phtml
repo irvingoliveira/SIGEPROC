@@ -1,0 +1,154 @@
+<div class="row">
+    
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Processos no setor</h3>
+            </div>
+            <div class="panel-body">
+                <div>
+                    <ul id="sortable1" class="droptrue">
+                        <?  foreach ($this->processos as $processo):?>
+                            <li id="<?=$processo->idProcesso?>" class="ui-state-default">
+                                <?=$processo->getNumero().'/'.$processo->getAnoExercicio()
+                                .' - '.$processo->getAssunto()->getNome()?>
+                            </li>
+                        <?  endforeach;?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Guia de remessa</h3>
+            </div>
+            <div class="panel-body">
+                <form id="guia" role="form" method="POST" action="<?= $this->url('guiasderemessa', array('action' => 'adicionar')); ?>">
+                <div class="form-group">
+                    <label for="destinatarioRd" style="padding-right: 20px">O destinatário é um orgão externo?</label>
+                        <input type="radio" name="destinatarioRd" class="form-inline" id="destinatarioRd" checked="checked" value="0"/> Não&nbsp;
+                        <input type="radio" name="destinatarioRd" class="form-inline" id="destinatarioRd" value="1"/> Sim
+                </div>
+                <div class="form-group" id="orgaoExternoDiv">
+                    <label for="orgaoSlct" class="control-label">Orgão Externo destino:</label>
+                    <div>
+                        <select name="orgaoSlct" class="form-control" id="orgaoSlct">
+                            <option>----Selecione um orgão externo----</option>
+                            <?  foreach ($this->orgaos as $orgao):?>
+                            <option value=<?=$orgao->getIdOrgaoExterno()?>><?=$orgao->getNome()?></option>
+                            <?  endforeach;?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="secretariaDiv">
+                    <label for="secretariaSlct" class="control-label">Secretaria destino:</label>
+                    <div>
+                        <select name="secretariaSlct" class="form-control" id="secretariaSlct">
+                            <option>----Selecione uma secretaria----</option>
+                            <?  foreach ($this->secretarias as $secretaria):?>
+                            <option value=<?=$secretaria->getIdSecretaria()?>><?=$secretaria->getNome()?></option>
+                            <?  endforeach;?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="setorDiv">
+                    <label for="setorSlct" class="control-label">Setor destino:</label>
+                    <div>
+                        <select name="setorSlct" class="form-control" id="setorSlct">
+                            <option>----Selecione um setor----</option>
+                            <?  /*foreach ($this->setores as $setor):?>
+                            <option value=<?=$setor->getIdSetor()?>><?=$setor->getNome()?></option>
+                            <?  endforeach;*/?>
+                        </select>
+                    </div>
+                </div>
+                </form>
+                <label for="sortable2" class="control-label">Processos:</label>
+                <div>
+                    <ul id="sortable2" class="droptrue"></ul>
+                </div>                
+            </div>
+            <div class="panel-footer center">
+                <button type="button" id="enviar" class="btn btn-success">
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+<? $this->headScript()->captureStart(); ?>
+$(function() {
+    $( "ul.droptrue" ).sortable({
+      connectWith: "ul"
+    });
+ 
+    $( "ul.dropfalse" ).sortable({
+      connectWith: "ul",
+      dropOnEmpty: false
+    });
+ 
+    $( "#sortable1, #sortable2" ).disableSelection();
+  });
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function (){
+    $("#sortable2").on( "sortchange", function( event, ui ) {
+        $(this).css("background","#eee");
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function (){
+    $("#enviar").click(function() {
+        var sortedIDs = $( "#sortable2" ).sortable( "toArray" );
+        for(i=0; i<sortedIDs.length;i++){
+            $('#guia').append(
+                '<input type="hidden" name="ids[]" value="'+sortedIDs[i]+'"/>'
+            );
+        }
+        $('#guia').submit();
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('#secretariaSlct').change(function(){
+        var valor = $(this).val();
+        $.post('/assuntos/getsetorcombobysecretaria',{data: valor},function(ret){
+            $('#setorSlct').html(ret);
+        });
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?> 
+$(document).ready(function(){
+    $("#orgaoExternoDiv").hide();
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+    $('input[type=radio][name=destinatarioRd]').change(function(){
+        var valor = $(this).val();
+        if(valor==0){
+            $("#orgaoExternoDiv").hide(1000);
+            $("#secretariaDiv").show(1000);
+            $("#setorDiv").show(1000);
+        } else{
+            $("#orgaoExternoDiv").show(1000);
+            $("#secretariaDiv").hide(1000);
+            $("#setorDiv").hide(1000);
+
+        }
+    });
+});
+<? $this->headScript()->captureEnd(); ?>
+-->

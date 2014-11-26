@@ -22,9 +22,19 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\Iterator;
+
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Application\Filters\AssuntoFilter;
-use Application\Entity\Assunto;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Application\Filters\ProcessoFilter;
+use Application\DAL\AssuntoDAO;
+use Application\DAL\ProcessoDAO;
+use Application\DAL\RequerenteDAO;
+use Application\DAL\StatusProcessoDAO;
+use Application\DAL\SecretariaDAO;
+use Application\DAL\SetorDAO;
+use Application\DAL\TipoDocumentoDAO;
+use Application\DAL\UsuarioDAO;
 
 /**
  * Description of ManterUsuariosController
@@ -33,74 +43,72 @@ use Application\Entity\Assunto;
  */
 class ManterProcessosController extends AbstractActionController {
 
-    private $objectManager;
-
-    public function getObjectManager() {
-        if (!$this->objectManager) {
-            $this->objectManager = $this->getServiceLocator()->get('ObjectManager');
-        }
-        return $this->objectManager;
-    }
-
     public function indexAction() {
-        $objectManager = $this->getObjectManager();
         $request = $this->getRequest();
 
-        if (!$request->isPost()) {
-            $dql = "SELECT a FROM Application\Entity\Assunto AS a";
+        $processoDAO = new ProcessoDAO($this->getServiceLocator());
+        $query = $processoDAO->lerTodos();
 
-            $query = $objectManager->createQuery($dql);
+        $ormPaginator = new ORMPaginator($query);
+        $ormPaginatorIterator = $ormPaginator->getIterator();
 
-            $ormPaginator = new ORMPaginator($query);
-            $ormPaginatorIterator = $ormPaginator->getIterator();
+        $adapter = new Iterator($ormPaginatorIterator);
 
-            $adapter = new Iterator($ormPaginatorIterator);
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage(10);
+        $page = (int) $this->params()->fromQuery('page');
+        if ($page)
+            $paginator->setCurrentPageNumber($page);
 
-            $paginator = new Paginator($adapter);
-            $paginator->setDefaultItemCountPerPage(10);
-            $page = (int) $this->params()->fromQuery('page');
-            if ($page)
-                $paginator->setCurrentPageNumber($page);
-
-            return array(
-                'assuntos' => $paginator,
-                'orderby' => $this->params()->fromQuery('orderby'),
-            );
-        }
+        return array(
+            'processos' => $paginator,
+            'orderby' => $this->params()->fromQuery('orderby'),
+        );
     }
 
     public function preencheCombos() {
-        $objectManager = $this->getObjectManager();
-        $dql = "SELECT COUNT(s) ";
-        $dql .= "FROM Application\Entity\Setor s";
-        $qtdSetores = $objectManager->createQuery($dql)->getSingleScalarResult();
+        $AssuntoDAO = new AssuntoDAO($this->getServiceLocator());
+        $qtdAssuntos = $AssuntoDAO->getQtdRegistros();
 
-        if ($qtdSetores <= 0) {
-            $mensagem = "É necessário que sejam cadastrados setores ";
-            $mensagem .= "para que um assunto possa ser cadastrado.";
+        if ($qtdAssuntos <= 0) {
+            $mensagem = "É necessário que sejam cadastrados assuntos ";
+            $mensagem .= "para que um processo possa ser cadastrado.";
             $this->flashMessenger()->addErrorMessage($mensagem);
-            $this->redirect()->toRoute('assuntos');
+            $this->redirect()->toRoute('processos');
         }
 
-        $dql = "SELECT COUNT(s) ";
-        $dql .= "FROM Application\Entity\Secretaria s";
-        $qtdSecretaria = $objectManager->createQuery($dql)->getSingleScalarResult();
+        $tipoDocumentoDAO = new TipoDocumentoDAO($this->getServiceLocator());
+        $qtdTiposDocumento = $tipoDocumentoDAO->getQtdRegistros();
 
-        if ($qtdSecretaria <= 0) {
-            $mensagem = "É necessário que sejam cadastradas secretarias ";
-            $mensagem .= "para que um assunto possa ser cadastrado.";
+        if ($qtdTiposDocumento <= 0) {
+            $mensagem = "É necessário que sejam cadastrados tipos de documento ";
+            $mensagem .= "para que um processo possa ser cadastrado.";
             $this->flashMessenger()->addErrorMessage($mensagem);
-            $this->redirect()->toRoute('assuntos');
+            $this->redirect()->toRoute('processos');
         }
 
-        $setores = $objectManager->getRepository('Application\Entity\Setor')
-                ->findAll();
-        $secretarias = $objectManager->getRepository('Application\Entity\Secretaria')
-                ->findAll();
+        $tiposDeDocumento = $tipoDocumentoDAO->lerRepositorio();
+
+        $statusProcessosDAO = new StatusProcessoDAO($this->getServiceLocator());
+        $qtdStatus = $statusProcessosDAO->getQtdRegistros();
+
+        if ($qtdStatus <= 0) {
+            $mensagem = "É necessário que sejam cadastrados status ";
+            $mensagem .= "para que um processo possa ser cadastrado.";
+            $this->flashMessenger()->addErrorMessage($mensagem);
+            $this->redirect()->toRoute('processos');
+            return;
+        }
+
+        $assuntos = $AssuntoDAO->lerRepositorio();
+
+        $secretariaDAO = new SecretariaDAO($this->getServiceLocator());
+        $secretarias = $secretariaDAO->lerRepositorio();
 
         return array(
+            'assuntos' => $assuntos,
             'secretarias' => $secretarias,
-            'setores' => $setores
+            'tiposDeDocumento' => $tiposDeDocumento
         );
     }
 
@@ -110,13 +118,28 @@ class ManterProcessosController extends AbstractActionController {
         if (!$request->isPost())
             return $this->preencheCombos();
 
-        $nomeTxt = $request->getPost('nomeTxt');
+        $assuntoTxt = $request->getPost('assuntoTxt');
+        $volumeTxt = $request->getPost('volumeTxt');
+        $requerenteTxt = $request->getPost('requerenteTxt');
+        $dddTxt = $request->getPost('dddTxt');
+        $telefoneTxt = $request->getPost('telefoneTxt');
         $secretariaSlct = $request->getPost('secretariaSlct');
         $setorSlct = $request->getPost('setorSlct');
-        $descricaoTxt = $request->getPost('descricaoTxt');
+        $tipoDocumentoSlct = $request->getPost('tipoDocumentoSlct');
+        $numeroTxt = $request->getPost('numeroTxt');
+        $digitoTxt = $request->getPost('digitoTxt');
+        $emissaoDt = $request->getPost('emissaoDt');
+        $orgaoEmissorTxt = $request->getPost('orgaoEmissorTxt');
 
-        $objectManager = $this->getObjectManager();
-        $dadosFiltrados = new AssuntoFilter($objectManager, $nomeTxt, $secretariaSlct, $setorSlct, $descricaoTxt);
+        $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
+        $secretariaDAO = new SecretariaDAO($this->getServiceLocator());
+        $setorDAO = new SetorDAO($this->getServiceLocator());
+        $tipoDocumentoDAO = new TipoDocumentoDAO($this->getServiceLocator());
+
+        $dadosFiltrados = new ProcessoFilter($assuntoTxt, $volumeTxt, $requerenteTxt, 
+                $dddTxt, $telefoneTxt, $secretariaSlct, $setorSlct, $tipoDocumentoSlct, 
+                $numeroTxt, $digitoTxt, $emissaoDt, $orgaoEmissorTxt, $assuntoDAO, 
+                $secretariaDAO, $setorDAO, $tipoDocumentoDAO);
 
         if (!$dadosFiltrados->isValid()) {
             foreach ($dadosFiltrados->getInvalidInput() as $erro) {
@@ -124,96 +147,183 @@ class ManterProcessosController extends AbstractActionController {
                     $this->flashMessenger()->addErrorMessage($message);
                 }
             }
-            $this->redirect()->toUrl('/assuntos/adicionar');
+            $this->redirect()->toUrl('/processos/adicionar');
             return;
         }
 
-        $setor = $objectManager->getRepository('Application\Entity\Setor')
-                ->find((int) $dadosFiltrados->getValue('setorSlct'));
-
-        $assunto = new Assunto();
-        $assunto->setNome($dadosFiltrados->getValue('nomeTxt'));
-        $assunto->setSetor($setor);
-        $assunto->setDescricao($dadosFiltrados->getValue('descricaoTxt'));
+        $parametros = new ArrayCollection();
+        $parametros->set('assunto', $assuntoDAO->buscaExata(
+                        $dadosFiltrados->getValue('assuntoTxt'))[0]);
+        $parametros->set('volume', $dadosFiltrados->getValue('volumeTxt'));
+        $parametros->set('requerente', $dadosFiltrados->getValue('requerenteTxt'));
+        $parametros->set('ddd', $dadosFiltrados->getValue('dddTxt'));
+        $parametros->set('telefone', $dadosFiltrados->getValue('telefoneTxt'));
+        $parametros->set('setor', $setorDAO->lerPorId(
+                        $dadosFiltrados->getValue('setorSlct')));
+        $parametros->set('tipoDocumento', $tipoDocumentoDAO->lerPorId(
+                        $dadosFiltrados->getValue('tipoDocumentoSlct')));
+        $parametros->set('numero', $dadosFiltrados->getValue('numeroTxt'));
+        $parametros->set('digito', $dadosFiltrados->getValue('digitoTxt'));
+        $parametros->set('emissao', new \DateTime($dadosFiltrados->getValue('emissaoDt')));
+        $parametros->set('orgaoEmissor', $dadosFiltrados->getValue('orgaoEmissorTxt'));
+        $dataSistema = new \DateTime('NOW');
+        $parametros->set('anoExercicio', (int)$dataSistema->format('Y'));
+        $parametros->set('dataAbertura', $dataSistema);
+        $authService = $this->getServiceLocator()->get('AuthService');
+        $usuario = $authService->getIdentity();
+        $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
+        $parametros->set('usuario', $usuarioDAO->lerPorId($usuario['id']));
 
         try {
-            $objectManager->persist($assunto);
-            $objectManager->flush();
-            $this->flashMessenger()->addSuccessMessage("Assunto adicionado com sucesso.");
+            $processoDAO = new ProcessoDAO($this->getServiceLocator());
+            $processoDAO->salvar($parametros);
+            $this->flashMessenger()->addSuccessMessage("Processo adicionado com sucesso.");
         } catch (\Exception $e) {
             $mensagem = "Ocorreu um erro na operação, tente novamente ";
             $mensagem .= "ou entre em contato com um administrador ";
             $mensagem .= "do sistema.";
             $this->flashMessenger()->addErrorMessage($mensagem);
         }
-        $this->redirect()->toRoute('assuntos');
+        $this->redirect()->toRoute('processos');
+    }
+
+    public function buscarAction() {
+        $request = $this->getRequest();
+        $busca = $this->params()->fromQuery('busca');
+        if ($busca == null) {
+            $this->redirect()->toRoute('processos');
+            return;
+        }
+
+        if (!$request->isGet()) {
+            $this->redirect()->toRoute('processos');
+            return;
+        }
+        
+        $parametrosBusca = new ArrayCollection();
+        
+        if(strpos($busca, '/') === FALSE){
+            $parametrosBusca->set('numero', $busca);
+        }else{
+            $partesBusca = explode('/', $busca);
+            $parametrosBusca->set('numero', $partesBusca[0]);
+            $parametrosBusca->set('anoExercicio', $partesBusca[1]);
+        }
+
+        $processoDAO = new ProcessoDAO($this->getServiceLocator());
+        $query = $processoDAO->buscaPersonalizada($parametrosBusca);
+
+        $ormPaginator = new ORMPaginator($query);
+        $ormPaginatorIterator = $ormPaginator->getIterator();
+
+        $adapter = new Iterator($ormPaginatorIterator);
+
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage(10);
+        $page = (int) $this->params()->fromQuery('page');
+        if ($page)
+            $paginator->setCurrentPageNumber($page);
+
+        $qtdResultados = $paginator->count();
+
+        if ($qtdResultados == 0) {
+            $this->flashMessenger()->addErrorMessage("Processo não encontrada.");
+            $this->redirect()->toRoute('processos');
+        }
+        return array(
+            'processos' => $paginator,
+            'orderby' => $this->params()->fromQuery('orderby'),
+        );
     }
     
-    public function excluirAction(){
-        $objectManager = $this->getObjectManager();
-        $idAssunto = $this->params()->fromRoute('id');
-        if(isset($idAssunto)){
-            $Assuntos = $objectManager->getRepository('Application\Entity\Assunto');
-            $assunto = $Assuntos->find($idAssunto); 
-            try{
-                $objectManager->remove($assunto);
-                $objectManager->flush();
-            }  catch (\Exception $e){
-                $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-                $this->redirect()->toRoute('assuntos');
-            }
-            $this->flashMessenger()->addSuccessMessage("Assunto excluído com sucesso.");
-            $this->redirect()->toRoute('assuntos');
+    public function editarAction() {
+        
+    }
+    
+    public function excluirAction() {
+        $idProcesso = $this->params()->fromRoute('id');
+        if (!$idProcesso) {
+            $this->flashMessenger()->addErrorMessage("Processo não encontrado.");
+            $this->redirect()->toRoute('processos');
+            return;
         }
+        try {
+            $processoDAO = new ProcessoDAO($this->getServiceLocator());
+            $processo = $processoDAO->lerPorId($idProcesso);
+            if ($processo->getStatus() != "1") {
+                $mensagem = "Somente processos que não possuam trâmie podem ser ";
+                $mensagem.= "excluídos.";
+                $this->flashMessenger()->addErrorMessage($mensagem);
+                $this->redirect()->toRoute('processos');
+            }
+            $processoDAO->excluir($idProcesso);
+        } catch (\Exception $e) {
+            $mensagem = "Ocorreu um erro na operação, tente novamente ou ";
+            $mensagem.= "entre em contato com um administrador do sistema.";
+            $this->flashMessenger()->addErrorMessage($mensagem);
+            $this->redirect()->toRoute('processos');
+        }
+        $this->flashMessenger()->addSuccessMessage("Proceso excluído com sucesso.");
+        $this->redirect()->toRoute('processos');
     }
 
     public function visualizarAction() {
-        $idAssunto = (int) $this->params()->fromRoute('id', 0);
-        if ($idAssunto) {
-            $objectManager = $this->getObjectManager();
-            try {
-                $assuntos = $objectManager->getRepository('Application\Entity\Assunto');
-                $assunto = $assuntos->find($idAssunto);
-            } catch (\Exception $e) {
-                $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-                $this->redirect()->toRoute('assuntos');
-            }
-            if ($assunto != NULL) {
-                return array('assunto' => $assunto);
-            } else {
-                $this->flashMessenger()->addMessage("Assunto não encotrado");
-                $this->redirect()->toRoute('assuntos');
-            }
+        $idProcesso = (int) $this->params()->fromRoute('id', 0);
+        if (!$idProcesso) {
+            $this->flashMessenger()->addMessage("Processo não encotrado");
+            $this->redirect()->toRoute('processos');
+        }
+        try {
+            $processoDAO = new ProcessoDAO($this->getServiceLocator());
+            $processo = $processoDAO->lerPorId($idProcesso);
+        } catch (\Exception $e) {
+            $mensagem = "Ocorreu um erro na operação, tente novamente ";
+            $mensagem .= "ou entre em contato com um administrador ";
+            $mensagem .= "do sistema.";
+            $this->flashMessenger()->addErrorMessage($mensagem);
+            $this->redirect()->toRoute('processos');
+        }
+        if ($processo != NULL) {
+            return array('processo' => $processo);
+        } else {
+            $this->flashMessenger()->addMessage("Processo não encotrado");
+            $this->redirect()->toRoute('processos');
         }
     }
-    
-    public function getSetorComboBySecretariaAction() {
-        $objectManager = $this->getObjectManager();
-        $request = $this->getRequest();
-        $idSecretaria = $request->getPost('data');
-        $selecionado = $request->getPost('selected');
 
-        $secretaria = $objectManager->getRepository('Application\Entity\Secretaria')
-                ->find($idSecretaria);
-        $dql = "SELECT s FROM Application\Entity\Setor AS s ";
-        $dql.= "WHERE s.secretaria = ?1";
-        $query = $objectManager->createQuery($dql);
-        $query->setParameter(1, $secretaria);
+    public function requerenteAutoCompleteAction() {
+        $termo = $this->params()->fromQuery('term');
 
-        $setores = $query->getResult();
-        $qtdSetores = count($setores);
-        if ($qtdSetores == 0) {
-            echo '<option>---- Não há setor cadastrado nesta secretaria----</option>';
-        } else {
-            echo '<option>----Selecione um setor----</option>';
-            foreach ($setores as $setor) {
-                if ($setor->getIdSetor() == $selecionado)
-                    echo '<option value="' . $setor->getIdSetor() . '" selected="selected">' . $setor->getTipo()->getNome() . ' de ' . $setor->getNome() . '</option>';
-                else
-                    echo '<option value="' . $setor->getIdSetor() . '">' . $setor->getTipo()->getNome() . ' de ' . $setor->getNome() . '</option>';
-            }
+        $requerenteDAO = new RequerenteDAO($this->getServiceLocator());
+        $requerentes = $requerenteDAO->busca($termo . '%');
+
+        $json = '[';
+        foreach ($requerentes as $key => $requerente) {
+            if ($key != 0)
+                $json .= ',';
+            $json.= '{"value":"' . $requerente->getNome() . '"}';
         }
+        $json.= ']';
+
+        echo $json;
         die();
     }
 
+    public function getRequerenteInfoAction() {
+        $request = $this->getRequest();
+        $termo = $request->getPost('data');
+        $requerenteDAO = new RequerenteDAO($this->getServiceLocator());
+        $requerentes = $requerenteDAO->busca($termo);
+
+        $json = '{"ddd":"' . $requerentes[0]->getTelefone()->getDdd() . '",';
+        $json.= '"telefone":"' . $requerentes[0]->getTelefone()->getNumero() . '",';
+        $json.= '"tipoDocumento":"' . $requerentes[0]->getDocumento()->getTipo() . '",';
+        $json.= '"documento":"' . $requerentes[0]->getDocumento()->getNumero() . '",';
+        $json.= '"digito":"' . $requerentes[0]->getDocumento()->getDigito() . '",';
+        $json.= '"emissao":"' . $requerentes[0]->getDocumento()->getDataEmissao()->format('Y-m-d') . '",';
+        $json.= '"orgaoEmissor":"' . $requerentes[0]->getDocumento()->getOrgaoEmissor() . '"}';
+
+        echo $json;
+        die();
+    }    
 }

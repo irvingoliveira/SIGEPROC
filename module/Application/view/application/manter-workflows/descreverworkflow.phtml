@@ -1,0 +1,55 @@
+<?
+if($this->posto):
+    $id = $this->posto->getIdFluxoPosto();
+    $idWorkflow = $this->posto->getWorkflow()->getIdWorkflow();
+    $posto = $this->posto->getPosto();
+?>
+<div class="row">
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Posto de trabalho</h3>
+            </div>
+            <form class="form-horizontal" role="form" method="POST" action="<?= $this->url('workflows', array('action' => 'descreverworkflow')); ?>">
+                <input type="hidden" name="idWorkflow" value="<?=$idWorkflow?>" />
+                <input type="hidden" name="id" value="<?=$id?>" />
+                <input type="hidden" name="in" value="<?=++$this->indice?>" />
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="nomeTxt" class="col-lg-3 col-md-3 control-label">Posto:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="nomeTxt" class="form-control" id="nomeTxt" value="<?=$posto?>" placeholder="Posto de Exemplo" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="diasUteisTxt" class="col-lg-3 col-md-3 control-label">Dias úteis:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="text" name="diasUteisTxt" class="form-control" id="diasUteisTxt" placeholder="00"  maxlength="2" size="2"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="descricaoTxt" class="col-lg-3 col-md-3 control-label">Descricao do trabalho:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <textarea name="descricaoTxt" class="form-control" id="descricaoTxt" placeholder="Neste posto devem ser realizados os procedimentos de exemplo."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer center">
+                    <button type="submit" class="btn btn-success">Enviar</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+<? $this->headScript()->captureStart(); ?>
+$(document).ready(function(){
+$('#secretariaSlct').change(function(){
+var valor = $(this).val();
+$.post('/assuntos/getsetorcombobysecretaria',{data: valor},function(ret){
+$('#setorSlct').html(ret);
+});
+});
+});
+<? $this->headScript()->captureEnd(); ?>
+
+<? endif;?>

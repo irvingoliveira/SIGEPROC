@@ -24,6 +24,6 @@ namespace Application\Exception;
  */
 class InactiveUserException extends \Exception{
     public function __construct() {
-        parent::__construct('Usuário inativo. Por favor, contate o administrador do sistema.');
+        parent::__construct('Usuário inativo. Por favor, contate o administrador do sistema.',0,NULL);
     }
 }

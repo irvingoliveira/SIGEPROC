@@ -70,26 +70,12 @@ class GuiaDeRemessa {
      */
     private $emissor;
     /**
-     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="guiasDeRemessaRecebidas")
-     * @ORM\JoinColumn(name="Destinatario_idUsuario", 
-     *                 referencedColumnName="idUsuario", nullable=true)
-     * @var Usuario
-     */
-    private $destinatario;
-    /**
-     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="guiasDeRemessa")
-     * @ORM\JoinColumn(name="Setor_idSetor",
-     *                 referencedColumnName="idSetor", nullable=true)
-     * @var Setor
-     */
-    private $setor;
-    /**
-     * @ORM\ManyToOne(targetEntity="OrgaoExterno", inversedBy="guiasDeRemessa")
-     * @ORM\JoinColumn(name="OrgaoExterno_idOrgaoExterno",
-     *                 referencedColumnName="idOrgaoExterno", nullable=true)
+     * @ORM\ManyToOne(targetEntity="PostoDeTrabalho", inversedBy="guiasDeRemessa")
+     * @ORM\JoinColumn(name="PostoDeTrabalho_idPostoDeTrabalho",
+     *                 referencedColumnName="idPostoDeTrabalho", nullable=false)
      * @var OrgaoExterno
      */
-    private $orgaoExterno;
+    private $postoDeTrabalho;
     /**
      * @ORM\ManyToMany(targetEntity="Processo", inversedBy="guiasDeRemessa")
      * @ORM\JoinTable(name="GuiaDeRemessa_has_Processo",
@@ -107,7 +93,15 @@ class GuiaDeRemessa {
     public function __construct() {
         $this->processos = new ArrayCollection();
     }
-    
+        
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
+    }
+        
     public function getIdGuiaDeRemessa() {
         return $this->idGuiaDeRemessa;
     }
@@ -174,34 +168,18 @@ class GuiaDeRemessa {
     }
     
     public function getOrgaoExterno() {
-        return $this->orgaoExterno;
+        return $this->postoDeTrabalho;
     }
 
-    public function setOrgaoExterno(OrgaoExterno $orgaoExterno) {
-        $this->orgaoExterno = $orgaoExterno;
-    }
-    
-    public function getSetor() {
-        return $this->setor;
+    public function setPostoDeTrabalho(PostoDeTrabalho $posto) {
+        $this->postoDeTrabalho = $posto;
     }
 
-    public function setSetor(Setor $setor) {
-        $this->setor = $setor;
-    }
-    
     public function getEmissor() {
         return $this->emissor;
     }
 
-    public function getDestinatario() {
-        return $this->destinatario;
-    }
-
     public function setEmissor(Usuario $emissor) {
         $this->emissor = $emissor;
-    }
-
-    public function setDestinatario(Usuario $destinatario) {
-        $this->destinatario = $destinatario;
     }
 }

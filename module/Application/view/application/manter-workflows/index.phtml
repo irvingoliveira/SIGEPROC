@@ -7,8 +7,8 @@
             </div>
             <div class="panel-body">
                 <ul class="navbar-link">
-                    <li><a href="<?php echo $this->url('workflows') ?>">Cadastrar assuntos</a></li>
-                    <li><a href="<?php echo $this->url('workflows') ?>">Cadastrar workflows</a></li>
+                    <li><a href="<?php echo $this->url('assuntos') ?>">Assuntos</a></li>
+                    <li><a href="<?php echo $this->url('workflows') ?>">Workflows</a></li>
                 </ul>
             </div>
         </div>
@@ -34,21 +34,20 @@
                 </form>
                 <table class="table table-striped table-bordered table-hover">
                     <tr>
-                        <th>Nome</th>
                         <th>Assunto</th>
                         <th>Descrição</th>
+                        <th>Quantidade de postos</th>
                         <th>&nbsp;</th>
                     </tr>
-                    <? foreach ($this->workflows as $workflows): ?>
-                        <tr>
-                            <td class="col-sd-1"><?= $workflow->getNome() ?></td>            
-                            <td class="col-sd-1"><?= $workflow->getSetor()->getSecretaria()->getSigla(); ?></td>            
-                            <td class="col-sd-1"><?= $workflow->getSetor()->getNome() ?></td>            
-                            <td class="col-sd-1"><?= substr($workflow->getDescricao(),0,20)."..." ?></td>            
+                    <? foreach ($this->workflows as $workflow): ?>
+                        <tr>          
+                            <td class="col-sd-1"><?= $workflow->getAssunto()->getNome(); ?></td>            
+                            <td class="col-sd-1"><?= substr($workflow->getDescricao(),0,45)."..." ?></td>            
+                            <td class="col-sd-1"><?= count($workflow->getFluxosPostos()) ?></td>            
                             <td class="col-sd-2">
-                                <a class="btn btn-xs btn-info" title="Visualizar" href="/workflows/visualizar/<?=$workflow->getIdAssunto()?>"><span class="glyphicon glyphicon-new-window"></span></a>
-                                <a class="btn btn-xs btn-warning" title="Editar" href="/workflows/editar/<?=$workflow->getIdAssunto()?>"><span class="glyphicon glyphicon-edit"></span></a>
-                                <a class="btn btn-xs btn-danger" title="Excluir" href="/workflows/excluir/<?=$workflow->getIdAssunto()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/workflows/visualizar/<?=$workflow->getIdWorkflow()?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <?/*<a class="btn btn-xs btn-warning" title="Editar" href="/workflows/editar/<?=$workflow->getIdWorkflow()?>"><span class="glyphicon glyphicon-edit"></span></a>*/?>
+                                <a class="btn btn-xs btn-danger" title="Excluir" href="/workflows/excluir/<?=$workflow->getIdWorkflow()?>"><span class="glyphicon glyphicon-floppy-remove"></span></a>
                             </td>
                         </tr>
                     <? endforeach; ?>
@@ -62,7 +61,7 @@
                         // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
                         'sliding',
                         // the partial to use to render the control
-                        array('partial/paginator.phtml', 'Assunto'),
+                        array('partial/paginator.phtml', 'Assuntos'),
                         // the route to link to when a user clicks a control link
                         array(
                     'route' => 'workflows',

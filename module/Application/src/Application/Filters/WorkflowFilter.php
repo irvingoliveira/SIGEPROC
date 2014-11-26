@@ -23,7 +23,11 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator;
+use Zend\Filter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Application\DAL\AssuntoDAO;
+use Application\DAL\OrgaoExternoDAO;
+use Application\DAL\SetorDAO;
 
 /**
  * Description of SecretariaFilter
@@ -33,21 +37,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class WorkflowFilter extends InputFilter {
 
     private $postoList;
-    private $objectManager;
+    private $descricaoTxt;
+    private $assunto;
+    private $serviceManager;
 
-    public function __construct(ServiceManager $sm,array $postoList) {
-        $this->objectManager = $sm->get("ObjectManager");
+    public function __construct(ServiceManager $sm,array $postoList, $descricaoTxt, $assunto) {
+        $this->serviceManager = $sm;
         $this->postoList = $postoList;
-        $this->assuntoInputFilters();
+        $this->descricaoTxt = $descricaoTxt;
+        $this->assunto = $assunto;
+        $this->workflowInputFilters();
     }
 
-    private final function assuntoInputFilters() {
+    private final function workflowInputFilters() {
 
-        $dql = "SELECT s.idSetor FROM Application\Entity\Setor AS s";
-        $query = $this->objectManager->createQuery($dql);
-        $setores = $query->getResult();
+        $setorDAO = new SetorDAO($this->serviceManager);
+        $setores = $setorDAO->lerTodos()->getResult();
         foreach ($setores as $setor) {
-            $idSetor[] = $setor['idSetor'];
+            $idSetor[] = $setor->getIdSetor();
         }
 
         $setorHayStack = new Validator\InArray(array('haystack' => $idSetor));
@@ -55,11 +62,10 @@ final class WorkflowFilter extends InputFilter {
             Validator\InArray::NOT_IN_ARRAY => 'Não foi escolhido um setor válido.'
         ));
 
-        $dql = "SELECT o.idOrgaoExterno FROM Application\Entity\OrgaoExterno AS o";
-        $query = $this->objectManager->createQuery($dql);
-        $orgaosExternos = $query->getResult();
+        $orgaoExternoDAO = new OrgaoExternoDAO($this->serviceManager);
+        $orgaosExternos = $orgaoExternoDAO->lerTodos()->getResult();
         foreach ($orgaosExternos as $orgao) {
-            $idOrgaoExterno[] = $orgao['idOrgaoExterno'];
+            $idOrgaoExterno[] = $orgao->getIdOrgaoExterno();
         }
 
         $orgaoHayStack = new Validator\InArray(array('haystack' => $idOrgaoExterno));
@@ -81,13 +87,44 @@ final class WorkflowFilter extends InputFilter {
             $this->add($postoFilter);
         }
         
+        $descricaoFilter = new Input('descricaoTxt');
+        
+        $descricaoFilter->setRequired(FALSE);
+        $descricaoFilter->getFilterChain()
+                ->attach(new Filter\HtmlEntities())
+                ->attach(new Filter\StringTrim())
+                ->attach(new Filter\StripTags());
+
+        $this->add($descricaoFilter);
+        
+        $assuntoDAO = new AssuntoDAO($this->serviceManager);
+        $assuntos = $assuntoDAO->lerRepositorio();
+        foreach ($assuntos as $assunto) {
+            $idAssunto[] = $assunto->getidAssunto();
+        }
+
+        $assuntoHayStack = new Validator\InArray(array('haystack' => $idAssunto));
+        $assuntoHayStack->setMessages(array(
+            Validator\InArray::NOT_IN_ARRAY => 'Não foi escolhido um assunto válido.'
+        ));
+        
+        $assuntoFilter = new Input('assuntoTxt');
+        $assuntoFilter->setRequired(TRUE);
+        $assuntoFilter->getValidatorChain()
+                            ->attach($assuntoHayStack);
+        
+        $this->add($assuntoFilter);
+        
         $data = new ArrayCollection();
+        
+        $data->set('assuntoTxt', $this->assunto);
+        $data->set('descricaoTxt', $this->descricaoTxt);
         
         foreach ($this->postoList as $key => $posto){
             $data->set('posto'.$key, substr($posto, 1));
-        }
-        
-         $this->setData($data->toArray());
+        }     
+      
+        $this->setData($data->toArray());
 
     }
 

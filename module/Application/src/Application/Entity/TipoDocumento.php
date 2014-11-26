@@ -43,7 +43,7 @@ class TipoDocumento {
      */
     private $nome;
     /**
-     * @ORM\OneToMany(targetEntity="Documento", mappedBy="tipo")
+     * @ORM\OneToMany(targetEntity="Documento", mappedBy="tipo", cascade={"persist"})
      * @var ArrayCollection
      */
     private $documentos;
@@ -91,5 +91,9 @@ class TipoDocumento {
     
     public function getDocumentos(){
         $this->documentos->toArray();
+    }
+    
+    public function __toString() {
+        return $this->nome;
     }
 }

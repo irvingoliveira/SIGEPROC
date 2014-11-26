@@ -40,6 +40,11 @@ class FluxoPosto {
      */
     private $diasUteis;
     /**
+     *@ORM\Column(type="string", length=100, nullable=true)
+     * @var string
+     */
+    private $descricao;
+    /**
      * @ORM\ManyToOne(targetEntity="Workflow", inversedBy="fluxosPostos")
      * @ORM\JoinColumn(name="Workflow_idWorkflow",
      *                 referencedColumnName="idWorkflow", nullable=false)
@@ -47,22 +52,23 @@ class FluxoPosto {
      */
     private $workflow;
     /**
-     * @ORM\ManyToOne(targetEntity="Setor", inversedBy="fluxosSetor")
-     * @ORM\JoinColumn(name="Setor_idSetor",
-     *                 referencedColumnName="idSetor", nullable=true)
-     * @var Setor
+     * @ORM\ManyToOne(targetEntity="PostoDeTrabalho", inversedBy="fluxosPosto")
+     * @ORM\JoinColumn(name="PostoDeTrabalho_idPostoDeTrabalho",
+     *                 referencedColumnName="idPostoDeTrabalho", nullable=false)
+     * @var PostoDeTrabalho
      */
-    private $setor;
-    /**
-     * @ORM\ManyToOne(targetEntity="OrgaoExterno", inversedBy="fluxosOrgaoExterno")
-     * @ORM\JoinColumn(name="OrgaoExterno_idOrgaoExterno",
-     *                 referencedColumnName="idOrgaoExterno", nullable=true)
-     * @var OrgaoExterno
-     */
-    private $orgaoExterno;
+    private $posto;
     
     public function __construct() {
         
+    }
+    
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
     }
     
     public function getIdFluxoPosto() {
@@ -77,14 +83,10 @@ class FluxoPosto {
         return $this->workflow;
     }
 
-    public function getSetor() {
-        return $this->setor;
+    public function getPosto() {
+        return $this->posto;
     }
-
-    public function getOrgaoExterno() {
-        return $this->orgaoExterno;
-    }
-
+    
     public function setIdFluxoPosto($idFluxoPosto) {
         $this->idFluxoPosto = $idFluxoPosto;
     }
@@ -97,11 +99,15 @@ class FluxoPosto {
         $this->workflow = $workflow;
     }
 
-    public function setSetor(Setor $setor) {
-        $this->setor = $setor;
+    public function setPosto(PostoDeTrabalho $posto) {
+        $this->posto = $posto;
     }
 
-    public function setOrgaoExterno(OrgaoExterno $orgaoExterno) {
-        $this->orgaoExterno = $orgaoExterno;
+    public function getDescricao() {
+        return $this->descricao;
+    }
+
+    public function setDescricao($descriao) {
+        $this->descricao = $descriao;
     }
 }

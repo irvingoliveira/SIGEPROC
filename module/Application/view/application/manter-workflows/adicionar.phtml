@@ -3,6 +3,23 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
+                    <h3 class="panel-title">Selecione o assunto alvo do workflow</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="navbar-link">
+                        <div class="form-group">
+                            <label for="assuntoTxt" class="col-md-7 control-label">Assunto:</label>
+                            <div class="col-md-12">
+                                <input name="assuntoTxt" class="form-control" id="assuntoTxt" placeholder="Digite um assunto"/>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
                     <h3 class="panel-title">Adicionar setores ao workflow</h3>
                 </div>
                 <div class="panel-body">
@@ -65,6 +82,21 @@
     <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
+                <h3 class="panel-title">Decrição</h3>
+            </div>
+            <div class="panel-body" id="panel-workflow">
+                <div class="form-group">
+                    <form id="workflow" class="form-horizontal" role="form" method="POST" action="<?= $this->url('workflows', array('action' => 'adicionar')); ?>">
+                        <label for="descricaoTxt" class="col-lg-3 col-md-3 control-label">Descricao:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <textarea name="descricaoTxt" class="form-control" id="descricaoTxt" placeholder="Este workflow define o fluxo padrão dos processos de exemplo."></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
                 <h3 class="panel-title">Workflow</h3>
             </div>
             <div class="panel-body panel-workflow" id="panel-workflow">
@@ -73,17 +105,17 @@
                 </ol>            
             </div>
             <div class="panel-footer center">
-                <form id="workflow" class="form-horizontal" role="form" method="POST" action="<?= $this->url('workflows', array('action' => 'adicionar')); ?>">
+                
                     <button type="button" id="enviar" class="btn btn-success">
                         Enviar
                     </button>
-                </form>
+<!--                </form>-->
             </div>
         </div>
     </div>
 
 </div>
-
+<!--
 <? $this->headScript()->captureStart(); ?>
 $(document).ready(function(){
     $('#secretariaSlct').change(function(){
@@ -150,3 +182,29 @@ $(function() {
     $( "ul, li" ).disableSelection();
  });
 <? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+  $(function() {
+    $( "#assuntoTxt" ).autocomplete({
+      source: '/assuntos/assuntoautocomplete'
+    });
+  });
+<? $this->headScript()->captureEnd(); ?>
+
+<? $this->headScript()->captureStart(); ?>
+  $(function() {
+    $( "#assuntoTxt" ).blur(function(){
+        var valor = $(this).val();
+        if(valor==null || valor == ""){
+            alert('Você deve escolher um assunto');
+            $(this).focus();
+            return;
+        }
+            
+        $.post('/assuntos/getidassuntopornome',{data: valor},function(ret){
+            $('#workflow').append('<input type="hidden" name="assunto" value="'+ret+'">');
+        });
+    });
+  });
+<? $this->headScript()->captureEnd(); ?>
+-->

@@ -89,11 +89,11 @@ final class AssuntoFilter extends InputFilter {
         
         $this->add($secretariaFilter);
 
-        $dql = "SELECT s.idSetor FROM Application\Entity\Setor AS s";
+        $dql = "SELECT s.idPostoDeTrabalho FROM Application\Entity\Setor AS s";
         $query = $this->objectManager->createQuery($dql);
         $setores = $query->getResult();
         foreach ($setores as $setor) {
-            $idSetor[] = $setor['idSetor'];
+            $idSetor[] = $setor['idPostoDeTrabalho'];
         }
 
         $setorHayStack = new Validator\InArray(array('haystack' => $idSetor));

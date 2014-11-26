@@ -51,9 +51,28 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
         $this->__cloner__      = $cloner;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param string $name
+     */
+    public function __get($name)
+    {
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
 
+        return parent::__get($name);
+    }
 
+    /**
+     * {@inheritDoc}
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function __set($name, $value)
+    {
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
 
+        return parent::__set($name, $value);
+    }
 
 
 
@@ -64,10 +83,10 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'idSetor', 'nome', 'sigla', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'fluxosSetor', 'guiasDeRemessa', 'requerentes', 'assuntos');
+            return array('__isInitialized__', 'arquivo', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'requerentes', 'assuntos');
         }
 
-        return array('__isInitialized__', 'idSetor', 'nome', 'sigla', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'fluxosSetor', 'guiasDeRemessa', 'requerentes', 'assuntos');
+        return array('__isInitialized__', 'arquivo', 'setorPai', 'setoresFilhos', 'tipoSetor', 'secretaria', 'usuarios', 'requerentes', 'assuntos');
     }
 
     /**
@@ -178,36 +197,10 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
      */
     public function getIdSetor()
     {
-        if ($this->__isInitialized__ === false) {
-            return (int)  parent::getIdSetor();
-        }
-
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdSetor', array());
 
         return parent::getIdSetor();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getNome()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNome', array());
-
-        return parent::getNome();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSigla()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSigla', array());
-
-        return parent::getSigla();
     }
 
     /**
@@ -224,17 +217,6 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getTipo()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTipo', array());
-
-        return parent::getTipo();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getSecretaria()
     {
 
@@ -246,56 +228,12 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function setIdSetor($idSetor)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIdSetor', array($idSetor));
-
-        return parent::setIdSetor($idSetor);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setNome($nome)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNome', array($nome));
-
-        return parent::setNome($nome);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setSigla($sigla)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSigla', array($sigla));
-
-        return parent::setSigla($sigla);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setSetorPai(\Application\Entity\Setor $setorPai)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSetorPai', array($setorPai));
 
         return parent::setSetorPai($setorPai);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setTipo(\Application\Entity\TipoSetor $tipo)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTipo', array($tipo));
-
-        return parent::setTipo($tipo);
     }
 
     /**
@@ -400,50 +338,6 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function addFluxoPosto(\Application\Entity\FluxoPosto $fluxoPosto)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addFluxoPosto', array($fluxoPosto));
-
-        return parent::addFluxoPosto($fluxoPosto);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFluxoPosto($key)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFluxoPosto', array($key));
-
-        return parent::getFluxoPosto($key);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeFluxoPosto($key)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeFluxoPosto', array($key));
-
-        return parent::removeFluxoPosto($key);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFluxosPostos()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFluxosPostos', array());
-
-        return parent::getFluxosPostos();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addRequerente(\Application\Entity\Requerente $requerente)
     {
 
@@ -527,6 +421,186 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAssuntos', array());
 
         return parent::getAssuntos();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setArquivo($boolean = false)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setArquivo', array($boolean));
+
+        return parent::setArquivo($boolean);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isArquivo()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isArquivo', array());
+
+        return parent::isArquivo();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTipoSetor()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTipoSetor', array());
+
+        return parent::getTipoSetor();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUsuarios()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsuarios', array());
+
+        return parent::getUsuarios();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTipoSetor(\Application\Entity\TipoSetor $tipoSetor)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTipoSetor', array($tipoSetor));
+
+        return parent::setTipoSetor($tipoSetor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUsuarios(\Doctrine\Common\Collections\ArrayCollection $usuarios)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUsuarios', array($usuarios));
+
+        return parent::setUsuarios($usuarios);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__toString', array());
+
+        return parent::__toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIdPostoDeTrabalho()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getIdPostoDeTrabalho();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdPostoDeTrabalho', array());
+
+        return parent::getIdPostoDeTrabalho();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIdPostoDeTrabalho($idPostoDeTrabalho)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIdPostoDeTrabalho', array($idPostoDeTrabalho));
+
+        return parent::setIdPostoDeTrabalho($idPostoDeTrabalho);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNome()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNome', array());
+
+        return parent::getNome();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSigla()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSigla', array());
+
+        return parent::getSigla();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setNome($nome)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNome', array($nome));
+
+        return parent::setNome($nome);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSigla($sigla)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSigla', array($sigla));
+
+        return parent::setSigla($sigla);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFluxosPosto()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFluxosPosto', array());
+
+        return parent::getFluxosPosto();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFluxosPosto(\Doctrine\Common\Collections\ArrayCollection $fluxosPosto)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFluxosPosto', array($fluxosPosto));
+
+        return parent::setFluxosPosto($fluxosPosto);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setGuiasDeRemessa(\Doctrine\Common\Collections\ArrayCollection $guiasDeRemessa)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setGuiasDeRemessa', array($guiasDeRemessa));
+
+        return parent::setGuiasDeRemessa($guiasDeRemessa);
     }
 
 }

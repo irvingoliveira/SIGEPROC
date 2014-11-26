@@ -265,4 +265,15 @@ class TipoSetor extends \Application\Entity\TipoSetor implements \Doctrine\ORM\P
         return parent::getSetores();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__toString', array());
+
+        return parent::__toString();
+    }
+
 }

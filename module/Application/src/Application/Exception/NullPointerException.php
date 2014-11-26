@@ -24,8 +24,8 @@ namespace Application\Exception;
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
-class NullPointerException extends Exception{
+class NullPointerException extends \Exception{
     public function __construct() {
-        parent::__construct("Não existe nenhum objeto neste índice.");
+        parent::__construct("Não existe nenhum objeto neste índice.",0,null);
     }
 }

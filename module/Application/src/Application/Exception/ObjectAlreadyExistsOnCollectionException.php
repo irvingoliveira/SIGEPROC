@@ -26,6 +26,6 @@ namespace Application\Exception;
  */
 class ObjectAlreadyExistsOnCollectionException extends \Exception{
     public function __construct() {
-        parent::__construct("Já existe este registro cadastrado.");
+        parent::__construct("Já existe este registro cadastrado.",0,NULL);
     }
 }

@@ -25,7 +25,7 @@
                     </tr>
                     <? foreach ($this->orgaosExternos as $key => $orgaoexterno): ?>
                         <tr>
-                            <td class="col-sd-2"><?= $orgaoexterno->getAbreviacao() ?></td>            
+                            <td class="col-sd-2"><?= $orgaoexterno->getSigla() ?></td>            
                             <td><?= $orgaoexterno->getNome() ?></td>            
                             <td class="col-sd-2">
                                 <a class="btn btn-xs btn-info" title="Visualizar" href="/orgaosexternos/visualizar/<?=$orgaoexterno->getIdOrgaoExterno()?>"><span class="glyphicon glyphicon-new-window"></span></a>

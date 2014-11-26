@@ -90,11 +90,6 @@ class Usuario {
      */
     private $guiasDeRemessaEnviadas;
     /**
-     * @ORM\OneToMany(targetEntity="GuiaDeRemessa", mappedBy="destinatario")
-     * @var ArrayCollection
-     */
-    private $guiasDeRemessaRecebidas;
-    /**
      * @ORM\OneToMany(targetEntity="Processo", mappedBy="usuario")
      * @var ArrayCollection
      */
@@ -113,7 +108,6 @@ class Usuario {
     public function __construct() {
         $this->setores = new ArrayCollection();
         $this->guiasDeRemessaEnviadas = new ArrayCollection();
-        $this->guiasDeRemessaRecebidas = new ArrayCollection();
         $this->processos = new ArrayCollection();
         $this->pendencias = new ArrayCollection();
         $this->pareceres = new ArrayCollection();
@@ -240,32 +234,7 @@ class Usuario {
     public function getProcessos(){
         return $this->processos->toArray();
     }
-    
-    public function addGuiaDeRemessaRecebida(GuiaDeRemessa $guiaDeRemessa){
-        if($this->guiasDeRemessaRecebidas->contains($guiaDeRemessa)){
-            throw new ObjectAlreadyExistsOnCollectionException();
-        }
-        $this->guiasDeRemessaRecebidas->set($guiaDeRemessa->getIdGuiaDeRemessa(), $guiaDeRemessa);
-    }
-    
-    public function getGuiaDeRemessaRecebida($key){
-        if(!$this->guiasDeRemessaRecebidas->containsKey($key)){
-            throw new NullPointerException();
-        }
-        return $this->guiasDeRemessaRecebidas->get($key);
-    }
-    
-    public function removeGuiaDeRemessaRecebida($key){
-        if(!$this->guiasDeRemessaRecebidas->containsKey($key)){
-            return;
-        }
-        $this->guiasDeRemessaRecebidas->remove($key);
-    }
-    
-    public function getGuiasDeRemessaRecebidas(){
-        return $this->guiasDeRemessaRecebidas->toArray();
-    }
-    
+
     public function addSetor(Setor $setor){
         if($this->setores->contains($setor)){
             throw new ObjectAlreadyExistsOnCollectionException();
@@ -274,7 +243,7 @@ class Usuario {
     }
     
     public function getSetorAtual(){
-        $this->setores->last();
+        return $this->setores->last();
     }
 
     public function getSetor($key){

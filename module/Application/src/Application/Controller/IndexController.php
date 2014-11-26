@@ -20,8 +20,7 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-
+use Application\DAL\ProcessoDAO;
 /**
  * Description of ManterSecretariasController
  *
@@ -31,6 +30,16 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+        $processosNoSetor = count($this->getProcessosInicadosNoSetorDoUsuario());
+        return array(
+            'processosNoSetor' => $processosNoSetor
+                );
+    }
+   
+    public function getProcessosInicadosNoSetorDoUsuario(){
+        $authService = $this->getServiceLocator()->get('AuthService');
+        $usuario = $authService->getIdentity();
+        $processoDAO = new ProcessoDAO($this->getServiceLocator());
+        return $processoDAO->getProcessosInicadosNoSetorDoUsuario($usuario['id'])->getResult();
     }
 }
