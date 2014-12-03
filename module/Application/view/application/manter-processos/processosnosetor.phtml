@@ -2,7 +2,7 @@
     <div class="col-md-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Guias de remessa</h3>
+                <h3 class="panel-title">Processos no setor</h3>
             </div>
             <div class="panel-body">
                 <div class="col-sm-2">
@@ -10,7 +10,7 @@
                 </div>
                 <form method="GET" action="<?=$this->url('guiasderemessa', array('action' => 'buscar'))?>">
                     <div class="col-sm-offset-4 col-sm-5">
-                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar guias" maxlength="150">
+                        <input type="text" name="busca" class="form-control" placeholder="Pesquisar processos" maxlength="150">
                     </div>
                     <div class="col-sm-1">
                         <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
@@ -21,23 +21,21 @@
                     <tr>
                         <th>Número</th>
                         <th>Exercício</th>
-                        <th>Data de criação</th>
-                        <th>Emissor</th>
-                        <th>Posto de Destino</th>
-                        <th>Quantidade de processos</th>
+                        <th>Assunto</th>
+                        <th>Volumes</th>
+                        <th>Requerente</th>
                         <th>&nbsp;</th>
                     </tr>
-                    <? foreach ($this->guias as $guia): ?>
+                    <? foreach ($this->processos as $processo): ?>
                         <tr>
-                            <td class="col-sd-2"><?= $guia->getNumero() ?></td>            
-                            <td><?= $guia->getAnoExercicio() ?></td>            
-                            <td><?= $guia->getDataCriacao()->format('d/m/Y') ?></td>            
-                            <td><?= $guia->getEmissor()->getNome() ?></td>            
-                            <td><?= $guia->getPostoDeTrabalho() ?></td>                     
-                            <td><?= $guia->getQtdProcessos() ?></td>      
+                            <td class="col-sd-2"><?= $processo->getNumero() ?></td>            
+                            <td><?= $processo->getAnoExercicio() ?></td>            
+                            <td><?= $processo->getAssunto()->getNome() ?></td>            
+                            <td><?= $processo->getVolume() ?></td>            
+                            <td><?= $processo->getRequerente()->getNome() ?></td>                     
                             <td>
-                                <a class="btn btn-xs btn-info" href="/guiasderemessa/visualizar/<?=$guia->getIdGuiaDeRemessa() ?>" title="Vizualizar">
-                                    <span class="glyphicon glyphicon-new-window"></span></a> 
+                                <a class="btn btn-xs btn-info" title="Visualizar" href="/processos/visualizar/<?=$processo->getIdProcesso();?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                            </td>                     
                         </tr>
                     <? endforeach; ?>
                 </table>
@@ -46,14 +44,14 @@
                 // add at the end of the file after the table
                 echo $this->paginationControl(
                         // the paginator object
-                        $this->guias,
+                        $this->processos,
                         // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
                         'sliding',
                         // the partial to use to render the control
-                        array('partial/paginator.phtml', 'GuiasDeRemessa'),
+                        array('partial/paginator.phtml', 'Secretarias'),
                         // the route to link to when a user clicks a control link
                         array(
-                    'route' => 'guiasderemessa',
+                    'route' => 'processos',
                     'orderby' => $this->orderby,
                         )
                 );

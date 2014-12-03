@@ -123,6 +123,20 @@ return array(
                     ),
                 ),
             ),
+            'relatorios' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/relatorios[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Relatorios',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'secretarias' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -279,6 +293,7 @@ return array(
             'GuiasDeRemessa' => 'Application\Controller\ManterGuiasDeRemessaController',
             'OrgaosExternos' => 'Application\Controller\ManterOrgaosExternosController',
             'Processos' => 'Application\Controller\ManterProcessosController',
+            'Relatorios' => 'Application\Controller\RelatoriosController',
             'Secretarias' => 'Application\Controller\ManterSecretariasController',
             'Setores' => 'Application\Controller\ManterSetoresController',
             'StatusProcessos' => 'Application\Controller\ManterStatusProcessosController',

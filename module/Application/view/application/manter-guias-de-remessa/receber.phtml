@@ -5,11 +5,8 @@
                 <h3 class="panel-title">Guias de remessa</h3>
             </div>
             <div class="panel-body">
-                <div class="col-sm-2">
-                    <a href="<?=$this->url('guiasderemessa', array('action' => 'adicionar'))?>" class="btn btn-success btn-add" title="Novo"><span class="glyphicon glyphicon-plus"></span>Nova guia</a>
-                </div>
                 <form method="GET" action="<?=$this->url('guiasderemessa', array('action' => 'buscar'))?>">
-                    <div class="col-sm-offset-4 col-sm-5">
+                    <div class="col-sm-offset-6 col-sm-5" style="padding-bottom: 10px">
                         <input type="text" name="busca" class="form-control" placeholder="Pesquisar guias" maxlength="150">
                     </div>
                     <div class="col-sm-1">
@@ -25,7 +22,7 @@
                         <th>Emissor</th>
                         <th>Posto de Destino</th>
                         <th>Quantidade de processos</th>
-                        <th>&nbsp;</th>
+                        <th style="min-width: 100px;">&nbsp;</th>
                     </tr>
                     <? foreach ($this->guias as $guia): ?>
                         <tr>
@@ -34,10 +31,14 @@
                             <td><?= $guia->getDataCriacao()->format('d/m/Y') ?></td>            
                             <td><?= $guia->getEmissor()->getNome() ?></td>            
                             <td><?= $guia->getPostoDeTrabalho() ?></td>                     
-                            <td><?= $guia->getQtdProcessos() ?></td>      
+                            <td><?= $guia->getQtdProcessos() ?></td>                     
                             <td>
                                 <a class="btn btn-xs btn-info" href="/guiasderemessa/visualizar/<?=$guia->getIdGuiaDeRemessa() ?>" title="Vizualizar">
-                                    <span class="glyphicon glyphicon-new-window"></span></a> 
+                                    <span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-success" href="/guiasderemessa/receber/<?=$guia->getIdGuiaDeRemessa() ?>" title="Receber">
+                                    <span class="glyphicon glyphicon-thumbs-up"></span></a>
+                                <a class="btn btn-xs btn-danger" href="/guiasderemessa/rejeitar/<?=$guia->getIdGuiaDeRemessa() ?>" title="Rejeitar">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span></a></td>                     
                         </tr>
                     <? endforeach; ?>
                 </table>
@@ -50,7 +51,7 @@
                         // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
                         'sliding',
                         // the partial to use to render the control
-                        array('partial/paginator.phtml', 'GuiasDeRemessa'),
+                        array('partial/paginator.phtml', 'Secretarias'),
                         // the route to link to when a user clicks a control link
                         array(
                     'route' => 'guiasderemessa',

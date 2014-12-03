@@ -3,7 +3,7 @@ if($this->assunto){
     $id = $this->assunto->getIdAssunto();
     $nome = $this->assunto->getNome();
     $secretaria = $this->assunto->getSetor()->getSecretaria()->getNome();
-    $tipoSetor = $this->assunto->getSetor()->getTipo()->getNome();
+    $tipoSetor = $this->assunto->getSetor()->getTipoSetor()->getNome();
     $setor = $this->assunto->getSetor()->getNome();
     $descricao = $this->assunto->getDescricao();
 }

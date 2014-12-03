@@ -19,7 +19,7 @@
 
 namespace Application\Filters;
 
-use \Doctrine\Common\Persistence\ObjectManager;
+use Zend\ServiceManager\ServiceManager;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator;
@@ -35,8 +35,8 @@ final class TipoSetorFilter extends InputFilter {
     private $nomeTxt;
     private $objectManager;
 
-    public function __construct(ObjectManager $om, $nomeTxt) {
-        $this->objectManager = $om;
+    public function __construct(ServiceManager $sm, $nomeTxt) {
+        $this->objectManager = $sm->get('ObjectManager');
         $this->nomeTxt = $nomeTxt;
         $this->TipoSetorInputFilters();
     }

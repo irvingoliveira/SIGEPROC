@@ -48,7 +48,7 @@ final class SetorFilter extends InputFilter {
     public function __construct($nomeTxt, $siglaTxt, $secretariaSlct, $tipoSlct, 
             $arquivoRd, $setorMestreSlct, DAOInterface $secretariaDAO, DAOInterface $tipoSetorDAO, 
             DAOInterface $setorDAO) {
-        var_dump($setorMestreSlct);die();
+
         $this->nomeTxt = $nomeTxt;
         $this->siglaTxt = $siglaTxt;
         $this->secretariaSlct = $secretariaSlct;

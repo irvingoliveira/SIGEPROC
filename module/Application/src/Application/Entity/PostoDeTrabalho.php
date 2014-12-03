@@ -58,10 +58,16 @@ abstract class PostoDeTrabalho {
      * @var ArrayCollection
      */
     private $guiasDeRemessa;
+    /**
+     * @ORM\OneToMany(targetEntity="Processo", mappedBy="postoDeTrabalho")
+     * @var ArrayCollection 
+     */
+    private $processos;
 
     public function __construct() {
         $this->fluxosPosto = new ArrayCollection();
         $this->guiasDeRemessa = new ArrayCollection();
+        $this->processos = new ArrayCollection();
     }
 
     public function __set($atrib, $value){
@@ -112,5 +118,12 @@ abstract class PostoDeTrabalho {
         $this->guiasDeRemessa = $guiasDeRemessa;
     }
 
+    public function getProcessos() {
+        return $this->processos;
+    }
+
+    public function setProcessos(ArrayCollection $processos) {
+        $this->processos = $processos;
+    }
 
 }

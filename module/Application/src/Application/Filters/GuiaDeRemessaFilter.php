@@ -32,13 +32,15 @@ use Application\DAL\DAOInterface;
 final class GuiaDeRemessaFilter extends InputFilter {
 
     private $setorSlct;
+    private $orgaoExternoSlct;
     
     private $setorDAO;
     private $orgaoExternoDAO;
     
-    public function __construct($setorSlct, DAOInterface $setorDAO, 
+    public function __construct($setorSlct, $orgaoExternoSlct, DAOInterface $setorDAO, 
                                 DAOInterface $orgaoExternoDAO) {
         $this->setorSlct = $setorSlct;
+        $this->orgaoExternoDAO = $orgaoExternoSlct;
         
         $this->setorDAO = $setorDAO;
         $this->orgaoExternoDAO = $orgaoExternoDAO;
@@ -47,12 +49,15 @@ final class GuiaDeRemessaFilter extends InputFilter {
     }
 
     private final function guiaDeRemessaInputFilters() {
-
-        $this->add($this->getSetorSlctInput());
+        if($this->setorSlct != NULL){
+            $this->add($this->getSetorSlctInput());
+            $data = array('postoSlct' => $this->setorSlct);
+        }else{
+            $this->add($this->getOrgaoExternoSlctInput());
+            $data = array('postoSlct' => $this->orgaoExternoSlct);
+        }
         
-        $this->setData(array(
-            'setorSlct' => $this->setorSlct
-        ));
+        $this->setData($data);
     }
     
     private function getSetorSlctInput(){
@@ -66,9 +71,13 @@ final class GuiaDeRemessaFilter extends InputFilter {
             Validator\InArray::NOT_IN_ARRAY => 'Não foi escolhido um setor válido.'
         ));
         
-        $setorFilter = new Input('setorSlct');
-        $setorFilter->setRequired(FALSE);
+        $setorNotEmpty = new Validator\NotEmpty();
+        $setorNotEmpty->setMessage('Você deve escolher um posto de trabalho.');
+        
+        $setorFilter = new Input('postoSlct');
+        $setorFilter->setRequired(TRUE);
         $setorFilter->getValidatorChain()
+                ->attach($setorNotEmpty)
                 ->attach($setorHayStack);
 
         return $setorFilter;
@@ -85,10 +94,14 @@ final class GuiaDeRemessaFilter extends InputFilter {
             Validator\InArray::NOT_IN_ARRAY => 'Não foi escolhido um setor válido.'
         ));
         
-        $orgaoFilter = new Input('orgaoSlct');
-        $orgaoFilter->setRequired(FALSE);
+        $orgaoNotEmpty = new Validator\NotEmpty();
+        $orgaoNotEmpty->setMessage('Você deve escolher um posto de trabalho.');
+        
+        $orgaoFilter = new Input('postoSlct');
+        $orgaoFilter->setRequired(TRUE);
         $orgaoFilter->getValidatorChain()
-                ->attach($orgaoHayStack);
+                ->attach($orgaoHayStack)
+                ->attach($orgaoNotEmpty);
 
         return $orgaoFilter;
     }

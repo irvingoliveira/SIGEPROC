@@ -20,7 +20,9 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Application\DAL\GuiaDeRemessaDAO;
 use Application\DAL\ProcessoDAO;
+use Application\DAL\UsuarioDAO;
 /**
  * Description of ManterSecretariasController
  *
@@ -28,18 +30,39 @@ use Application\DAL\ProcessoDAO;
  */
 class IndexController extends AbstractActionController
 {
-    public function indexAction()
-    {
-        $processosNoSetor = count($this->getProcessosInicadosNoSetorDoUsuario());
+    public function indexAction() {
+        
+        $authService = $this->getServiceLocator()->get('AuthService');
+        $usuario = $authService->getIdentity();
+        
+        $processosNoSetor = count($this->getProcessosNoSetorDoUsuario($usuario));
+        $guiasEnviadas = count($this->getGuiasEnviadasNaoRecebidas($usuario));
+        $guiasAReceber = count($this->getGuiasAReceber($usuario));
         return array(
-            'processosNoSetor' => $processosNoSetor
+            'processosNoSetor' => $processosNoSetor,
+            'guiasEnviadas' => $guiasEnviadas,
+            'guiasAReceber' => $guiasAReceber
                 );
     }
    
-    public function getProcessosInicadosNoSetorDoUsuario(){
-        $authService = $this->getServiceLocator()->get('AuthService');
-        $usuario = $authService->getIdentity();
+    public function getProcessosNoSetorDoUsuario(array $usuario){
         $processoDAO = new ProcessoDAO($this->getServiceLocator());
-        return $processoDAO->getProcessosInicadosNoSetorDoUsuario($usuario['id'])->getResult();
+        $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
+        return $processoDAO->getProcessosNoSetor(
+                $usuarioDAO->lerPorId($usuario['id']))->getResult();
+    }
+    
+    public function getGuiasEnviadasNaoRecebidas(array $usuario){
+        $guiaDAO = new GuiaDeRemessaDAO($this->getServiceLocator());
+        $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
+        return $guiaDAO->getGuiasEnviadasNaoRecebidas(
+                $usuarioDAO->lerPorId($usuario['id']))->getResult();
+    }
+    
+    public function getGuiasAReceber(array $usuario){
+        $guiaDAO = new GuiaDeRemessaDAO($this->getServiceLocator());
+        $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
+        return $guiaDAO->getGuiasAReceber(
+                $usuarioDAO->lerPorId($usuario['id']))->getResult();
     }
 }

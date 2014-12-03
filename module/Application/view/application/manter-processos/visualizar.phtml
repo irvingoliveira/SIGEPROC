@@ -35,8 +35,8 @@ if($this->processo){
     $usuario = $processo->getUsuario();
     $usuarioMatr = $usuario->getMatricula().'-'.$usuario->getDigito();
     $usuarioNome = $usuario->getNome();
-    $usuarioSec = $usuario->getSetorAtual()['secretaria']['nome'];
-    $usuarioSetor = $usuario->getSetorAtual()['nome'];
+    $usuarioSec = $usuario->getSetorAtual()->getSetor()->getSecretaria()->getNome();
+    $usuarioSetor = $usuario->getSetorAtual()->getSetor();
 }
 ?>
 <div class="row">
@@ -164,7 +164,7 @@ if($this->processo){
                 </div>
             </div>
             <div class="panel-footer center">
-                <a href="<?=$this->url('processos', array('action' => 'index'))?>" class="btn btn-success" title="Voltar"><span class="glyphicon glyphicon-backward"></span>Voltar</a>
+                <a onclick="history.go(-1)" class="btn btn-success" title="Voltar"><span class="glyphicon glyphicon-backward"></span>Voltar</a>
             </div>
         </div>
     </div>

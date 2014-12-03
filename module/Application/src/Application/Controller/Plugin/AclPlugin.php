@@ -79,8 +79,7 @@ class AclPlugin extends AbstractPlugin{
         
         $session = $this->getSessionContainer()->read();       
         $funcao = (!$session)? 'GUEST' : $session['funcao'];
-        
-        $e->getViewModel()->funcao = $funcao; 
+
         
         if(!$acl->isAllowed($funcao, $recurso, $action)){
             $router = $e->getRouter();
@@ -92,6 +91,7 @@ class AclPlugin extends AbstractPlugin{
             $response->getHeaders()->addHeaderLine('Location',$url);
             $e->stopPropagation();
         }
+        $e->getViewModel()->funcao = $funcao; 
         $e->getViewModel()->usuarioNome = $session['nome']; 
     }   
 }

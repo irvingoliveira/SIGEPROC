@@ -37,6 +37,14 @@ class ProcessoDAO extends GenericDAO {
     public function getNomeDaClasse() {
         return "Processo";
     }
+    
+    public function setStatus($idProcesso, $status){
+        $objectManager = $this->getObjectManager();
+        $statusDAO = new StatusProcessoDAO($this->getServiceManager());
+        
+        $processo = $this->lerPorId($idProcesso);
+        $processo->setStatus($statusDAO->lerPorId($status));
+    }
 
     public function salvar(ArrayCollection $params) {
         $documentoDAO = new DocumentoDAO($this->getServiceManager());
@@ -121,11 +129,12 @@ class ProcessoDAO extends GenericDAO {
     
     public function getProcessosInicadosNoSetorDoUsuario($idUsuario){
         $objectManager = $this->getObjectManager();
-        
+
         $dql = 'SELECT p FROM Application\Entity\Processo p ';
         $dql.= 'JOIN p.usuario u ';
         $dql.= 'JOIN u.setores s ';
         $dql.= 'WHERE u.idUsuario = ?1 ';
+        $dql.= 'AND p.status = 1 ';
         $dql.= 'AND s.dataSaida IS NULL ';
         
         $query = $objectManager->createQuery($dql);
@@ -136,24 +145,34 @@ class ProcessoDAO extends GenericDAO {
     public function getProcessosNoSetor(Usuario $usuario){
         $objectManager = $this->getObjectManager();
         
-        $dql = 'SELECT p ';
+        $statusDAO = new StatusProcessoDAO($this->getServiceManager());
+        $statusEmTransito = $statusDAO->lerPorId(2);
+        
+        $dql = 'SELECT DISTINCT p ';
         $dql.= 'FROM Application\Entity\Processo p ';
-        $dql.= 'JOIN p.usuario u ';
-        $dql.= 'JOIN u.setores s ';
-        $dql.= 'WHERE (u.idUsuario = ?1 ';
-        $dql.= 'AND s.dataSaida IS NULL) ';
-        $dql.= 'OR p IN( ';
-        $dql.= '    SELECT pr ';
-        $dql.= '    FROM Application\Entity\Processo pr ';
-        $dql.= '    JOIN pr.guiasDeRemessa g ';
-        $dql.= '    WHERE g.dataRecebimento IS NULL ';
-        $dql.= '    AND g.postoDeTrabalho = ?2 ';
-        $dql.= ') ';
+        $dql.= 'JOIN p.postoDeTrabalho pt ';
+        $dql.= 'WHERE pt.idPostoDeTrabalho = ?1';
+        $dql.= 'AND p.status <> ?2';
 
         $query = $objectManager->createQuery($dql);
-        $query->setParameter(1,$usuario->getIdUsuario());
-        $query->setParameter(2,$usuario->getSetorAtual()->getSetor()->getIdSetor());
+        $query->setParameter(1,$usuario->getSetorAtual()->getSetor());
+        $query->setParameter(2,$statusEmTransito);
         
         return $query;
+    }
+    
+    public function getProcessosPorAno(){
+        $objectManager = $this->getObjectManager();
+        
+        $dql = 'SELECT p.anoExercicio, COUNT(p.idProcesso) AS processos ';
+        $dql.= 'FROM Application\Entity\Processo p ';
+        $dql.= 'WHERE p.anoExercicio > ?1-2 ';
+        $dql.= 'AND p.anoExercicio < ?1+2 ';
+        $dql.= 'GROUP BY p.anoExercicio ';
+
+        $query = $objectManager->createQuery($dql);
+        $dataDoSistema = new \DateTime('NOW');
+        $query->setParameter(1,$dataDoSistema->format('Y'));
+        return $query->getResult();
     }
 }

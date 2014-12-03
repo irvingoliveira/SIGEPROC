@@ -63,12 +63,24 @@ class GuiaDeRemessa {
      */
     private $dataRecebimento;
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     * @var boolean
+     */
+    private $rejeitada;
+    /**
      * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="guiasDeRemessaEnviadas")
      * @ORM\JoinColumn(name="Emissor_idUsuario",
      *                 referencedColumnName="idUsuario", nullable=false)
      * @var Usuario
      */
     private $emissor;
+    /**
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="guiasDeRemessaEnviadas")
+     * @ORM\JoinColumn(name="Recebedor_idUsuario",
+     *                 referencedColumnName="idUsuario", nullable=true)
+     * @var Usuario
+     */
+    private $recebedor;
     /**
      * @ORM\ManyToOne(targetEntity="PostoDeTrabalho", inversedBy="guiasDeRemessa")
      * @ORM\JoinColumn(name="PostoDeTrabalho_idPostoDeTrabalho",
@@ -167,7 +179,11 @@ class GuiaDeRemessa {
         return $this->processos->toArray();
     }
     
-    public function getOrgaoExterno() {
+    public function setProcessos(ArrayCollection $processos){
+        $this->processos = $processos;
+    }
+    
+    public function getPostoDeTrabalho() {
         return $this->postoDeTrabalho;
     }
 
@@ -181,5 +197,24 @@ class GuiaDeRemessa {
 
     public function setEmissor(Usuario $emissor) {
         $this->emissor = $emissor;
+    }
+    
+    public function getQtdProcessos(){
+        return $this->processos->count();
+    }
+    
+    public function getRecebedor() {
+        return $this->recebedor;
+    }
+
+    public function setRecebedor(Usuario $recebedor) {
+        $this->recebedor = $recebedor;
+    }
+    public function isRejeitada() {
+        return $this->rejeitada;
+    }
+
+    public function setRejeitada($rejeitada) {
+        $this->rejeitada = $rejeitada;
     }
 }

@@ -16,75 +16,78 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Application\DAL;
 
 use Zend\ServiceManager\ServiceManager;
 use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Description of GenericDAO
  *
  * @author Irving Fernando de Medeiros Oliveira
  */
 abstract class GenericDAO implements DAOInterface {
+
     private $serviceManager;
     private $objectManager;
-    
+
     protected function __construct(ServiceManager $serviceManager) {
         $this->serviceManager = $serviceManager;
         $this->objectManager = $serviceManager->get('ObjectManager');
     }
+
     /**
      * 
      * @return Doctrine\ORM\EntityManager
      */
-    protected function getObjectManager(){
+    protected function getObjectManager() {
         if (!$this->objectManager->isOpen()) {
             $this->objectManager = $this->objectManager->create(
-                $this->objectManager->getConnection(), 
-                $this->objectManager->getConfiguration()
+                    $this->objectManager->getConnection(), $this->objectManager->getConfiguration()
             );
         }
-         return $this->objectManager;
+        return $this->objectManager;
     }
-    
-    protected function getServiceManager(){
+
+    protected function getServiceManager() {
         return $this->serviceManager;
     }
-    
-    public function busca($parametro){
-        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o ';
+
+    public function busca($parametro) {
+        $dql = 'SELECT o FROM Application\Entity\\' . $this->getNomeDaClasse() . ' AS o ';
         $dql.= "WHERE o.nome LIKE ?1";
         $objectManager = $this->getObjectManager();
         $query = $objectManager->createQuery($dql);
-        $query->setParameter(1,$parametro);
+        $query->setParameter(1, $parametro);
         return $query->getResult();
     }
-    
-    public function buscaExata($parametro){
-        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o ';
+
+    public function buscaExata($parametro) {
+        $dql = 'SELECT o FROM Application\Entity\\' . $this->getNomeDaClasse() . ' AS o ';
         $dql.= "WHERE o.nome = ?1";
         $objectManager = $this->getObjectManager();
         $query = $objectManager->createQuery($dql);
-        $query->setParameter(1,$parametro);
+        $query->setParameter(1, $parametro);
         return $query->getResult();
     }
-   
-    public function buscaPersonalizada(ArrayCollection $params){
+
+    public function buscaPersonalizada(ArrayCollection $params) {
         $objectManager = $this->getObjectManager();
-        $i=1;
-        $j=1;
-        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o ';
-        $dql.= 'WHERE o.'.$params->key().' = ?'.$i.' ';
-        while(TRUE){
-            if($params->next() == NULL)
+        $i = 1;
+        $j = 1;
+        $dql = 'SELECT o FROM Application\Entity\\' . $this->getNomeDaClasse() . ' AS o ';
+        $dql.= 'WHERE o.' . $params->key() . ' = ?' . $i . ' ';
+        while (TRUE) {
+            if ($params->next() == NULL)
                 break;
-            $dql.= 'AND o.'.$params->key().' = ?'.++$i.' ';    
+            $dql.= 'AND o.' . $params->key() . ' = ?' . ++$i . ' ';
         }
         $query = $objectManager->createQuery($dql);
         $params->first();
-        while (TRUE){
-            $query->setParameter($j++,$params->current());
-            if($params->next() == NULL){
+        while (TRUE) {
+            $query->setParameter($j++, $params->current());
+            if ($params->next() == NULL) {
                 break;
             }
         }
@@ -92,92 +95,88 @@ abstract class GenericDAO implements DAOInterface {
     }
 
     public function lerPorId($id) {
-        if($id == NULL)
+        if ($id == NULL)
             return;
         $objectManager = $this->getObjectManager();
         $objetos = $objectManager
-                        ->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
+                ->getRepository('Application\Entity\\' . $this->getNomeDaClasse());
         $objeto = $objetos->find($id);
-        return $objeto;    
+        return $objeto;
     }
-    
+
     public abstract function getNomeDaClasse();
-    
+
     public function lerTodos() {
-        $dql = 'SELECT o FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o';
+        $dql = 'SELECT o FROM Application\Entity\\' . $this->getNomeDaClasse() . ' AS o';
         $objectManager = $this->getObjectManager();
         $query = $objectManager->createQuery($dql);
         return $query;
     }
-    
+
     public function getIdHaystack() {
-        $dql = 'SELECT o.id'.$this->getNomeDaClasse().' '
-             . 'FROM Application\Entity\\'.$this->getNomeDaClasse().' AS o';
+        $dql = 'SELECT o.id' . $this->getNomeDaClasse() . ' '
+                . 'FROM Application\Entity\\' . $this->getNomeDaClasse() . ' AS o';
         $objectManager = $this->getObjectManager();
         $query = $objectManager->createQuery($dql);
         return $query->getResult();
     }
-    
+
     public function salvar(ArrayCollection $params) {
-        $reflector = new \ReflectionClass('Application\Entity\\'.$this->getNomeDaClasse());
+        $reflector = new \ReflectionClass('Application\Entity\\' . $this->getNomeDaClasse());
         $objeto = $reflector->newInstance();
-        while(TRUE){
-            if($params->current() instanceof ArrayCollection){
-                $inicial = strtoupper(substr($params->key(),0,1));
-                $objeto->{'add'.$inicial.substr($params->key(),1)} = $params->current();
-            }else{
-                $objeto->{$params->key()} = $params->current();
-            }
-            if($params->next() == NULL){
+        while (TRUE) {
+            $objeto->{$params->key()} = $params->current();
+            if ($params->next() == NULL) {
                 break;
             }
         }
         $objectManager = $this->getObjectManager();
         $objectManager->persist($objeto);
         $objectManager->flush();
-        return $objectManager->find('Application\Entity\\'.$this->getNomeDaClasse(),
-                                             $objeto->{'id'.$this->getNomeDaClasse()});
+        return $objectManager->find('Application\Entity\\' . $this->getNomeDaClasse(), $objeto->{'id' . $this->getNomeDaClasse()});
     }
-    
+
     public function editar($id, ArrayCollection $params) {
-        if($id == NULL)
+        if ($id == NULL)
             return;
         $objectManager = $this->getObjectManager();
-        $objetos = $objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
+        $objetos = $objectManager->getRepository('Application\Entity\\' . $this->getNomeDaClasse());
         $objeto = $objetos->find($id);
-        while(TRUE){
+        while (TRUE) {
             $objeto->{$params->key()} = $params->current();
-            if($params->next() == NULL){
+            if ($params->next() == NULL) {
                 break;
             }
         }
         $objectManager->persist($objeto);
         $objectManager->flush();
+        return $objectManager->find('Application\Entity\\' . $this->getNomeDaClasse(), $objeto->{'id' . $this->getNomeDaClasse()});
     }
-    
+
     public function excluir($id) {
-        if($id == NULL)
+        if ($id == NULL)
             return;
         $objectManager = $this->getObjectManager();
         $objetos = $objectManager
-                        ->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
-        $objeto = $objetos->find($id); 
+                ->getRepository('Application\Entity\\' . $this->getNomeDaClasse());
+        $objeto = $objetos->find($id);
         $objectManager->remove($objeto);
         $objectManager->flush();
     }
-    
-    public function getQtdRegistros(){
+
+    public function getQtdRegistros() {
         $dql = 'SELECT COUNT(o) ';
-        $dql.= 'FROM Application\Entity\\'.$this->getNomeDaClasse().' o';
+        $dql.= 'FROM Application\Entity\\' . $this->getNomeDaClasse() . ' o';
         return $this->objectManager->createQuery($dql)->getSingleScalarResult();
     }
-    
-    public function lerRepositorio(){
-        return $this->objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse())
-                ->findAll();
+
+    public function lerRepositorio() {
+        return $this->objectManager->getRepository('Application\Entity\\' . $this->getNomeDaClasse())
+                        ->findAll();
     }
-    
-    public function getRepositorio(){
-        return $this->objectManager->getRepository('Application\Entity\\'.$this->getNomeDaClasse());
+
+    public function getRepositorio() {
+        return $this->objectManager->getRepository('Application\Entity\\' . $this->getNomeDaClasse());
     }
+
 }

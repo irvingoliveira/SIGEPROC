@@ -171,34 +171,34 @@ class ManterOrgaosExternosController extends AbstractActionController {
     }
 
     public function editarAction() {
-        $request = $this->getRequest();
-        $idTipoDocumento = (int) $this->params()->fromRoute('id', 0);
-        if ($idTipoDocumento) {
-            $objectManager = $this->getObjectManager();
-            $tiposDeDocumento = $objectManager->getRepository('Application\Entity\TipoDocumento');
-            $tipoDeDocumento = $tiposDeDocumento->find($idTipoDocumento);
-            if (!$request->isPost()) {
-                try {
-                    if ($tipoDeDocumento != NULL) {
-                        return array('tipoDocumento' => $tipoDeDocumento);
-                    } else {
-                        $this->flashMessenger()->addMessage("Tipo de documento não encotrada");
-                        $this->redirect()->toRoute('tiposdedocumento');
-                    }
-                } catch (\Exception $e) {
-                    $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
-                    $this->redirect()->toRoute('tiposdedocumento');
-                }
-            } else {
-                $nomeTxt = $request->getPost('nomeTxt');
-                $dadosFiltrados = new TipoSetorFilter($objectManager, $nomeTxt);
-                $tipoDeDocumento->setNome($dadosFiltrados->getValue('nomeTxt'));
-                $objectManager->persist($tipoDeDocumento);
-                $objectManager->flush();
-                $this->flashMessenger()->addSuccessMessage("Tipo de documento editado com sucesso.");
-                $this->redirect()->toRoute('tiposdedocumento');
-            }
-        }
+//        $request = $this->getRequest();
+//        $idTipoDocumento = (int) $this->params()->fromRoute('id', 0);
+//        if ($idTipoDocumento) {
+//            $objectManager = $this->getObjectManager();
+//            $tiposDeDocumento = $objectManager->getRepository('Application\Entity\TipoDocumento');
+//            $tipoDeDocumento = $tiposDeDocumento->find($idTipoDocumento);
+//            if (!$request->isPost()) {
+//                try {
+//                    if ($tipoDeDocumento != NULL) {
+//                        return array('tipoDocumento' => $tipoDeDocumento);
+//                    } else {
+//                        $this->flashMessenger()->addMessage("Tipo de documento não encotrada");
+//                        $this->redirect()->toRoute('tiposdedocumento');
+//                    }
+//                } catch (\Exception $e) {
+//                    $this->flashMessenger()->addErrorMessage("Ocorreu um erro na operação, tente novamente ou entre em contato com um administrador do sistema.");
+//                    $this->redirect()->toRoute('tiposdedocumento');
+//                }
+//            } else {
+//                $nomeTxt = $request->getPost('nomeTxt');
+//                $dadosFiltrados = new TipoSetorFilter($objectManager, $nomeTxt);
+//                $tipoDeDocumento->setNome($dadosFiltrados->getValue('nomeTxt'));
+//                $objectManager->persist($tipoDeDocumento);
+//                $objectManager->flush();
+//                $this->flashMessenger()->addSuccessMessage("Tipo de documento editado com sucesso.");
+//                $this->redirect()->toRoute('tiposdedocumento');
+//            }
+//        }
     }
 
     public function excluirAction() {

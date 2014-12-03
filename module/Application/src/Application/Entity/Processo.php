@@ -100,7 +100,7 @@ class Processo {
      * @ORM\ManyToOne(targetEntity="StatusProcesso", inversedBy="processos")
      * @ORM\JoinColumn(name="StatusProcesso_idStatusProcesso",
      *                 referencedColumnName="idStatusProcesso", nullable=false)
-     * @var Status
+     * @var StatusProcesso
      */
     private $status;
     /**
@@ -110,6 +110,13 @@ class Processo {
      * @var Usuario
      */
     private $usuario;
+    /**
+     * @ORM\ManyToOne(targetEntity="PostoDeTrabalho", inversedBy="processos")
+     * @ORM\JoinColumn(name="PostoDeTrabalho_idPostoDeTrabalho",
+     *                 referencedColumnName="idPostoDeTrabalho",nullable=false)
+     * @var PostoDeTrabalho
+     */
+    private $postoDeTrabalho;
     /**
      * @ORM\ManyToMany(targetEntity="GuiaDeRemessa", mappedBy="processos")
      * @var ArrayCollection
@@ -250,7 +257,7 @@ class Processo {
         return $this->usuario;
     }
 
-    public function setStatus(Status $status) {
+    public function setStatus(StatusProcesso $status) {
         $this->status = $status;
     }
 
@@ -307,4 +314,13 @@ class Processo {
     public function getApensosFilhos(){
         return $this->apensosFilhos->toArray();
     }
+    
+    public function getPostoDeTrabalho() {
+        return $this->postoDeTrabalho;
+    }
+
+    public function setPostoDeTrabalho(PostoDeTrabalho $postoDeTrabalho) {
+        $this->postoDeTrabalho = $postoDeTrabalho;
+    }
+
 }

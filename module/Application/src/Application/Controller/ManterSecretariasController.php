@@ -178,13 +178,31 @@ class ManterSecretariasController extends AbstractActionController {
             } else {
                 $nomeTxt = $request->getPost('nomeTxt');
                 $siglaTxt = $request->getPost('siglaTxt');
-                $dadosFiltrados = new SecretariaFilter($objectManager, $nomeTxt, $siglaTxt);
+                $dadosFiltrados = new SecretariaFilter($this->getServiceLocator(), $nomeTxt, $siglaTxt);
                 $secretaria->setNome($dadosFiltrados->getValue('nomeTxt'));
                 $secretaria->setSigla($dadosFiltrados->getValue('siglaTxt'));
-                $objectManager->persist($secretaria);
-                $objectManager->flush();
-                $this->flashMessenger()->addSuccessMessage("Secretaria editada com sucesso.");
-                $this->redirect()->toRoute('secretarias');
+                try{
+                    $objectManager->persist($secretaria);
+                    $objectManager->flush();
+                    $this->flashMessenger()->addSuccessMessage("Secretaria editada com sucesso.");
+                    $this->redirect()->toRoute('secretarias');
+                } catch (\Doctrine\DBAL\DBALException $e){
+                    if(strpos($e->getMessage(), 'SQLSTATE[23000]') > 0){
+                        $mensagem = "Já existe uma secretaria cadastrada ";
+                        $mensagem.= "com este nome ou sigla.";
+                    } else{
+                        $mensagem = "Ocorreu um erro na operação, tente novamente ";
+                        $mensagem .= "ou entre em contato com um administrador ";
+                        $mensagem .= "do sistema.";
+                    }
+                    $this->redirect()->toRoute('secretarias', array(
+                        'action'=>'editar',
+                        'id'=>$idSecretaria
+                        
+                        ));
+                    $this->flashMessenger()->addErrorMessage($mensagem);
+                    return;
+                }
             }
         }
     }

@@ -161,7 +161,7 @@ class ManterTiposDeDocumentoController extends AbstractActionController{
                 }
             }else{
                 $nomeTxt = $request->getPost('nomeTxt');
-                $dadosFiltrados = new TipoSetorFilter($objectManager, $nomeTxt);
+                $dadosFiltrados = new TipoDocumentoFilter($objectManager, $nomeTxt);
                 $tipoDeDocumento->setNome($dadosFiltrados->getValue('nomeTxt'));
                 $objectManager->persist($tipoDeDocumento);
                 $objectManager->flush();

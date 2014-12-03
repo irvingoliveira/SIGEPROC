@@ -11,7 +11,7 @@
             </div>
             <div class="panel-body">
                 <div class="col-md-5 col-md-offset-1">
-                    <a href="/guiasderemessa">
+                    <a href="/processos/processosnosetor">
                         <p style="font-size: 80pt"><?=$this->processosNoSetor?></p>
                     </a>
                 </div>                
@@ -25,14 +25,16 @@
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Processos a serem recebidos</h3>
+                <h3 class="panel-title">Guias de remessa a serem recebias</h3>
             </div>
             <div class="panel-body">
                 <div class="col-md-5 col-md-offset-1">
-                    <p style="font-size: 80pt">0</p>
+                    <a href="/guiasderemessa/receber">
+                        <p style="font-size: 80pt"><?=$this->guiasAReceber?></p>
+                    </a>
                 </div>                
-                <div class="col-md-5">
-                    <p style="padding-top: 20px">Processos encaminhados para este setor aguardando recebimento.</p>
+                <div class="col-md-6">
+                    <p style="padding-top: 20px">Guias de remessa encaminhadas para este setor aguardando recebimento.</p>
                 </div>                
             </div>
         </div>
@@ -41,14 +43,16 @@
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Processos em atrazo</h3>
+                <h3 class="panel-title">Guias de remessa enviadas.</h3>
             </div>
             <div class="panel-body">
                 <div class="col-md-5 col-md-offset-1">
-                    <p style="font-size: 80pt;">0</p>
+                    <a href="/guiasderemessa">
+                        <p style="font-size: 80pt"><?=$this->guiasEnviadas?></p>
+                    </a>
                 </div>                
-                <div class="col-md-5">
-                    <p style="padding-top: 30px">Processos em atrazo neste setor.</p>
+                <div class="col-md-6">
+                    <p style="padding-top: 15%">Guias de remessa enviadas aguardando o recebimento do destinatário.</p>
                 </div>                
             </div>
         </div>

@@ -1,0 +1,53 @@
+<div class="row">
+    
+    <div id='a' class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Menu</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="navbar-link">
+                    <li><a href="<?php echo $this->url('relatorios') ?>">Guias de remessa rejeitadas</a></li>
+                    <li><a href="<?php echo $this->url('relatorios', array('action' => 'processosporano')) ?>">Total de processos por ano</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Guias de remessa</h3>
+            </div>
+            <div class="panel-body">
+                <div>
+                    <div id="piechart"></div>
+                </div>                                
+            </div>
+        </div>
+    </div>
+
+<?php $this->headScript()->appendFile('https://www.google.com/jsapi') ?>
+ 
+<? $this->headScript()->captureStart(); ?>
+     google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Enviadas',<?=count($this->enviadas)?>],
+          ['Rejeitadas',<?=count($this->rejeitadas)?>]
+        ]);
+
+        var options = {
+          title: 'Guias de remessa'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+
+<? $this->headScript()->captureEnd(); ?>
+</div>

@@ -19,6 +19,7 @@
 namespace Application\DAL;
 
 use Zend\ServiceManager\ServiceManager;
+use Application\Entity\Usuario;
 /**
  * Description of AssuntoDAO
  *
@@ -32,5 +33,68 @@ class GuiaDeRemessaDAO extends GenericDAO{
 
     public function getNomeDaClasse() {
         return "GuiaDeRemessa";
+    }
+    
+    public function getGuiasEnviadasNaoRecebidas(Usuario $usuario){
+        $objectManager = $this->getObjectManager();
+        
+        $dql = 'SELECT g ';
+        $dql.= 'FROM Application\Entity\GuiaDeRemessa g ';
+        $dql.= 'WHERE g.dataRecebimento IS NULL ';
+        $dql.= 'AND g.emissor = ?1 ';
+        
+        
+        $query = $objectManager->createQuery($dql);
+        $query->setParameter(1,$usuario);
+        
+        return $query;
+    }
+    
+    public function getGuiasRejeitadasDoSetor(Usuario $usuario){
+        $objectManager = $this->getObjectManager();
+        
+        $dql = 'SELECT g ';
+        $dql.= 'FROM Application\Entity\GuiaDeRemessa g ';
+        $dql.= 'JOIN g.emissor u ';
+        $dql.= 'JOIN u.setores us ';
+        $dql.= 'WHERE g.rejeitada = TRUE ';
+        $dql.= 'AND us.setor = ?1 ';
+        
+        
+        $query = $objectManager->createQuery($dql);
+        $query->setParameter(1,$usuario->getSetorAtual()->getSetor());
+        
+        return $query;
+    }
+    
+    public function getGuiasEnviadasDoSetor(Usuario $usuario){
+        $objectManager = $this->getObjectManager();
+        
+        $dql = 'SELECT g ';
+        $dql.= 'FROM Application\Entity\GuiaDeRemessa g ';
+        $dql.= 'JOIN g.emissor u ';
+        $dql.= 'JOIN u.setores us ';
+        $dql.= 'WHERE g.rejeitada = FALSE ';
+        $dql.= 'AND us.setor = ?1 ';
+        
+        
+        $query = $objectManager->createQuery($dql);
+        $query->setParameter(1,$usuario->getSetorAtual()->getSetor());
+        
+        return $query;
+    }
+    
+    public function getGuiasAReceber(Usuario $usuario){
+        $objectManager = $this->getObjectManager();
+        
+        $dql = 'SELECT g ';
+        $dql.= 'FROM Application\Entity\GuiaDeRemessa g ';
+        $dql.= 'WHERE g.dataRecebimento IS NULL ';
+        $dql.= 'AND g.postoDeTrabalho = ?1 ';
+        
+        $query = $objectManager->createQuery($dql);
+        $query->setParameter(1,$usuario->getSetorAtual()->getSetor());
+        
+        return $query;
     }
 }

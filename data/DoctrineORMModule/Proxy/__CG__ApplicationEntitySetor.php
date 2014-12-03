@@ -603,4 +603,26 @@ class Setor extends \Application\Entity\Setor implements \Doctrine\ORM\Proxy\Pro
         return parent::setGuiasDeRemessa($guiasDeRemessa);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getProcessos()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProcessos', array());
+
+        return parent::getProcessos();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setProcessos(\Doctrine\Common\Collections\ArrayCollection $processos)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProcessos', array($processos));
+
+        return parent::setProcessos($processos);
+    }
+
 }

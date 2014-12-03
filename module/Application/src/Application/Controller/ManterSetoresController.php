@@ -124,7 +124,6 @@ class ManterSetoresController extends AbstractActionController {
 
         if (!$request->isPost())
             return $this->preencheCombos();
-
         $nomeTxt = $request->getPost('nomeTxt');
         $siglaTxt = $request->getPost('siglaTxt');
         $secretariaSlct = $request->getPost('secretariaSlct');
@@ -169,7 +168,7 @@ class ManterSetoresController extends AbstractActionController {
         $setor->setSigla($dadosFiltrados->getValue('siglaTxt'));
         $setor->setArquivo((bool)$dadosFiltrados->getValue('arquivoRd'));
         $setor->setSecretaria($secretaria);
-        $setor->setTipo($tipo);
+        $setor->setTipoSetor($tipo);
         if ($setorMestre instanceof \Application\Entity\Setor)
             $setor->setSetorPai($setorMestre);
 
@@ -179,7 +178,6 @@ class ManterSetoresController extends AbstractActionController {
             $this->flashMessenger()->addSuccessMessage("Setor adicionado com sucesso.");
         } catch (\Doctrine\DBAL\DBALException $e){
             if(strpos($e->getMessage(), 'SQLSTATE[23000]') > 0){
-                            echo $e->getMessage();die();
                 $mensagem = "Já existe um setor cadastrado nesta secretaria ";
                 $mensagem.= "com este nome ou sigla.";
             } else{

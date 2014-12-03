@@ -290,6 +290,40 @@ class ManterProcessosController extends AbstractActionController {
             $this->redirect()->toRoute('processos');
         }
     }
+    
+    
+    public function processosNoSetorAction(){
+        $processoDAO = new ProcessoDAO($this->getServiceLocator());
+        
+        $authService = $this->getServiceLocator()->get('AuthService');
+        $usuarioAuth = $authService->getIdentity();
+        $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
+        $query = $processoDAO->getProcessosNoSetor($usuarioDAO->lerPorId($usuarioAuth['id']));
+
+        $ormPaginator = new ORMPaginator($query);
+        $ormPaginatorIterator = $ormPaginator->getIterator();
+
+        $adapter = new Iterator($ormPaginatorIterator);
+
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage(10);
+        $page = (int) $this->params()->fromQuery('page');
+        if ($page)
+            $paginator->setCurrentPageNumber($page);
+        
+                if ($paginator->count() == 0) {
+            $mensagem = "Não existem processos no setor.";
+            $this->flashMessenger()->addInfoMessage($mensagem);
+            $this->redirect()->toRoute('home');
+            return;
+        }
+        
+        return array(
+            'processos' => $paginator,
+            'orderby' => $this->params()->fromQuery('orderby'),
+        );
+    }
+    
 
     public function requerenteAutoCompleteAction() {
         $termo = $this->params()->fromQuery('term');

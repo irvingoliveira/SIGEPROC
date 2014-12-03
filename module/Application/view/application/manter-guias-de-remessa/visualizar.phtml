@@ -1,0 +1,87 @@
+<?
+if($this->guia){
+    $id = $this->guia->getIdGuiaDeRemessa();
+    $numero = $this->guia->getNumero();
+    $anoExercicio = $this->guia->getAnoExercicio();
+    $dataCriacao = $this->guia->getDataCriacao()->format('d/m/Y');
+    $emissor = $this->guia->getEmissor()->getNome();
+    $destino = $this->guia->getPostoDeTrabalho();
+    $processos = $this->guia->getProcessos();
+    
+}
+?>
+<div class="row">
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading list-group">
+                <h3 class="panel-title">Visualizar guia</h3>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Id:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="idTxt"><?=$id;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Guia:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$numero.'/'.$anoExercicio;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Data de criaão:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$dataCriacao;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Emissor:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="setorTxt"><?=$emissor;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Destino:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="descricaoTxt"><?=$destino;?></p>
+                    </div>
+                </div>
+            </div>
+            <?  foreach ($processos as $processo):?>
+                <div class="panel-heading list-group-item">
+                    Processo: <?=$processo->getNumero().'/'.$processo->getAnoExercicio() ?>
+                </div>
+                <div class="panel-body list-group-item">
+                    <div>
+                        <p class="col-lg-3 col-md-3 list-group-item-text">Assunto:</p>
+                        <div class="col-lg-9 col-md-9">
+                            <p class="list-group-item-text" id="descricaoTxt">
+                                <?=$processo->getAssunto()->getNome();?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body list-group-item">
+                    <div>
+                        <p class="col-lg-3 col-md-3 list-group-item-text">Requerente:</p>
+                        <div class="col-lg-9 col-md-9">
+                            <p class="list-group-item-text" id="descricaoTxt"><?=$processo->getRequerente()->getNome();?></p>
+                        </div>
+                    </div>
+                </div>
+            <?  endforeach;?>
+            <div class="panel-footer center">
+                <a href="<?=$this->url('home')?>" class="btn btn-success" title="Voltar"><span class="glyphicon glyphicon-backward"></span>Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>

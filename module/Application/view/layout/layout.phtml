@@ -39,18 +39,15 @@
                     </button>
                     <?
                         $home = $this->url('home');
-                        $assuntos = $this->url('assuntos');
-                        $orgaosexternos = $this->url('orgaosexternos');
-                        $processos = $this->url('processos');
-                        /*
-                         * TODO
-                         */
-                        $secretarias = $this->url('secretarias');
-                        $setores = $this->url('setores');
-                        $usuarios = $this->url('usuarios');
-                        /**
-                         * TODO
-                         */
+                        $relatorios = $this->url('relatorios');
+//                        if($this->layout()->role == 'Administrador'){
+                            $assuntos = $this->url('assuntos');
+                            $orgaosexternos = $this->url('orgaosexternos');
+                            $processos = $this->url('processos');
+                            $secretarias = $this->url('secretarias');
+                            $setores = $this->url('setores');
+                            $usuarios = $this->url('usuarios');
+//                        }
                         $logout = $this->url('logout');
                     ?>
                     <a class="navbar-brand" href="<?php echo $this->url('home') ?>"><img src="<?php echo $this->basePath('img/logo-w.png') ?>" alt="SIGEPROC"/></a>
@@ -61,6 +58,10 @@
                             <li <?=$this->MenuAtivo($home)?>>
                                 <a href="<?=$home?>">Principal</a>
                             </li>
+                            <li <?=$this->MenuAtivo($relatorios)?>>
+                                <a href="<?=$relatorios?>">Relatórios</a>
+                            </li>
+                            <?if(($this->funcao == 'Administrador')||($this->funcao == 'root')):?>
                             <li <?=$this->MenuAtivo($assuntos)?>>
                                 <a href="<?=$assuntos?>">Assuntos</a>
                             </li>
@@ -71,14 +72,12 @@
                                 <a href="<?=$secretarias?>">Secretarias</a>
                             </li>
                             <li <?=$this->MenuAtivo($setores)?>>
-                                <a href="<?=$setores?>">Setores</a></li>
-                            <li <?=$this->MenuAtivo($orgaosexternos)?>>
-                                <a href="<?=$orgaosexternos?>">Orgãos externos</a>
-                            </li>
+                                <a href="<?=$setores?>">Postos de trabalho</a></li>
 <!--                            <li><a href="#">Configurações</a></li>-->
                             <li <?=$this->MenuAtivo($usuarios)?>>
                                 <a href="<?=$usuarios?>">Usuários</a>
                             </li>
+                            <?endif;?>
                             <li <?=$this->MenuAtivo($logout)?>>
                                 <a href="<?=$logout?>">Sair</a>
                             </li>

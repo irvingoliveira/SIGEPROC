@@ -1,0 +1,59 @@
+<div class="row">
+    
+    <div id='a' class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Menu</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="navbar-link">
+                    <li><a href="<?php echo $this->url('relatorios') ?>">Guias de remessa rejeitadas</a></li>
+                    <li><a href="<?php echo $this->url('relatorios', array('action' => 'processosporano')) ?>">Total de processos por ano</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Processos por ano</h3>
+            </div>
+            <div class="panel-body">
+                <div>
+                    <div id="chart_div"></div>
+                </div>                                
+            </div>
+        </div>
+    </div>
+
+<?php $this->headScript()->appendFile('https://www.google.com/jsapi') ?>
+ 
+<? $this->headScript()->captureStart(); ?>
+google.load("visualization", "1", {packages:["corechart"]});
+google.setOnLoadCallback(drawChart);
+function drawChart() {
+
+  var data = google.visualization.arrayToDataTable([
+    ['Anos', 'Processos'],
+    ['2010',  0],
+    ['2011',  0],
+    ['2012',  0],
+    ['2013',  0],
+    <?  foreach ($this->dados as $dado):?>
+        ['<?=$dado['anoExercicio']?>',  <?=$dado['processos']?>],
+    <?  endforeach;?>
+  ]);
+
+  var options = {
+    title: 'Processos por ano',
+    hAxis: {title: 'Anos', titleTextStyle: {color: 'red'}}
+  };
+
+  var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+
+  chart.draw(data, options);
+
+}
+<? $this->headScript()->captureEnd(); ?>
+</div>

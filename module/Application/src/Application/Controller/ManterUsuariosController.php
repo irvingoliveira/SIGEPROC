@@ -24,6 +24,8 @@ use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\Iterator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Application\DAL\UsuarioDAO;
+use Application\Exception\UserNotFoundException;
+use Application\Exception\InactiveUserException;
 /**
  * Description of ManterUsuariosController
  *
@@ -65,6 +67,7 @@ class ManterUsuariosController extends AbstractActionController {
                             'email' => $identity->getEmail(),
                             'funcao' => $identity->getFuncao()->getNome()
                         ));
+                        
                         $this->redirect()->toRoute('home');
                     } catch (Exception $e) {
                         $authService = $this->getAuthService();
@@ -75,20 +78,19 @@ class ManterUsuariosController extends AbstractActionController {
                 } else {
                     $authService->clearIdentity();
                     $authService->getStorage()->clear();
-                    try {
-                        throw new InactiveUserException();
-                    } catch (InactiveUserException $e) {
-                        return array('errMsg' => $e->getMessage());
-                    }
-                }
-            } else {
-                try{
-                    throw new UserNotFoundException();
-                }  catch (UserNotFoundException $e){
-                    $this->flashMessenger()->addErrorMessage("Não foi possível autenticar com estas informações de login. Tente novamente.");
+                    $mensagem = 'Não foi possível autenticar com estas informações ';
+                    $mensagem.= 'de login. Tente novamente.';
+                    $this->flashMessenger()->addErrorMessage($mensagem);
                     $this->redirect()->toRoute('autenticar');
                 }
-            }
+            } else {
+                $authService->clearIdentity();
+                $authService->getStorage()->clear();
+                $mensagem = 'Não foi possível autenticar com estas informações ';
+                $mensagem.= 'de login. Tente novamente.';
+                $this->flashMessenger()->addErrorMessage($mensagem);
+                $this->redirect()->toRoute('autenticar');
+             }
         }
     }
     
