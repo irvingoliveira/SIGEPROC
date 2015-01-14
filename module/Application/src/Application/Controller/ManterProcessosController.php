@@ -172,7 +172,9 @@ class ManterProcessosController extends AbstractActionController {
         $authService = $this->getServiceLocator()->get('AuthService');
         $usuario = $authService->getIdentity();
         $usuarioDAO = new UsuarioDAO($this->getServiceLocator());
-        $parametros->set('usuario', $usuarioDAO->lerPorId($usuario['id']));
+        $usuario = $usuarioDAO->lerPorId($usuario['id']);
+        $parametros->set('usuario', $usuario);
+        $parametros->set('postoDeTrabalho', $usuario->getSetorAtual()->getSetor());
 
         try {
             $processoDAO = new ProcessoDAO($this->getServiceLocator());
@@ -255,6 +257,7 @@ class ManterProcessosController extends AbstractActionController {
                 $mensagem.= "excluídos.";
                 $this->flashMessenger()->addErrorMessage($mensagem);
                 $this->redirect()->toRoute('processos');
+                return;
             }
             $processoDAO->excluir($idProcesso);
         } catch (\Exception $e) {

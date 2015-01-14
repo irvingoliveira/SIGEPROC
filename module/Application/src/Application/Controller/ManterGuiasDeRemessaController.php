@@ -260,6 +260,7 @@ class ManterGuiasDeRemessaController extends AbstractActionController {
         $parametros->set('dataCriacao', $dataSistema);
         $parametros->set('emissor', $usuario);
         $parametros->set('postoDeTrabalho', $postoDeTrabalho);
+        $parametros->set('rejeitada', 'FALSE');
         try {
             $guiaDeRemessaDAO = new GuiaDeRemessaDAO($this->getServiceLocator());
             $guiaDeRemessaDAO->salvar($parametros);
