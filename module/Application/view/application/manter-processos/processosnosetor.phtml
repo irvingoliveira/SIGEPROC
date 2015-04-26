@@ -35,6 +35,7 @@
                             <td><?= $processo->getRequerente()->getNome() ?></td>                     
                             <td>
                                 <a class="btn btn-xs btn-info" title="Visualizar" href="/processos/visualizar/<?=$processo->getIdProcesso();?>"><span class="glyphicon glyphicon-new-window"></span></a>
+                                <a class="btn btn-xs btn-danger" title="Adicionar pendência" href="/pendencias/adicionar/<?=$processo->getIdProcesso();?>"><span class="glyphicon glyphicon-plus"></span></a>
                             </td>                     
                         </tr>
                     <? endforeach; ?>

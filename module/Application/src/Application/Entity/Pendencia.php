@@ -43,6 +43,11 @@ class Pendencia {
      */
     private $descricao;
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @var int
+     */
+    private $imagem;
+    /**
      * @ORM\Column(type="datetime", nullable=false)
      * @var \DateTime
      */
@@ -79,6 +84,14 @@ class Pendencia {
     
     public function __construct() {
         $this->pareceres = new ArrayCollection();
+    }
+    
+    public function __set($atrib, $value){
+        $this->$atrib = $value;
+    }
+ 
+    public function __get($atrib){
+        return $this->$atrib;
     }
     
     public function getIdPendencia() {
@@ -163,6 +176,13 @@ class Pendencia {
 
     public function setDataConclusao(\DateTime $dataConclusao) {
         $this->dataConclusao = $dataConclusao;
+    }
+    public function getImagem() {
+        return $this->imagem;
+    }
+    
+    public function setImagem($imagem) {
+        $this->imagem = $imagem;
     }
 
     public function setUsuario(Usuario $usuario) {

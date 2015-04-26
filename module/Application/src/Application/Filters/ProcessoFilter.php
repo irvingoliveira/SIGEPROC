@@ -19,6 +19,7 @@
 
 namespace Application\Filters;
 
+use Zend\InputFilter\FileInput;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator;
@@ -34,6 +35,7 @@ final class ProcessoFilter extends InputFilter {
     private $assuntoTxt;
     private $volumeTxt;
     private $requerenteTxt;
+    private $imagemFile;
     private $dddTxt;
     private $telefoneTxt;
     private $secretariaSlct;
@@ -52,9 +54,11 @@ final class ProcessoFilter extends InputFilter {
     public function __construct($assuntoTxt, $volumeTxt, $requerenteTxt,
             $dddTxt, $telefoneTxt, $secretariaSlct, $setorSlct, $tipoDocumentoSlct,
             $numeroTxt, $digitoTxt, $emissaoDt, $orgaoEmissorTxt,  DAOInterface $assuntoDAO, 
-            DAOInterface $secretariaDAO, DAOInterface $setorDAO, DAOInterface $tipoDocumentoDAO) {
+            DAOInterface $secretariaDAO, DAOInterface $setorDAO, DAOInterface $tipoDocumentoDAO,
+            $imagemFile = NULL) {
         $this->assuntoTxt = $assuntoTxt;
         $this->volumeTxt = $volumeTxt;
+        $this->imagemFile = $imagemFile;
         $this->requerenteTxt = $requerenteTxt;
         $this->dddTxt = $dddTxt;
         $this->telefoneTxt = $telefoneTxt;
@@ -79,6 +83,8 @@ final class ProcessoFilter extends InputFilter {
         $this->add($this->getAssuntoTxtInput());
         $this->add($this->getVolumeTxtInput());
         $this->add($this->getRequerenteTxtInput());
+        if(!is_null($this->imagemFile))
+            $this->add($this->getImagemFileInput());
         $this->add($this->getDddTxtInput());
         $this->add($this->getTelefoneTxtInput());
         $this->add($this->getSecretariaSlctInput());
@@ -92,6 +98,7 @@ final class ProcessoFilter extends InputFilter {
         $this->setData(array(
             'assuntoTxt' => $this->assuntoTxt,
             'volumeTxt' => $this->volumeTxt,
+            'imagemFile' => $this->imagemFile,
             'requerenteTxt' => $this->requerenteTxt,
             'dddTxt' => $this->dddTxt,
             'telefoneTxt' => $this->telefoneTxt,
@@ -158,6 +165,29 @@ final class ProcessoFilter extends InputFilter {
                 ->attach(new Filter\StripTags());
 
         return $volumeFilter;
+    }
+    
+    private function getImagemFileInput(){
+        $imagemFilter = new FileInput('imagemFile');
+
+        $imagemExtension = new \Zend\Validator\File\Extension(array(
+            'jpg','jpeg','tiff','pdf'
+        ));
+        
+        $imagemFilter->getValidatorChain()
+                ->attach($imagemExtension)
+                ->attach(new Validator\File\UploadFile())
+                ->attach(new Validator\File\Size(array(
+                    'max' => substr(ini_get('upload_max_filesize'), 0, 1).'MB'
+                )));
+        $imagemFilter->getFilterChain()
+                ->attach(new Filter\File\RenameUpload(array(
+                    'target'    => './public/img/documentos/processo',
+                    'overwrite' => true,
+                    'randomize' => true,
+                    'use_upload_extension' => true,
+                )));
+        return $imagemFilter;
     }
     
     private function getRequerenteTxtInput(){

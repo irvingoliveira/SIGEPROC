@@ -5,6 +5,7 @@ if($this->processo){
     $anoExercicio = $this->processo->getAnoExercicio();
     $dataAbertura = $this->processo->getDataAbertura()->format('d/m/Y');
     $volume = $this->processo->getVolume();
+    $imagem = $this->processo->getImagem();
     $assunto = $this->processo->getAssunto()->getNome();
     $status = $this->processo->getStatus()->getNome();
     $requerente = $this->processo->getRequerente();
@@ -40,6 +41,19 @@ if($this->processo){
 }
 ?>
 <div class="row">
+    <div id="imagem" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Pendência</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="<?=$imagem?>"  width="560">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-6 col-sm-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading list-group">
@@ -57,7 +71,7 @@ if($this->processo){
                 <div>
                     <p class="col-lg-3 col-md-3 list-group-item-text">Processo:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="nomeTxt"><?=$numero.'/'.$anoExercicio;?></p>
+                        <p class="list-group-item-text" id="numeroTxt"><?=$numero.'/'.$anoExercicio;?></p>
                     </div>
                 </div>
             </div>
@@ -65,7 +79,7 @@ if($this->processo){
                 <div>
                     <p class="col-lg-3 col-md-3 list-group-item-text">Assunto:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="nomeTxt"><?=$assunto;?></p>
+                        <p class="list-group-item-text" id="assuntoTxt"><?=$assunto;?></p>
                     </div>
                 </div>
             </div>
@@ -73,7 +87,16 @@ if($this->processo){
                 <div>
                     <p class="col-lg-3 col-md-3 list-group-item-text">Volumes:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="secretariaTxt"><?=$volume;?></p>
+                        <p class="list-group-item-text" id="volumeTxt"><?=$volume;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Imagem:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt">
+                            <a href="#imagem" data-toggle="modal">Abrir</a></p>
                     </div>
                 </div>
             </div>
@@ -81,7 +104,7 @@ if($this->processo){
                 <div>
                     <p class="col-lg-3 col-md-3 list-group-item-text">Status:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="tipoSetorTxt"><?=$status;?></p>
+                        <p class="list-group-item-text" id="statusTxt"><?=$status;?></p>
                     </div>
                 </div>
             </div>
@@ -89,7 +112,22 @@ if($this->processo){
                 <div>
                     <p class="col-lg-3 col-md-3 list-group-item-text">Data de abertura:</p>
                     <div class="col-lg-9 col-md-9">
-                        <p class="list-group-item-text" id="descricaoTxt"><?=$dataAbertura;?></p>
+                        <p class="list-group-item-text" id="dataAberturaTxt"><?=$dataAbertura;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Pendências:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text"  style="display: inline" id="pendenciasTxt"><?=$pendencias;?></p>
+                        &nbsp;
+                        <?if($pendencias>0):?>
+                        <a href="/pendencias/index/<?=$id;?>" class="btn btn-success">
+                                <span class="glyphicon glyphicon-open"></span>
+                                Abrir
+                            </a>
+                        <?endif;?>
                     </div>
                 </div>
             </div>

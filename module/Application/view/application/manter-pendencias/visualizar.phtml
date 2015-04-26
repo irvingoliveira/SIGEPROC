@@ -1,0 +1,88 @@
+<?
+if($this->pendencia){
+    $id = $this->pendencia->getIdPendencia();
+    $descricao = $this->pendencia->getDescricao();
+    $imagem = $this->pendencia->getImagem();
+    $dataCriacao = $this->pendencia->getDataCriacao()->format('d/m/Y');
+    $resolvido = $this->pendencia->getResolvido();
+    $dataConclusao = ($this->pendencia->getDataConclusao())?
+                        $this->pendencia->getDataConclusao()->format('d/m/Y'):NULL;
+}
+?>
+<div class="row">
+    <div id="imagem" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Pendência</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="<?=$imagem?>"  width="560">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading list-group">
+                <h3 class="panel-title">Vizualizar pedência</h3>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Id:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$id;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Imagem:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt">
+                            <a href="#imagem" data-toggle="modal">Abrir</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Data de criação:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$dataCriacao;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Descrição:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=$descricao;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Resolvido:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="nomeTxt"><?=($resolvido)?
+                                                                     'Sim':'Não';?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body list-group-item">
+                <div>
+                    <p class="col-lg-3 col-md-3 list-group-item-text">Data de conclusão:</p>
+                    <div class="col-lg-9 col-md-9">
+                        <p class="list-group-item-text" id="siglaTxt"><?=$dataConclusao;?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer center">
+                <a href="<?=$this->url('pendencias', array('id' => $processo))?>" 
+                   class="btn btn-success" title="Voltar">
+                        <span class="glyphicon glyphicon-backward"></span>Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>

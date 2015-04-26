@@ -109,6 +109,20 @@ return array(
                     ),
                 ),
             ),
+            'pendencias' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/pendencias[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pendencias',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'processos' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -292,6 +306,7 @@ return array(
             'Assuntos' => 'Application\Controller\ManterAssuntosController',
             'GuiasDeRemessa' => 'Application\Controller\ManterGuiasDeRemessaController',
             'OrgaosExternos' => 'Application\Controller\ManterOrgaosExternosController',
+            'Pendencias' => 'Application\Controller\ManterPendenciasController',
             'Processos' => 'Application\Controller\ManterProcessosController',
             'Relatorios' => 'Application\Controller\RelatoriosController',
             'Secretarias' => 'Application\Controller\ManterSecretariasController',

@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">Adicionar novo processo</h3>
             </div>
-            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('processos', array('action' => 'adicionar')); ?>">
+            <form class="form-horizontal" role="form" method="POST" action="<?php echo $this->url('processos', array('action' => 'adicionar')); ?>" action="<?php echo $this->url('pendencias', array('action' => 'adicionar')); ?>" enctype="multipart/form-data">
                 <div class="panel-body">
                     <div class="form-group">
                         <label for="assuntoTxt" class="col-lg-3 col-md-3 control-label">Assunto:</label>
@@ -20,6 +20,13 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="imagemFile" class="col-lg-3 col-md-3 control-label">Documento:</label>
+                        <div class="col-lg-9 col-md-9">
+                            <input type="file" name="imagemFile" class="form-control" id="imagemFile"/>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="requerenteTxt" class="col-lg-3 col-md-3 control-label">Requerente:</label>
                         <div class="col-lg-9 col-md-9">

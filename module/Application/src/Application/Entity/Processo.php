@@ -63,6 +63,11 @@ class Processo {
      */
     private $volume;
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @var string
+     */
+    private $imagem;
+    /**
      * @ORM\ManyToOne(targetEntity="Assunto", inversedBy="processos")
      * @ORM\JoinColumn(name="Assunto_idAssunto",
      *                 referencedColumnName="idAssunto",
@@ -161,6 +166,15 @@ class Processo {
         return $this->volume;
     }
 
+    public function getImagem() {
+        return $this->imagem;
+    }
+
+    public function setImagem($imagem) {
+        $this->imagem = $imagem;
+        return $this;
+    }
+
     public function getAssunto() {
         return $this->assunto;
     }
@@ -173,7 +187,7 @@ class Processo {
         $this->anoExercicio = $anoExercicio;
     }
 
-    public function setDataAbertura(DateTime $dataAbertura) {
+    public function setDataAbertura(\DateTime $dataAbertura) {
         $this->dataAbertura = $dataAbertura;
     }
 

@@ -28,6 +28,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Application\Filters\ProcessoFilter;
 use Application\DAL\AssuntoDAO;
+use Application\DAL\PendenciaDAO;
 use Application\DAL\ProcessoDAO;
 use Application\DAL\RequerenteDAO;
 use Application\DAL\StatusProcessoDAO;
@@ -118,18 +119,23 @@ class ManterProcessosController extends AbstractActionController {
         if (!$request->isPost())
             return $this->preencheCombos();
 
-        $assuntoTxt = $request->getPost('assuntoTxt');
-        $volumeTxt = $request->getPost('volumeTxt');
-        $requerenteTxt = $request->getPost('requerenteTxt');
-        $dddTxt = $request->getPost('dddTxt');
-        $telefoneTxt = $request->getPost('telefoneTxt');
-        $secretariaSlct = $request->getPost('secretariaSlct');
-        $setorSlct = $request->getPost('setorSlct');
-        $tipoDocumentoSlct = $request->getPost('tipoDocumentoSlct');
-        $numeroTxt = $request->getPost('numeroTxt');
-        $digitoTxt = $request->getPost('digitoTxt');
-        $emissaoDt = $request->getPost('emissaoDt');
-        $orgaoEmissorTxt = $request->getPost('orgaoEmissorTxt');
+        $post = array_merge_recursive(
+                $request->getPost()->toArray(), $request->getFiles()->toArray()
+        );
+        
+        $assuntoTxt = $post['assuntoTxt'];
+        $volumeTxt = $post['volumeTxt'];
+        $imagemFile = $post['imagemFile'];
+        $requerenteTxt = $post['requerenteTxt'];
+        $dddTxt = $post['dddTxt'];
+        $telefoneTxt = $post['telefoneTxt'];
+        $secretariaSlct = $post['secretariaSlct'];
+        $setorSlct = $post['setorSlct'];
+        $tipoDocumentoSlct = $post['tipoDocumentoSlct'];
+        $numeroTxt = $post['numeroTxt'];
+        $digitoTxt = $post['digitoTxt'];
+        $emissaoDt = $post['emissaoDt'];
+        $orgaoEmissorTxt = $post['orgaoEmissorTxt'];
 
         $assuntoDAO = new AssuntoDAO($this->getServiceLocator());
         $secretariaDAO = new SecretariaDAO($this->getServiceLocator());
@@ -139,7 +145,7 @@ class ManterProcessosController extends AbstractActionController {
         $dadosFiltrados = new ProcessoFilter($assuntoTxt, $volumeTxt, $requerenteTxt, 
                 $dddTxt, $telefoneTxt, $secretariaSlct, $setorSlct, $tipoDocumentoSlct, 
                 $numeroTxt, $digitoTxt, $emissaoDt, $orgaoEmissorTxt, $assuntoDAO, 
-                $secretariaDAO, $setorDAO, $tipoDocumentoDAO);
+                $secretariaDAO, $setorDAO, $tipoDocumentoDAO, $imagemFile);
 
         if (!$dadosFiltrados->isValid()) {
             foreach ($dadosFiltrados->getInvalidInput() as $erro) {
@@ -155,6 +161,8 @@ class ManterProcessosController extends AbstractActionController {
         $parametros->set('assunto', $assuntoDAO->buscaExata(
                         $dadosFiltrados->getValue('assuntoTxt'))[0]);
         $parametros->set('volume', $dadosFiltrados->getValue('volumeTxt'));
+        $imagem = $dadosFiltrados->getValue('imagemFile');
+        $parametros->set('imagem', substr($imagem['tmp_name'], 8));
         $parametros->set('requerente', $dadosFiltrados->getValue('requerenteTxt'));
         $parametros->set('ddd', $dadosFiltrados->getValue('dddTxt'));
         $parametros->set('telefone', $dadosFiltrados->getValue('telefoneTxt'));
@@ -181,6 +189,7 @@ class ManterProcessosController extends AbstractActionController {
             $processoDAO->salvar($parametros);
             $this->flashMessenger()->addSuccessMessage("Processo adicionado com sucesso.");
         } catch (\Exception $e) {
+            echo $e->getMessage();die();
             $mensagem = "Ocorreu um erro na operação, tente novamente ";
             $mensagem .= "ou entre em contato com um administrador ";
             $mensagem .= "do sistema.";
@@ -279,6 +288,8 @@ class ManterProcessosController extends AbstractActionController {
         try {
             $processoDAO = new ProcessoDAO($this->getServiceLocator());
             $processo = $processoDAO->lerPorId($idProcesso);
+            $pendenciaDAO = new PendenciaDAO($this->getServiceLocator());
+            $pendencias = $pendenciaDAO->getQtdPendenciasPorProcesso($processo);
         } catch (\Exception $e) {
             $mensagem = "Ocorreu um erro na operação, tente novamente ";
             $mensagem .= "ou entre em contato com um administrador ";
@@ -287,7 +298,10 @@ class ManterProcessosController extends AbstractActionController {
             $this->redirect()->toRoute('processos');
         }
         if ($processo != NULL) {
-            return array('processo' => $processo);
+            return array(
+                'processo' => $processo,
+                'pendencias' => $pendencias
+            );
         } else {
             $this->flashMessenger()->addMessage("Processo não encotrado");
             $this->redirect()->toRoute('processos');
